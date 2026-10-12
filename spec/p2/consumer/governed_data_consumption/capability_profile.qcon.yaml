@@ -1,0 +1,41 @@
+projection:
+  source_contract_ref: Q.SS.STD.P2.CONTRACT.CROSS_DOMAIN_REALIZATION@V0128
+  source_contract_hash: sha256:15549a6a4a0c005ccbeddb0c7b40b4f4918f336c731b7c2017f05e2926bbb71d
+  role: consumer
+  role_dimension: N2
+  direction: INWARD
+  capability_id: governed_data_consumption
+  canonical_name: governed_data_consumption
+  stable_code: GOVERNED_DATA_CONSUMPTION
+  authority_fragment_ref: Q.SS.STD.P2.CONTRACT.CROSS_DOMAIN_REALIZATION@V0128#/role_capability_catalog/consumer/capabilities/governed_data_consumption
+  purpose: sole governed inward consumption of Provider-exposed STATIC/DYNAMIC/RUNTIME data
+  semantic_authority: false
+  projection_only: true
+operations:
+- operation_id: consume_static_data
+  canonical_name: consume_static_data
+  stable_code: CONSUME_STATIC_DATA
+  catalog_fragment_ref: Q.SS.STD.P2.CONTRACT.CROSS_DOMAIN_REALIZATION@V0128#/operation_catalog/consumer/governed_data_consumption
+  source_leaf: src/p2/consumer/governed_data_consumption/consume_static_data/handler.ts
+  test_leaf: tests/p2/consumer/governed_data_consumption/consume_static_data/handler.test.ts
+- operation_id: consume_dynamic_data
+  canonical_name: consume_dynamic_data
+  stable_code: CONSUME_DYNAMIC_DATA
+  catalog_fragment_ref: Q.SS.STD.P2.CONTRACT.CROSS_DOMAIN_REALIZATION@V0128#/operation_catalog/consumer/governed_data_consumption
+  source_leaf: src/p2/consumer/governed_data_consumption/consume_dynamic_data/handler.ts
+  test_leaf: tests/p2/consumer/governed_data_consumption/consume_dynamic_data/handler.test.ts
+- operation_id: consume_runtime_data
+  canonical_name: consume_runtime_data
+  stable_code: CONSUME_RUNTIME_DATA
+  catalog_fragment_ref: Q.SS.STD.P2.CONTRACT.CROSS_DOMAIN_REALIZATION@V0128#/operation_catalog/consumer/governed_data_consumption
+  source_leaf: src/p2/consumer/governed_data_consumption/consume_runtime_data/handler.ts
+  test_leaf: tests/p2/consumer/governed_data_consumption/consume_runtime_data/handler.test.ts
+boundaries:
+  single_p2_stage_identity: true
+  provider_consumer_parallel_independence: true
+  module_forbidden: true
+  p2a_p2b_stage_identity_forbidden: true
+  direct_cross_domain_p1_read_forbidden: true
+  p2_stage_database_ownership: false
+  p2_gate_or_activation_authority: false
+  verification_execution_owner: Q.WORKFLOW

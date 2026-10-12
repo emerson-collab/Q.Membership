@@ -1,0 +1,21 @@
+{
+  "stage_contract_ref": "Q.SS.STD.P1.CONTRACT.BUSINESS_RUNTIME@V0186",
+  "interfaces": [
+    "business_operation_invoke",
+    "internal_call_invoke",
+    "dependency_invoke",
+    "business_hook_bind",
+    "business_hook_evaluate",
+    "business_event_publish",
+    "business_event_consume",
+    "business_registry_register",
+    "business_registry_resolve",
+    "business_registry_lookup"
+  ],
+  "surfaces": {
+    "CALL": "active",
+    "HOOK": "active",
+    "EVENT": "active",
+    "REGISTRY": "active"
+  }
+}

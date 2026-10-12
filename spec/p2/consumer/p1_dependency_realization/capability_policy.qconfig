@@ -1,0 +1,35 @@
+projection:
+  source_contract_ref: Q.SS.STD.P2.CONTRACT.CROSS_DOMAIN_REALIZATION@V0128
+  role: consumer
+  capability_id: p1_dependency_realization
+rules:
+  operation_set_exact:
+  - realize_dependency
+  - bind_operation_use
+  operation_count: 2
+  cross_domain_direct_p1_read_forbidden: true
+  protocol_translation_mapping_wrapper_second_protocol_forbidden: true
+  new_global_field_surface_layer_interface_kind_forbidden: true
+  p2_stage_database_ownership_forbidden: true
+  p2_evidence_observation_gate_activation_authority_forbidden: true
+  stage_local_workflow_launcher_forbidden: true
+  local_p0_is_only_runtime_when_execution_required: true
+  exact_source_and_test_leaf_per_operation_required: true
+  unlisted_p2_path_forbidden: true
+  receiving_p1_predeclared_dependency_required: true
+  active_mount_set_member_or_data_access_binding_required: true
+  p1_dependency_creation_forbidden: true
+  provider_capability_reownership_forbidden: true
+  p1_dependency_interface_ref: Q.SS.STD.P1.CONTRACT.BUSINESS_RUNTIME@V0186#/interfaces/dependency_invoke
+  active_mount_set_member_dependency_realization_binding_durable: true
+  dependency_realization_durable_key_exact:
+  - receiving_domain_ref
+  - exact_owner_capability_ref
+  - exact_receiving_operation_ref
+  - exact_local_dependency_ref
+  - active_mount_set_hash
+  dependency_realization_exact_readback_before_bind_operation_use_required: true
+  dependency_realization_binding_hash_reverification_required: true
+  restart_dependency_binding_resolution_against_recovered_active_mount_set_required: true
+  missing_or_mismatched_active_dependency_binding_fail_closed: true
+  operation_use_binding_durable_persistence_required: false

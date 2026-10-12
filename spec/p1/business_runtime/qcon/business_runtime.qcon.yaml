@@ -1,0 +1,10 @@
+stage_contract_ref: Q.SS.STD.P1.CONTRACT.BUSINESS_RUNTIME@V0186
+runtime_contract_ref: Q.SS.STD.P0.CONTRACT.RUNTIME_CORE@V0134
+stage_id: P1
+stage_role: NONE
+primary_business_carrier: capability
+interface_profile_ref: Q.SS.STD.P1.CONTRACT.BUSINESS_RUNTIME@V0186#/interface_profile
+framework_anchor_crosswalk_ref: Q.SS.STD.P1.CONTRACT.BUSINESS_RUNTIME@V0186#/concrete_interface_framework_anchor_crosswalk
+classification_ref: Q.SS.STD.META.CONTRACT.DIMENSION_INTERFACE_CLASSIFICATION@V0114
+surface_layer_ref: Q.SS.STD.META.CONTRACT.SURFACE_LAYER_MOUNT@V0114
+field_dictionary_ref: Q.SS.STD.META.CONTRACT.FIELD_DICTIONARY@V0106

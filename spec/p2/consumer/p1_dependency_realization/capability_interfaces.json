@@ -1,0 +1,17 @@
+{
+  "projection": {
+    "capability_id": "p1_dependency_realization",
+    "exact_q_interface_identity_request_response_outcome_stable_error_layer_preserved": true,
+    "new_surface_kind_layer_created": false,
+    "operation_bindings": {
+      "bind_operation_use": {"allowed_kind_codes": ["M1", "M6", "M7", "M8"], "binding_mode": "PRESERVE_EXACT_INPUT_Q_INTERFACE_OR_DECLARED_REGISTRY_BINDING", "creates_new_interface": false},
+      "realize_dependency": {"allowed_kind_codes": ["M1", "M6", "M7", "M8"], "binding_mode": "PRESERVE_EXACT_INPUT_Q_INTERFACE_OR_DECLARED_REGISTRY_BINDING", "creates_new_interface": false}
+    },
+    "protocol_translation_mapping_wrapper_or_second_protocol_forbidden": true,
+    "role": "consumer",
+    "role_lineage_kind_codes": ["M1", "M6", "M7", "M8"],
+    "source_contract_ref": "Q.SS.STD.P2.CONTRACT.CROSS_DOMAIN_REALIZATION@V0128",
+    "surface_binding": {"M1": "CALL", "M6": "REGISTRY", "M7": "REGISTRY", "M8": "REGISTRY"},
+    "system_interface_role_overlay_created_by_p2": false
+  }
+}

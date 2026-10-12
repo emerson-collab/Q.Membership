@@ -1,0 +1,41 @@
+projection:
+  source_contract_ref: Q.SS.STD.P2.CONTRACT.CROSS_DOMAIN_REALIZATION@V0128
+  source_contract_hash: sha256:15549a6a4a0c005ccbeddb0c7b40b4f4918f336c731b7c2017f05e2926bbb71d
+  role: provider
+  role_dimension: N3
+  direction: OUTWARD
+  capability_id: governed_data_exposure
+  canonical_name: governed_data_exposure
+  stable_code: GOVERNED_DATA_EXPOSURE
+  authority_fragment_ref: Q.SS.STD.P2.CONTRACT.CROSS_DOMAIN_REALIZATION@V0128#/role_capability_catalog/provider/capabilities/governed_data_exposure
+  purpose: sole governed non-change outward exposure of source-owned facts for authorized cross-domain consumers
+  semantic_authority: false
+  projection_only: true
+operations:
+- operation_id: expose_static_data
+  canonical_name: expose_static_data
+  stable_code: EXPOSE_STATIC_DATA
+  catalog_fragment_ref: Q.SS.STD.P2.CONTRACT.CROSS_DOMAIN_REALIZATION@V0128#/operation_catalog/provider/governed_data_exposure
+  source_leaf: src/p2/provider/governed_data_exposure/expose_static_data/handler.ts
+  test_leaf: tests/p2/provider/governed_data_exposure/expose_static_data/handler.test.ts
+- operation_id: expose_dynamic_data
+  canonical_name: expose_dynamic_data
+  stable_code: EXPOSE_DYNAMIC_DATA
+  catalog_fragment_ref: Q.SS.STD.P2.CONTRACT.CROSS_DOMAIN_REALIZATION@V0128#/operation_catalog/provider/governed_data_exposure
+  source_leaf: src/p2/provider/governed_data_exposure/expose_dynamic_data/handler.ts
+  test_leaf: tests/p2/provider/governed_data_exposure/expose_dynamic_data/handler.test.ts
+- operation_id: expose_runtime_data
+  canonical_name: expose_runtime_data
+  stable_code: EXPOSE_RUNTIME_DATA
+  catalog_fragment_ref: Q.SS.STD.P2.CONTRACT.CROSS_DOMAIN_REALIZATION@V0128#/operation_catalog/provider/governed_data_exposure
+  source_leaf: src/p2/provider/governed_data_exposure/expose_runtime_data/handler.ts
+  test_leaf: tests/p2/provider/governed_data_exposure/expose_runtime_data/handler.test.ts
+boundaries:
+  single_p2_stage_identity: true
+  provider_consumer_parallel_independence: true
+  module_forbidden: true
+  p2a_p2b_stage_identity_forbidden: true
+  direct_cross_domain_p1_read_forbidden: true
+  p2_stage_database_ownership: false
+  p2_gate_or_activation_authority: false
+  verification_execution_owner: Q.WORKFLOW

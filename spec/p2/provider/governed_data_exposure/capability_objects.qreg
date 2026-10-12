@@ -1,0 +1,32 @@
+projection:
+  source_contract_ref: Q.SS.STD.P2.CONTRACT.CROSS_DOMAIN_REALIZATION@V0128
+  role: provider
+  capability:
+    capability_id: governed_data_exposure
+    canonical_name: governed_data_exposure
+    stable_code: GOVERNED_DATA_EXPOSURE
+    authority_fragment_ref: Q.SS.STD.P2.CONTRACT.CROSS_DOMAIN_REALIZATION@V0128#/role_capability_catalog/provider/capabilities/governed_data_exposure
+  operations:
+    expose_static_data:
+      operation_id: expose_static_data
+      canonical_name: expose_static_data
+      stable_code: EXPOSE_STATIC_DATA
+      owner_capability_id: governed_data_exposure
+      catalog_fragment_ref: Q.SS.STD.P2.CONTRACT.CROSS_DOMAIN_REALIZATION@V0128#/operation_catalog/provider/governed_data_exposure
+    expose_dynamic_data:
+      operation_id: expose_dynamic_data
+      canonical_name: expose_dynamic_data
+      stable_code: EXPOSE_DYNAMIC_DATA
+      owner_capability_id: governed_data_exposure
+      catalog_fragment_ref: Q.SS.STD.P2.CONTRACT.CROSS_DOMAIN_REALIZATION@V0128#/operation_catalog/provider/governed_data_exposure
+    expose_runtime_data:
+      operation_id: expose_runtime_data
+      canonical_name: expose_runtime_data
+      stable_code: EXPOSE_RUNTIME_DATA
+      owner_capability_id: governed_data_exposure
+      catalog_fragment_ref: Q.SS.STD.P2.CONTRACT.CROSS_DOMAIN_REALIZATION@V0128#/operation_catalog/provider/governed_data_exposure
+  hierarchy:
+  - DOMAIN
+  - CAPABILITY
+  - OPERATION
+  module_formal_object_created: false

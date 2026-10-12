@@ -1,0 +1,40 @@
+projection:
+  source_contract_ref: Q.SS.STD.P2.CONTRACT.CROSS_DOMAIN_REALIZATION@V0128
+  source_contract_hash: sha256:15549a6a4a0c005ccbeddb0c7b40b4f4918f336c731b7c2017f05e2926bbb71d
+  role: provider
+  role_dimension: N3
+  direction: OUTWARD
+  capability_id: capability_publishing
+  canonical_name: capability_publishing
+  stable_code: CAPABILITY_PUBLISHING
+  authority_fragment_ref: Q.SS.STD.P2.CONTRACT.CROSS_DOMAIN_REALIZATION@V0128#/role_capability_catalog/provider/capabilities/capability_publishing
+  purpose: materialize and publish immutable PUBLICATION_ELIGIBLE P1 capability material without changing provider-owned P1 semantics
+  semantic_authority: false
+  projection_only: true
+operations:
+- operation_id: create_material_set
+  canonical_name: create_material_set
+  stable_code: CREATE_MATERIAL_SET
+  catalog_fragment_ref: Q.SS.STD.P2.CONTRACT.CROSS_DOMAIN_REALIZATION@V0128#/operation_catalog/provider/capability_publishing
+  source_leaf: src/p2/provider/capability_publishing/create_material_set/handler.ts
+  test_leaf: tests/p2/provider/capability_publishing/create_material_set/handler.test.ts
+- operation_id: publish_capability
+  canonical_name: publish_capability
+  stable_code: PUBLISH_CAPABILITY
+  catalog_fragment_ref: Q.SS.STD.P2.CONTRACT.CROSS_DOMAIN_REALIZATION@V0128#/operation_catalog/provider/capability_publishing
+  source_leaf: src/p2/provider/capability_publishing/publish_capability/handler.ts
+  test_leaf: tests/p2/provider/capability_publishing/publish_capability/handler.test.ts
+boundaries:
+  single_p2_stage_identity: true
+  provider_consumer_parallel_independence: true
+  module_forbidden: true
+  p2a_p2b_stage_identity_forbidden: true
+  direct_cross_domain_p1_read_forbidden: true
+  p2_stage_database_ownership: false
+  p2_gate_or_activation_authority: false
+  verification_execution_owner: Q.WORKFLOW
+  executable_publication_requires_immutable_implementation_material_binding: true
+  mutable_repository_path_for_execution_forbidden: true
+  raw_provider_url_for_execution_forbidden: true
+  unverified_implementation_bytes_for_execution_forbidden: true
+  launcher_owned_implementation_binding_forbidden: true

@@ -1,0 +1,39 @@
+projection:
+  source_contract_ref: Q.SS.STD.P2.CONTRACT.CROSS_DOMAIN_REALIZATION@V0128
+  source_contract_hash: sha256:15549a6a4a0c005ccbeddb0c7b40b4f4918f336c731b7c2017f05e2926bbb71d
+  role: consumer
+  role_dimension: N2
+  direction: INWARD
+  capability_id: p1_dependency_realization
+  canonical_name: p1_dependency_realization
+  stable_code: P1_DEPENDENCY_REALIZATION
+  authority_fragment_ref: Q.SS.STD.P2.CONTRACT.CROSS_DOMAIN_REALIZATION@V0128#/role_capability_catalog/consumer/capabilities/p1_dependency_realization
+  purpose: bind an active mount-set member or governed-data consumption binding to an already-declared receiving-P1 local_dependency_ref and exact receiving Operation use
+  semantic_authority: false
+  projection_only: true
+operations:
+- operation_id: realize_dependency
+  canonical_name: realize_dependency
+  stable_code: REALIZE_DEPENDENCY
+  catalog_fragment_ref: Q.SS.STD.P2.CONTRACT.CROSS_DOMAIN_REALIZATION@V0128#/operation_catalog/consumer/p1_dependency_realization
+  source_leaf: src/p2/consumer/p1_dependency_realization/realize_dependency/handler.ts
+  test_leaf: tests/p2/consumer/p1_dependency_realization/realize_dependency/handler.test.ts
+- operation_id: bind_operation_use
+  canonical_name: bind_operation_use
+  stable_code: BIND_OPERATION_USE
+  catalog_fragment_ref: Q.SS.STD.P2.CONTRACT.CROSS_DOMAIN_REALIZATION@V0128#/operation_catalog/consumer/p1_dependency_realization
+  source_leaf: src/p2/consumer/p1_dependency_realization/bind_operation_use/handler.ts
+  test_leaf: tests/p2/consumer/p1_dependency_realization/bind_operation_use/handler.test.ts
+boundaries:
+  single_p2_stage_identity: true
+  provider_consumer_parallel_independence: true
+  module_forbidden: true
+  p2a_p2b_stage_identity_forbidden: true
+  direct_cross_domain_p1_read_forbidden: true
+  p2_stage_database_ownership: false
+  p2_gate_or_activation_authority: false
+  verification_execution_owner: Q.WORKFLOW
+  active_mount_set_member_dependency_realization_binding_durable: true
+  dependency_realization_exact_readback_before_operation_use_required: true
+  restart_dependency_binding_reverification_against_active_mount_set_required: true
+  operation_use_binding_durable_persistence_required: false

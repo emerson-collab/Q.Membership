@@ -1,0 +1,129 @@
+{
+  "q_header": "1",
+  "q_id": "Q.P0.SPEC.INTERFACE.RUNTIME_INTERFACES",
+  "q_version": "V0134",
+  "q_stage": "P0",
+  "source_contract_ref": "Q.SS.STD.P0.CONTRACT.RUNTIME_CORE@V0134",
+  "field_dictionary_ref": "Q.SS.STD.META.CONTRACT.FIELD_DICTIONARY@V0106",
+  "interfaces": {
+    "runtime_execution_invoke": {
+      "interface_ref": "Q.SS.STD.P0.CONTRACT.RUNTIME_CORE@V0134#/interfaces/runtime_execution_invoke",
+      "operation_ref": "q.p0.operation.invoke_runtime",
+      "surface": "CALL",
+      "kind_code": "M1",
+      "kind": "CALL_INVOKE",
+      "method_ref": "invoke",
+      "request_contract_ref": "Q.SS.STD.P0.CONTRACT.RUNTIME_CORE@V0134#/runtime_type_contracts/runtime_context",
+      "response_contract_ref": "Q.SS.STD.P0.CONTRACT.RUNTIME_CORE@V0134#/runtime_type_contracts/runtime_result",
+      "stable_error_contract_ref": "Q.SS.STD.P0.CONTRACT.RUNTIME_CORE@V0134#/runtime_type_contracts/stable_runtime_error",
+      "path": [
+        "operation_id",
+        "trace_id",
+        "request_id"
+      ],
+      "static_mount": [
+        "operation_contract",
+        "policy_refs",
+        "hook_binding_refs",
+        "receipt_contract_ref"
+      ],
+      "dynamic_mount": [
+        "input",
+        "runtime_context",
+        "validated_context",
+        "operation_attempt",
+        "outcome_type",
+        "runtime_result",
+        "stable_error",
+        "execution_receipt",
+        "evidence_ref"
+      ],
+      "implementation_binding": {
+        "provider_implementation_ref": "Q.SS.STD.P0.CONTRACT.RUNTIME_CORE@V0134#/object_catalog/stage_handler",
+        "implementation_file": "src/p0/stage_handler.ts",
+        "contract_owner_file_ref": "Q.SS.STD.P0.CONTRACT.RUNTIME_CORE@V0134#/object_catalog/runtime_contract",
+        "visibility": "stage_public",
+        "public_provider_symbol_ref": "#q/p0/stage_handler::runtime_provider.invoke"
+      }
+    },
+    "runtime_hook_bind": {
+      "interface_ref": "Q.SS.STD.P0.CONTRACT.RUNTIME_CORE@V0134#/interfaces/runtime_hook_bind",
+      "operation_ref": "q.p0.operation.bind_runtime_hook",
+      "surface": "HOOK",
+      "kind_code": "M2",
+      "kind": "HOOK_BIND",
+      "method_ref": "bind",
+      "request_contract_ref": "Q.SS.STD.P0.CONTRACT.RUNTIME_CORE@V0134#/hook_binding_contract",
+      "response_contract_ref": "Q.SS.STD.P0.CONTRACT.RUNTIME_CORE@V0134#/hook_binding_contract",
+      "stable_error_contract_ref": "Q.SS.STD.P0.CONTRACT.RUNTIME_CORE@V0134#/runtime_type_contracts/stable_runtime_error",
+      "path": [
+        "hook_point_value",
+        "consumer_id"
+      ],
+      "static_mount": [
+        "consumer_contract",
+        "order",
+        "enabled_rule",
+        "policy_refs"
+      ],
+      "dynamic_mount": [
+        "binding_validation",
+        "binding_receipt",
+        "stable_error"
+      ],
+      "implementation_binding": {
+        "provider_implementation_ref": "Q.SS.STD.P0.CONTRACT.RUNTIME_CORE@V0134#/object_catalog/hook_anchor",
+        "implementation_file": "src/p0/hook_anchor.ts",
+        "contract_owner_file_ref": "Q.SS.STD.P0.CONTRACT.RUNTIME_CORE@V0134#/object_catalog/runtime_contract",
+        "visibility": "stage_public",
+        "public_provider_symbol_ref": "#q/p0/stage_handler::runtime_provider.bind"
+      }
+    },
+    "runtime_hook_evaluate": {
+      "interface_ref": "Q.SS.STD.P0.CONTRACT.RUNTIME_CORE@V0134#/interfaces/runtime_hook_evaluate",
+      "operation_ref": "q.p0.operation.evaluate_runtime_hook",
+      "surface": "HOOK",
+      "kind_code": "M3",
+      "kind": "HOOK_EVALUATE",
+      "method_ref": "evaluate",
+      "request_contract_ref": "Q.SS.STD.P0.CONTRACT.RUNTIME_CORE@V0134#/runtime_type_contracts/hook_envelope",
+      "response_contract_ref": "Q.SS.STD.P0.CONTRACT.RUNTIME_CORE@V0134#/hook_decision_contracts",
+      "stable_error_contract_ref": "Q.SS.STD.P0.CONTRACT.RUNTIME_CORE@V0134#/runtime_type_contracts/stable_runtime_error",
+      "path": [
+        "hook_point_value",
+        "consumer_id",
+        "trace_id",
+        "request_id"
+      ],
+      "static_mount": [
+        "consumer_contract",
+        "order",
+        "policy_refs"
+      ],
+      "dynamic_mount": [
+        "hook_envelope",
+        "hook_decision",
+        "hook_evidence",
+        "evidence_ref",
+        "stable_error"
+      ],
+      "implementation_binding": {
+        "provider_implementation_ref": "Q.SS.STD.P0.CONTRACT.RUNTIME_CORE@V0134#/object_catalog/hook_anchor",
+        "implementation_file": "src/p0/hook_anchor.ts",
+        "contract_owner_file_ref": "Q.SS.STD.P0.CONTRACT.RUNTIME_CORE@V0134#/object_catalog/runtime_contract",
+        "visibility": "runtime_internal",
+        "public_provider_symbol_ref": null,
+        "upper_stage_direct_call_forbidden": true
+      }
+    }
+  },
+  "rules": {
+    "exact_interface_set": [
+      "runtime_execution_invoke",
+      "runtime_hook_bind",
+      "runtime_hook_evaluate"
+    ],
+    "path_static_dynamic_required": true,
+    "field_alias_forbidden": true
+  }
+}

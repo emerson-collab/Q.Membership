@@ -1,0 +1,309 @@
+{
+  "authority_ref": "Q.SS.STD.P1.CONTRACT.BUSINESS_RUNTIME@V0186",
+  "classification_ref": "Q.SS.STD.META.CONTRACT.DIMENSION_INTERFACE_CLASSIFICATION@V0114",
+  "surface_layer_ref": "Q.SS.STD.META.CONTRACT.SURFACE_LAYER_MOUNT@V0114",
+  "field_dictionary_ref": "Q.SS.STD.META.CONTRACT.FIELD_DICTIONARY@V0106",
+  "surfaces": {
+    "CALL": "active",
+    "HOOK": "active",
+    "EVENT": "active",
+    "REGISTRY": "active"
+  },
+  "interfaces": {
+    "business_operation_invoke": {
+      "surface": "CALL",
+      "kind_code": "M1",
+      "kind": "CALL_INVOKE",
+      "method_ref": "invoke_business_operation",
+      "path": [
+        "route_key",
+        "capability_id",
+        "operation_id",
+        "trace_id",
+        "request_id"
+      ],
+      "static_mount": [
+        "manifest",
+        "surface",
+        "qreg",
+        "qconfig",
+        "operation_contract",
+        "policy_refs",
+        "hook_binding_refs"
+      ],
+      "dynamic_mount": [
+        "input",
+        "runtime_context",
+        "validated_context",
+        "operation_attempt",
+        "outcome_type",
+        "runtime_result",
+        "stable_error",
+        "execution_receipt",
+        "rule_evidence"
+      ]
+    },
+    "internal_call_invoke": {
+      "surface": "CALL",
+      "kind_code": "M1",
+      "kind": "CALL_INVOKE",
+      "method_ref": "invoke_internal_call",
+      "path": [
+        "local_route_key",
+        "trace_id",
+        "parent_request_id",
+        "call_path",
+        "call_depth"
+      ],
+      "static_mount": [
+        "target_operation_contract",
+        "cycle_rule",
+        "depth_rule",
+        "hook_binding_refs"
+      ],
+      "dynamic_mount": [
+        "input",
+        "runtime_context",
+        "child_request_id",
+        "child_call_path",
+        "child_call_depth",
+        "outcome_type",
+        "runtime_result",
+        "stable_error",
+        "execution_receipt",
+        "rule_evidence"
+      ]
+    },
+    "dependency_invoke": {
+      "surface": "CALL",
+      "kind_code": "M1",
+      "kind": "CALL_INVOKE",
+      "method_ref": "invoke_dependency",
+      "path": [
+        "local_dependency_id",
+        "trace_id",
+        "request_id"
+      ],
+      "static_mount": [
+        "dependency_contract_ref",
+        "dependency_client_ref",
+        "dependency_binding_ref"
+      ],
+      "dynamic_mount": [
+        "input",
+        "context",
+        "provider_resolution",
+        "dependency_request",
+        "outcome_type",
+        "runtime_result",
+        "stable_error",
+        "execution_receipt",
+        "rule_evidence"
+      ]
+    },
+    "business_hook_bind": {
+      "surface": "HOOK",
+      "kind_code": "M2",
+      "kind": "HOOK_BIND",
+      "method_ref": "bind_business_hook",
+      "path": [
+        "hook_point_value",
+        "consumer_id"
+      ],
+      "static_mount": [
+        "p0_runtime_hook_bind_ref",
+        "consumer_contract",
+        "order",
+        "enabled_rule"
+      ],
+      "dynamic_mount": [
+        "binding_validation",
+        "outcome_type",
+        "binding_receipt",
+        "stable_error"
+      ]
+    },
+    "business_hook_evaluate": {
+      "surface": "HOOK",
+      "kind_code": "M3",
+      "kind": "HOOK_EVALUATE",
+      "method_ref": "evaluate_business_hook",
+      "path": [
+        "hook_point_value",
+        "consumer_id",
+        "trace_id",
+        "request_id"
+      ],
+      "static_mount": [
+        "p0_runtime_hook_evaluate_ref",
+        "consumer_contract",
+        "order"
+      ],
+      "dynamic_mount": [
+        "hook_envelope",
+        "hook_decision",
+        "hook_evidence",
+        "outcome_type",
+        "evidence_ref",
+        "stable_error"
+      ]
+    },
+    "business_event_publish": {
+      "surface": "EVENT",
+      "kind_code": "M4",
+      "kind": "EVENT_PUBLISH",
+      "method_ref": "publish_business_event",
+      "path": [
+        "subject_ref",
+        "trace_id",
+        "request_id"
+      ],
+      "static_mount": [
+        "operation_contract",
+        "result_contract_ref",
+        "receipt_contract_ref",
+        "policy_refs"
+      ],
+      "dynamic_mount": [
+        "input",
+        "runtime_context",
+        "outcome_type",
+        "runtime_result",
+        "stable_error",
+        "execution_receipt",
+        "evidence_ref"
+      ]
+    },
+    "business_event_consume": {
+      "surface": "EVENT",
+      "kind_code": "M5",
+      "kind": "EVENT_CONSUME",
+      "method_ref": "consume_business_event",
+      "path": [
+        "subject_ref",
+        "trace_id",
+        "request_id"
+      ],
+      "static_mount": [
+        "operation_contract",
+        "result_contract_ref",
+        "receipt_contract_ref",
+        "policy_refs"
+      ],
+      "dynamic_mount": [
+        "input",
+        "runtime_context",
+        "outcome_type",
+        "runtime_result",
+        "stable_error",
+        "execution_receipt",
+        "evidence_ref"
+      ]
+    },
+    "business_registry_register": {
+      "surface": "REGISTRY",
+      "kind_code": "M6",
+      "kind": "REGISTRY_REGISTER",
+      "method_ref": "register_business_object",
+      "path": [
+        "object_ref"
+      ],
+      "static_mount": [
+        "object_contract",
+        "registry_rule"
+      ],
+      "dynamic_mount": [
+        "registration_receipt",
+        "outcome_type",
+        "stable_error"
+      ]
+    },
+    "business_registry_resolve": {
+      "surface": "REGISTRY",
+      "kind_code": "M7",
+      "kind": "REGISTRY_RESOLVE",
+      "method_ref": "resolve_business_object",
+      "path": [
+        "resolution_key"
+      ],
+      "static_mount": [
+        "object_contract",
+        "registry_rule"
+      ],
+      "dynamic_mount": [
+        "exact_resolution",
+        "outcome_type",
+        "stable_error"
+      ]
+    },
+    "business_registry_lookup": {
+      "surface": "REGISTRY",
+      "kind_code": "M8",
+      "kind": "REGISTRY_LOOKUP",
+      "method_ref": "lookup_business_object",
+      "path": [
+        "lookup_query"
+      ],
+      "static_mount": [
+        "object_contract",
+        "registry_rule"
+      ],
+      "dynamic_mount": [
+        "lookup_result",
+        "outcome_type",
+        "stable_error"
+      ]
+    }
+  },
+  "framework_anchor_crosswalk": {
+    "authority_ref": "Q.SS.STD.P1.CONTRACT.BUSINESS_RUNTIME@V0186#/concrete_interface_framework_anchor_crosswalk",
+    "selection_key": [
+      "surface",
+      "kind"
+    ],
+    "source_method_ref_and_framework_entry_method_ref_are_distinct_identities_by_default": true,
+    "internal_call_and_dependency_call_are_runtime_framework_paths_not_concrete_capability_interface_anchors": true,
+    "anchors": {
+      "CALL:CALL_INVOKE": {
+        "framework_interface_ref": "Q.SS.STD.P1.CONTRACT.BUSINESS_RUNTIME@V0186#/interfaces/business_operation_invoke",
+        "framework_entry_method_ref": "invoke_business_operation",
+        "concrete_method_ref_policy": "PRESERVE_CONCRETE_METHOD_REF_SEPARATE_FROM_FRAMEWORK_ENTRY_METHOD"
+      },
+      "HOOK:HOOK_BIND": {
+        "framework_interface_ref": "Q.SS.STD.P1.CONTRACT.BUSINESS_RUNTIME@V0186#/interfaces/business_hook_bind",
+        "framework_entry_method_ref": "bind_business_hook",
+        "concrete_method_ref_policy": "PRESERVE_CONCRETE_METHOD_REF_SEPARATE_FROM_FRAMEWORK_ENTRY_METHOD"
+      },
+      "HOOK:HOOK_EVALUATE": {
+        "framework_interface_ref": "Q.SS.STD.P1.CONTRACT.BUSINESS_RUNTIME@V0186#/interfaces/business_hook_evaluate",
+        "framework_entry_method_ref": "evaluate_business_hook",
+        "concrete_method_ref_policy": "PRESERVE_CONCRETE_METHOD_REF_SEPARATE_FROM_FRAMEWORK_ENTRY_METHOD"
+      },
+      "EVENT:EVENT_PUBLISH": {
+        "framework_interface_ref": "Q.SS.STD.P1.CONTRACT.BUSINESS_RUNTIME@V0186#/interfaces/business_event_publish",
+        "framework_entry_method_ref": "publish_business_event",
+        "concrete_method_ref_policy": "MUST_EQUAL_FRAMEWORK_ENTRY_METHOD_REF_UNDER_EXISTING_EVENT_CONTRACT"
+      },
+      "EVENT:EVENT_CONSUME": {
+        "framework_interface_ref": "Q.SS.STD.P1.CONTRACT.BUSINESS_RUNTIME@V0186#/interfaces/business_event_consume",
+        "framework_entry_method_ref": "consume_business_event",
+        "concrete_method_ref_policy": "MUST_EQUAL_FRAMEWORK_ENTRY_METHOD_REF_UNDER_EXISTING_EVENT_CONTRACT"
+      },
+      "REGISTRY:REGISTRY_REGISTER": {
+        "framework_interface_ref": "Q.SS.STD.P1.CONTRACT.BUSINESS_RUNTIME@V0186#/interfaces/business_registry_register",
+        "framework_entry_method_ref": "register_business_object",
+        "concrete_method_ref_policy": "PRESERVE_CONCRETE_METHOD_REF_SEPARATE_FROM_FRAMEWORK_ENTRY_METHOD"
+      },
+      "REGISTRY:REGISTRY_RESOLVE": {
+        "framework_interface_ref": "Q.SS.STD.P1.CONTRACT.BUSINESS_RUNTIME@V0186#/interfaces/business_registry_resolve",
+        "framework_entry_method_ref": "resolve_business_object",
+        "concrete_method_ref_policy": "PRESERVE_CONCRETE_METHOD_REF_SEPARATE_FROM_FRAMEWORK_ENTRY_METHOD"
+      },
+      "REGISTRY:REGISTRY_LOOKUP": {
+        "framework_interface_ref": "Q.SS.STD.P1.CONTRACT.BUSINESS_RUNTIME@V0186#/interfaces/business_registry_lookup",
+        "framework_entry_method_ref": "lookup_business_object",
+        "concrete_method_ref_policy": "PRESERVE_CONCRETE_METHOD_REF_SEPARATE_FROM_FRAMEWORK_ENTRY_METHOD"
+      }
+    }
+  }
+}

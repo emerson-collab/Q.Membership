@@ -1,0 +1,24 @@
+{
+  "name": "@q-system/p0-runtime-core",
+  "version": "0.13.3",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22.6"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "build": "npm run typecheck",
+    "test": "node --experimental-transform-types --test",
+    "smoke": "npm run smoke:p0",
+    "test:p0": "node --experimental-transform-types --test tests/p0/p0_runtime_core.test.ts",
+    "smoke:p0": "node --experimental-transform-types --test --test-name-pattern=\"P0 smoke\" tests/p0/p0_runtime_core.test.ts"
+  },
+  "imports": {
+    "#q/*": "./src/*"
+  },
+  "devDependencies": {
+    "@types/node": "22.17.0",
+    "typescript": "5.8.3"
+  }
+}

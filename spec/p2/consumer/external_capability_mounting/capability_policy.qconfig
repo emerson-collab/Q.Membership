@@ -1,0 +1,45 @@
+projection:
+  source_contract_ref: Q.SS.STD.P2.CONTRACT.CROSS_DOMAIN_REALIZATION@V0128
+  role: consumer
+  capability_id: external_capability_mounting
+rules:
+  operation_set_exact:
+  - consume_publication
+  - create_mount
+  - activate_mount
+  - create_mount_set
+  - activate_mount_set
+  - rollback_mount
+  - execute_mounted_capability
+  operation_count: 7
+  cross_domain_direct_p1_read_forbidden: true
+  protocol_translation_mapping_wrapper_second_protocol_forbidden: true
+  new_global_field_surface_layer_interface_kind_forbidden: true
+  p2_stage_database_ownership_forbidden: true
+  owner_local_mount_persistence_implemented_by_receiving_skeleton_runtime: true
+  database_persistence_meta_standard_dependency_forbidden: true
+  cross_domain_sql_business_dependency_forbidden: true
+  cross_owner_foreign_key_forbidden: true
+  p2_evidence_observation_gate_activation_authority_forbidden: true
+  stage_local_workflow_launcher_forbidden: true
+  local_p0_is_only_runtime_when_execution_required: true
+  exact_source_and_test_leaf_per_operation_required: true
+  unlisted_p2_path_forbidden: true
+  verified_publication_required: true
+  resolver_owner: P2.Consumer
+  one_provider_capability_per_mount: true
+  create_mount_exact_readback_required: true
+  create_mount_set_same_receiving_domain_required: true
+  create_mount_set_unique_provider_capability_contract_ref_required: true
+  create_mount_set_canonical_member_order_required: true
+  mount_set_hash_deterministic: true
+  active_mount_set_pointer_mutation_verify_then_atomic_last: true
+  restart_recovery_pointer_first_and_all_members_reverified: true
+  receiving_local_p0_only_execution_runtime: true
+  executable_publication_requires_immutable_implementation_material_binding: true
+  implementation_material_exact_artifact_ref_required: true
+  implementation_material_exact_content_hash_required: true
+  implementation_material_provider_neutral_locator_binding_required: true
+  implementation_material_exact_entry_symbol_ref_required: true
+  execute_exact_mount_set_member_only: true
+  execution_receipt_binds_mount_set_hash_and_selected_mount_hash: true

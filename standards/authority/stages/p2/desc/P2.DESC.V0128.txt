@@ -1,0 +1,16 @@
+Q.SS.STD.P2.DESC.CROSS_DOMAIN_REALIZATION@V0128
+
+
+Status: active.
+Authority: Q.SS.STD.P2.CONTRACT.CROSS_DOMAIN_REALIZATION@V0128.
+Update classification: ADD_ONLY.
+Predecessor: Q.SS.STD.P2.CONTRACT.CROSS_DOMAIN_REALIZATION@V0127, hash sha256:74a7cfc707576f3d6941fc4f37654abb454b97b3535db9f9a443248b351d0b1c.
+
+
+V0128 is a version-matched standard-release projection closure over V0127. It preserves the exact five-Capability / seventeen-Operation / 56-path Provider/Consumer model and all mounted-execution, owner-local persistence and receiving-P1 dependency-realization semantics unchanged.
+
+
+This successor adds only the V0115 exact governed-data-material fragment identity compatibility closure, mirrors q_interface_carrier_binding from provider_governed_data_json_triad_contract, and updates the version-matched DESC/DRT projection paths to V0128.
+
+
+No Capability, Operation, Interface, Surface, Layer, Q-wide field, connection mode, request/response mapping, StableError, P0 runtime rule, Provider publication rule, Consumer mount rule, mounted execution rule, dependency-realization rule, Rule payload or Rule version is added, removed or redefined.

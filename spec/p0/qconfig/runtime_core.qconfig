@@ -1,0 +1,60 @@
+q_header: '1'
+q_id: Q.P0.SPEC.QCONFIG.RUNTIME_CORE
+q_version: V0134
+q_stage: P0
+source_contract_ref: Q.SS.STD.P0.CONTRACT.RUNTIME_CORE@V0134
+ordering:
+  sort_keys:
+  - order
+  - consumer_id
+  - binding_id
+  sort_directions:
+  - ascending
+  - ascending
+  - ascending
+  order_min: -2147483648
+  order_max: 2147483647
+  duplicate_order_allowed: true
+empty_consumer_behavior:
+  decision: continue
+  evidence: []
+decision_combination:
+  before_process:
+    precedence:
+    - deny
+    - recompute
+    - continue
+    default: continue
+    timeout_value: deny
+  after_process:
+    precedence:
+    - recompute
+    - continue
+    default: continue
+    timeout_value: continue
+  on_error:
+    precedence:
+    - continue
+    default: continue
+    timeout_value: continue
+timeout:
+  numeric_duration_defined_by_p0: false
+  local_numeric_timeout_forbidden_without_exact_authority: true
+  behavior_ref: Q.SS.STD.P0.CONTRACT.RUNTIME_CORE@V0134#/hook_decision_contracts
+error_preservation:
+  primary_runtime_error_preserved: true
+  on_error_must_not_replace_primary: true
+reentrancy:
+  allowed: false
+  maximum_depth: 0
+  on_cycle: reject
+binding_freeze:
+  per_invocation: true
+  deep_freeze: true
+  storage_after_invocation: false
+retarget:
+  in_place_retarget_forbidden: true
+  active_identity_immutable: true
+persistence:
+  database_scope: NONE
+  runtime_values_in_memory: true

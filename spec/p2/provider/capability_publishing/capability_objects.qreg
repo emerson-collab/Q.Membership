@@ -1,0 +1,26 @@
+projection:
+  source_contract_ref: Q.SS.STD.P2.CONTRACT.CROSS_DOMAIN_REALIZATION@V0128
+  role: provider
+  capability:
+    capability_id: capability_publishing
+    canonical_name: capability_publishing
+    stable_code: CAPABILITY_PUBLISHING
+    authority_fragment_ref: Q.SS.STD.P2.CONTRACT.CROSS_DOMAIN_REALIZATION@V0128#/role_capability_catalog/provider/capabilities/capability_publishing
+  operations:
+    create_material_set:
+      operation_id: create_material_set
+      canonical_name: create_material_set
+      stable_code: CREATE_MATERIAL_SET
+      owner_capability_id: capability_publishing
+      catalog_fragment_ref: Q.SS.STD.P2.CONTRACT.CROSS_DOMAIN_REALIZATION@V0128#/operation_catalog/provider/capability_publishing
+    publish_capability:
+      operation_id: publish_capability
+      canonical_name: publish_capability
+      stable_code: PUBLISH_CAPABILITY
+      owner_capability_id: capability_publishing
+      catalog_fragment_ref: Q.SS.STD.P2.CONTRACT.CROSS_DOMAIN_REALIZATION@V0128#/operation_catalog/provider/capability_publishing
+  hierarchy:
+  - DOMAIN
+  - CAPABILITY
+  - OPERATION
+  module_formal_object_created: false

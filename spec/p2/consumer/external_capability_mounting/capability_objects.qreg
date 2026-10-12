@@ -1,0 +1,56 @@
+projection:
+  source_contract_ref: Q.SS.STD.P2.CONTRACT.CROSS_DOMAIN_REALIZATION@V0128
+  role: consumer
+  capability:
+    capability_id: external_capability_mounting
+    canonical_name: external_capability_mounting
+    stable_code: EXTERNAL_CAPABILITY_MOUNTING
+    authority_fragment_ref: Q.SS.STD.P2.CONTRACT.CROSS_DOMAIN_REALIZATION@V0128#/role_capability_catalog/consumer/capabilities/external_capability_mounting
+  operations:
+    consume_publication:
+      operation_id: consume_publication
+      canonical_name: consume_publication
+      stable_code: CONSUME_PUBLICATION
+      owner_capability_id: external_capability_mounting
+      catalog_fragment_ref: Q.SS.STD.P2.CONTRACT.CROSS_DOMAIN_REALIZATION@V0128#/operation_catalog/consumer/external_capability_mounting
+    create_mount:
+      operation_id: create_mount
+      canonical_name: create_mount
+      stable_code: CREATE_MOUNT
+      owner_capability_id: external_capability_mounting
+      catalog_fragment_ref: Q.SS.STD.P2.CONTRACT.CROSS_DOMAIN_REALIZATION@V0128#/operation_catalog/consumer/external_capability_mounting
+    activate_mount:
+      operation_id: activate_mount
+      canonical_name: activate_mount
+      stable_code: ACTIVATE_MOUNT
+      owner_capability_id: external_capability_mounting
+      catalog_fragment_ref: Q.SS.STD.P2.CONTRACT.CROSS_DOMAIN_REALIZATION@V0128#/operation_catalog/consumer/external_capability_mounting
+    create_mount_set:
+      operation_id: create_mount_set
+      canonical_name: create_mount_set
+      stable_code: CREATE_MOUNT_SET
+      owner_capability_id: external_capability_mounting
+      catalog_fragment_ref: Q.SS.STD.P2.CONTRACT.CROSS_DOMAIN_REALIZATION@V0128#/operation_catalog/consumer/external_capability_mounting
+    activate_mount_set:
+      operation_id: activate_mount_set
+      canonical_name: activate_mount_set
+      stable_code: ACTIVATE_MOUNT_SET
+      owner_capability_id: external_capability_mounting
+      catalog_fragment_ref: Q.SS.STD.P2.CONTRACT.CROSS_DOMAIN_REALIZATION@V0128#/operation_catalog/consumer/external_capability_mounting
+    rollback_mount:
+      operation_id: rollback_mount
+      canonical_name: rollback_mount
+      stable_code: ROLLBACK_MOUNT
+      owner_capability_id: external_capability_mounting
+      catalog_fragment_ref: Q.SS.STD.P2.CONTRACT.CROSS_DOMAIN_REALIZATION@V0128#/operation_catalog/consumer/external_capability_mounting
+    execute_mounted_capability:
+      operation_id: execute_mounted_capability
+      canonical_name: execute_mounted_capability
+      stable_code: EXECUTE_MOUNTED_CAPABILITY
+      owner_capability_id: external_capability_mounting
+      catalog_fragment_ref: Q.SS.STD.P2.CONTRACT.CROSS_DOMAIN_REALIZATION@V0128#/operation_catalog/consumer/external_capability_mounting
+  hierarchy:
+  - DOMAIN
+  - CAPABILITY
+  - OPERATION
+  module_formal_object_created: false

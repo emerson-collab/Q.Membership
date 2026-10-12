@@ -1,0 +1,26 @@
+projection:
+  source_contract_ref: Q.SS.STD.P2.CONTRACT.CROSS_DOMAIN_REALIZATION@V0128
+  role: consumer
+  capability:
+    capability_id: p1_dependency_realization
+    canonical_name: p1_dependency_realization
+    stable_code: P1_DEPENDENCY_REALIZATION
+    authority_fragment_ref: Q.SS.STD.P2.CONTRACT.CROSS_DOMAIN_REALIZATION@V0128#/role_capability_catalog/consumer/capabilities/p1_dependency_realization
+  operations:
+    realize_dependency:
+      operation_id: realize_dependency
+      canonical_name: realize_dependency
+      stable_code: REALIZE_DEPENDENCY
+      owner_capability_id: p1_dependency_realization
+      catalog_fragment_ref: Q.SS.STD.P2.CONTRACT.CROSS_DOMAIN_REALIZATION@V0128#/operation_catalog/consumer/p1_dependency_realization
+    bind_operation_use:
+      operation_id: bind_operation_use
+      canonical_name: bind_operation_use
+      stable_code: BIND_OPERATION_USE
+      owner_capability_id: p1_dependency_realization
+      catalog_fragment_ref: Q.SS.STD.P2.CONTRACT.CROSS_DOMAIN_REALIZATION@V0128#/operation_catalog/consumer/p1_dependency_realization
+  hierarchy:
+  - DOMAIN
+  - CAPABILITY
+  - OPERATION
+  module_formal_object_created: false

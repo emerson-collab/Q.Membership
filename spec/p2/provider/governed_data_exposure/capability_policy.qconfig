@@ -1,0 +1,24 @@
+projection:
+  source_contract_ref: Q.SS.STD.P2.CONTRACT.CROSS_DOMAIN_REALIZATION@V0128
+  role: provider
+  capability_id: governed_data_exposure
+rules:
+  operation_set_exact:
+  - expose_static_data
+  - expose_dynamic_data
+  - expose_runtime_data
+  operation_count: 3
+  cross_domain_direct_p1_read_forbidden: true
+  protocol_translation_mapping_wrapper_second_protocol_forbidden: true
+  new_global_field_surface_layer_interface_kind_forbidden: true
+  p2_stage_database_ownership_forbidden: true
+  p2_evidence_observation_gate_activation_authority_forbidden: true
+  stage_local_workflow_launcher_forbidden: true
+  local_p0_is_only_runtime_when_execution_required: true
+  exact_source_and_test_leaf_per_operation_required: true
+  unlisted_p2_path_forbidden: true
+  data_categories_exact:
+  - STATIC
+  - DYNAMIC
+  - RUNTIME
+  provider_reexecution_only_to_manufacture_runtime_data_forbidden: true

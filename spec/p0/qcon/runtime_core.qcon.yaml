@@ -1,0 +1,73 @@
+q_header: '1'
+q_id: Q.P0.SPEC.QCON.RUNTIME_CORE
+q_version: V0134
+q_stage: P0
+source_contract_ref: Q.SS.STD.P0.CONTRACT.RUNTIME_CORE@V0134
+stage:
+  stage_id: P0
+  stage_role: NONE
+  runtime_owner: P0
+  stable_stage_ids:
+  - P0
+  - P1
+  - P2
+  - P3
+  - P4
+  p2_role_profiles:
+    Provider: PROVIDER
+    Consumer: CONSUMER
+  second_runtime_forbidden: true
+runtime_invariants:
+  runtime_provider_implementations: 1
+  runtime_pipeline_implementations: 1
+  hook_anchor_implementations: 1
+  runtime_result_models: 1
+  runtime_error_models: 1
+  caller_context_immutable: true
+  operation_resolved_upstream: true
+  p0_business_operation_definition_forbidden: true
+  operation_max_executions: 1
+  before_deny_operation_executions: 0
+  primary_error_preserved: true
+  invocation_binding_freeze_required: true
+  persistence: NONE
+hook_points:
+  before_process:
+    hook_point_ref: before_process
+    bind_interface_ref: Q.SS.STD.P0.CONTRACT.RUNTIME_CORE@V0134#/interfaces/runtime_hook_bind
+    evaluate_interface_ref: Q.SS.STD.P0.CONTRACT.RUNTIME_CORE@V0134#/interfaces/runtime_hook_evaluate
+    input_contract_ref: Q.SS.STD.P0.CONTRACT.RUNTIME_CORE@V0134#/hook_input_contracts/runtime_hook_input
+    decision_contract_ref: Q.SS.STD.P0.CONTRACT.RUNTIME_CORE@V0134#/hook_decision_contracts/before_process_decision
+  after_process:
+    hook_point_ref: after_process
+    bind_interface_ref: Q.SS.STD.P0.CONTRACT.RUNTIME_CORE@V0134#/interfaces/runtime_hook_bind
+    evaluate_interface_ref: Q.SS.STD.P0.CONTRACT.RUNTIME_CORE@V0134#/interfaces/runtime_hook_evaluate
+    input_contract_ref: Q.SS.STD.P0.CONTRACT.RUNTIME_CORE@V0134#/hook_input_contracts/runtime_hook_input
+    decision_contract_ref: Q.SS.STD.P0.CONTRACT.RUNTIME_CORE@V0134#/hook_decision_contracts/after_process_decision
+  on_error:
+    hook_point_ref: on_error
+    bind_interface_ref: Q.SS.STD.P0.CONTRACT.RUNTIME_CORE@V0134#/interfaces/runtime_hook_bind
+    evaluate_interface_ref: Q.SS.STD.P0.CONTRACT.RUNTIME_CORE@V0134#/interfaces/runtime_hook_evaluate
+    input_contract_ref: Q.SS.STD.P0.CONTRACT.RUNTIME_CORE@V0134#/hook_input_contracts/runtime_hook_input
+    decision_contract_ref: Q.SS.STD.P0.CONTRACT.RUNTIME_CORE@V0134#/hook_decision_contracts/on_error_decision
+verification_execution_boundary:
+  execution_owner: Q.WORKFLOW
+  system_interface_declaration_ref: Q.WORKFLOW.CONTRACT.DOMAIN@V0116#/system_interface_declarations/workflow_execution_invoke
+  base_interface_ref: Q.WORKFLOW.CONTRACT.CAPABILITY.WORKFLOW@V0101#/interfaces/workflow_execution_invoke
+  operation_ref: Q.WORKFLOW.CONTRACT.CAPABILITY.WORKFLOW@V0101#/operations/execute_workflow
+  stage_local_workflow_launcher_forbidden: true
+  github_actions_stage_verification_launcher_forbidden: true
+  stage_owned_verification_assets_preserved: true
+  tests_remain_stage_owned: true
+  workflow_success_is_not_gate_pass: true
+public_api:
+  runtime_contract: '#q/p0/runtime_contract'
+  stage_handler: '#q/p0/stage_handler'
+  runtime_provider_symbol: '#q/p0/stage_handler::runtime_provider'
+forbidden:
+  module_formal_object: true
+  runtime_event_interface: true
+  runtime_registry_interface: true
+  p0_runtime_persistence: true
+  stage_local_repository_decision_gate: true
+  p2a_p2b_stage_identities: true

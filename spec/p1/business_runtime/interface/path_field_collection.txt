@@ -1,0 +1,16 @@
+route_key
+capability_id
+operation_id
+trace_id
+request_id
+local_route_key
+parent_request_id
+call_path
+call_depth
+local_dependency_id
+hook_point_value
+consumer_id
+object_ref
+resolution_key
+lookup_query
+subject_ref

@@ -1,0 +1,132 @@
+q_header: '1'
+q_id: Q.P0.SPEC.QREG.RUNTIME_CORE
+q_version: V0134
+q_stage: P0
+source_contract_ref: Q.SS.STD.P0.CONTRACT.RUNTIME_CORE@V0134
+formal_objects:
+- object_id: q.p0.domain.runtime_governance
+  object_type: domain
+  stable_code: RUNTIME_GOVERNANCE
+  canonical_name: runtime_governance
+  parent_object_ref: null
+  status: draft
+  rule_version_ref: Q.SS.STD.META.CONTRACT.SYSTEM_OBJECT_NAMING.MIN@${CURRENT}
+- object_id: q.p0.capability.shared_runtime_execution
+  object_type: capability
+  stable_code: SHARED_RUNTIME_EXECUTION
+  canonical_name: shared_runtime_execution
+  parent_object_ref: Q.SS.STD.P0.CONTRACT.RUNTIME_CORE@V0134#/object_catalog/runtime_governance
+  status: draft
+  rule_version_ref: Q.SS.STD.META.CONTRACT.SYSTEM_OBJECT_NAMING.MIN@${CURRENT}
+- object_id: q.p0.operation.invoke_runtime
+  object_type: operation
+  stable_code: INVOKE_RUNTIME
+  canonical_name: invoke_runtime
+  parent_object_ref: Q.SS.STD.P0.CONTRACT.RUNTIME_CORE@V0134#/object_catalog/shared_runtime_execution
+  status: draft
+  rule_version_ref: Q.SS.STD.META.CONTRACT.SYSTEM_OBJECT_NAMING.MIN@${CURRENT}
+- object_id: q.p0.operation.bind_runtime_hook
+  object_type: operation
+  stable_code: BIND_RUNTIME_HOOK
+  canonical_name: bind_runtime_hook
+  parent_object_ref: Q.SS.STD.P0.CONTRACT.RUNTIME_CORE@V0134#/object_catalog/shared_runtime_execution
+  status: draft
+  rule_version_ref: Q.SS.STD.META.CONTRACT.SYSTEM_OBJECT_NAMING.MIN@${CURRENT}
+- object_id: q.p0.operation.evaluate_runtime_hook
+  object_type: operation
+  stable_code: EVALUATE_RUNTIME_HOOK
+  canonical_name: evaluate_runtime_hook
+  parent_object_ref: Q.SS.STD.P0.CONTRACT.RUNTIME_CORE@V0134#/object_catalog/shared_runtime_execution
+  status: draft
+  rule_version_ref: Q.SS.STD.META.CONTRACT.SYSTEM_OBJECT_NAMING.MIN@${CURRENT}
+- object_id: q.p0.interface.runtime_execution_invoke
+  object_type: interface
+  stable_code: RUNTIME_EXECUTION_INVOKE
+  canonical_name: runtime_execution_invoke
+  parent_object_ref: Q.SS.STD.P0.CONTRACT.RUNTIME_CORE@V0134#/object_catalog/runtime_execution_operation
+  status: draft
+  rule_version_ref: Q.SS.STD.META.CONTRACT.SYSTEM_OBJECT_NAMING.MIN@${CURRENT}
+  surface_code: CALL
+  interface_action: invoke
+- object_id: q.p0.interface.runtime_hook_bind
+  object_type: interface
+  stable_code: RUNTIME_HOOK_BIND
+  canonical_name: runtime_hook_bind
+  parent_object_ref: Q.SS.STD.P0.CONTRACT.RUNTIME_CORE@V0134#/object_catalog/runtime_hook_bind_operation
+  status: draft
+  rule_version_ref: Q.SS.STD.META.CONTRACT.SYSTEM_OBJECT_NAMING.MIN@${CURRENT}
+  surface_code: HOOK
+  interface_action: bind
+- object_id: q.p0.interface.runtime_hook_evaluate
+  object_type: interface
+  stable_code: RUNTIME_HOOK_EVALUATE
+  canonical_name: runtime_hook_evaluate
+  parent_object_ref: Q.SS.STD.P0.CONTRACT.RUNTIME_CORE@V0134#/object_catalog/runtime_hook_evaluate_operation
+  status: draft
+  rule_version_ref: Q.SS.STD.META.CONTRACT.SYSTEM_OBJECT_NAMING.MIN@${CURRENT}
+  surface_code: HOOK
+  interface_action: evaluate
+- object_id: q.p0.implementation_file.runtime_contract
+  object_type: implementation_file
+  stable_code: RUNTIME_CONTRACT
+  canonical_name: runtime_contract
+  parent_object_ref: Q.SS.STD.P0.CONTRACT.RUNTIME_CORE@V0134#/object_catalog/shared_runtime_execution
+  status: draft
+  rule_version_ref: Q.SS.STD.META.CONTRACT.SYSTEM_OBJECT_NAMING.MIN@${CURRENT}
+- object_id: q.p0.implementation_file.hook_anchor
+  object_type: implementation_file
+  stable_code: HOOK_ANCHOR
+  canonical_name: hook_anchor
+  parent_object_ref: Q.SS.STD.P0.CONTRACT.RUNTIME_CORE@V0134#/object_catalog/runtime_hook_evaluate
+  status: draft
+  rule_version_ref: Q.SS.STD.META.CONTRACT.SYSTEM_OBJECT_NAMING.MIN@${CURRENT}
+- object_id: q.p0.implementation_file.runtime_pipeline
+  object_type: implementation_file
+  stable_code: RUNTIME_PIPELINE
+  canonical_name: runtime_pipeline
+  parent_object_ref: Q.SS.STD.P0.CONTRACT.RUNTIME_CORE@V0134#/object_catalog/shared_runtime_execution
+  status: draft
+  rule_version_ref: Q.SS.STD.META.CONTRACT.SYSTEM_OBJECT_NAMING.MIN@${CURRENT}
+- object_id: q.p0.implementation_file.stage_handler
+  object_type: implementation_file
+  stable_code: STAGE_HANDLER
+  canonical_name: stage_handler
+  parent_object_ref: Q.SS.STD.P0.CONTRACT.RUNTIME_CORE@V0134#/object_catalog/runtime_governance
+  status: draft
+  rule_version_ref: Q.SS.STD.META.CONTRACT.SYSTEM_OBJECT_NAMING.MIN@${CURRENT}
+interface_facts:
+- interface_name: runtime_execution_invoke
+  interface_ref: Q.SS.STD.P0.CONTRACT.RUNTIME_CORE@V0134#/interfaces/runtime_execution_invoke
+  surface: CALL
+  kind_code: M1
+  kind: CALL_INVOKE
+  operation_ref: q.p0.operation.invoke_runtime
+- interface_name: runtime_hook_bind
+  interface_ref: Q.SS.STD.P0.CONTRACT.RUNTIME_CORE@V0134#/interfaces/runtime_hook_bind
+  surface: HOOK
+  kind_code: M2
+  kind: HOOK_BIND
+  operation_ref: q.p0.operation.bind_runtime_hook
+- interface_name: runtime_hook_evaluate
+  interface_ref: Q.SS.STD.P0.CONTRACT.RUNTIME_CORE@V0134#/interfaces/runtime_hook_evaluate
+  surface: HOOK
+  kind_code: M3
+  kind: HOOK_EVALUATE
+  operation_ref: q.p0.operation.evaluate_runtime_hook
+hook_point_facts:
+- hook_point_ref: before_process
+  bind_interface_ref: Q.SS.STD.P0.CONTRACT.RUNTIME_CORE@V0134#/interfaces/runtime_hook_bind
+  evaluate_interface_ref: Q.SS.STD.P0.CONTRACT.RUNTIME_CORE@V0134#/interfaces/runtime_hook_evaluate
+- hook_point_ref: after_process
+  bind_interface_ref: Q.SS.STD.P0.CONTRACT.RUNTIME_CORE@V0134#/interfaces/runtime_hook_bind
+  evaluate_interface_ref: Q.SS.STD.P0.CONTRACT.RUNTIME_CORE@V0134#/interfaces/runtime_hook_evaluate
+- hook_point_ref: on_error
+  bind_interface_ref: Q.SS.STD.P0.CONTRACT.RUNTIME_CORE@V0134#/interfaces/runtime_hook_bind
+  evaluate_interface_ref: Q.SS.STD.P0.CONTRACT.RUNTIME_CORE@V0134#/interfaces/runtime_hook_evaluate
+gate_inputs:
+  evidence_only: true
+  repository_decision_authority: false
+  required_commands:
+  - npm run build
+  - npm run test:p0
+  - npm run smoke:p0
