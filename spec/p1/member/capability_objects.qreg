@@ -1,0 +1,177 @@
+# 统一会员能力 V0103 — Capability Objects Registry（物理投影）
+# projection_only: true
+# source_of_truth: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/type_closure
+# closure_mode: EXACT_OWNER_LOCAL_PROPOSED_SCHEMAS
+# transitive_public_type_closure_complete: true
+# undeclared_type_inference_forbidden: true
+q_header: '1'
+q_id: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER
+q_version: V0103
+q_stage: P1
+q_role: capability_objects_registry_projection
+
+objects:
+  - object_id: member
+    schema_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/type_closure/schemas/member
+    kind: BUSINESS_OBJECT
+    identity_field_path: member_ref
+    state_field_path: member_status
+    additional_properties: false
+    fields:
+      - field_path: member_ref
+        type: string
+        required: true
+        semantic_kind: BUSINESS_REFERENCE
+        reference_owner_mode: SELF
+        min_length: 1
+      - field_path: member_status
+        type: string
+        required: true
+        enum: [active, terminated]
+        design_status: EXPLICIT_PROPOSED_ENUM_PENDING_OWNER_APPROVAL
+      - field_path: member_profile
+        type: object
+        required: true
+        additional_properties: false
+        fields:
+          - field_path: display_name
+            type: string
+            required: true
+            min_length: 1
+            max_length: 256
+    disclosure_policy:
+      contact_email_disclosed_by_default: false
+
+  - object_id: membership
+    schema_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/type_closure/schemas/membership
+    kind: BUSINESS_OBJECT
+    identity_field_path: membership_ref
+    state_field_path: membership_status
+    additional_properties: false
+    fields:
+      - field_path: membership_ref
+        type: string
+        required: true
+        semantic_kind: BUSINESS_REFERENCE
+        reference_owner_mode: SELF
+      - field_path: member_ref
+        type: string
+        required: true
+        semantic_kind: BUSINESS_REFERENCE
+        reference_owner_mode: SELF
+      - field_path: plan_ref
+        type: string
+        required: true
+        semantic_kind: BUSINESS_REFERENCE
+        reference_owner_mode: DECLARED_DEPENDENCY
+        reference_owner_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBERSHIP_PLAN@V0105
+      - field_path: membership_status
+        type: string
+        required: true
+        enum: [active, replaced]
+      - field_path: effective_time
+        type: string
+        format: date-time
+        required: true
+      - field_path: termination_time
+        type: [string, 'null']
+        format: date-time
+        required: false
+    invariants:
+      - replaced_requires_termination_time: true
+      - active_requires_null_termination_time: true
+      - interval_semantics: half_open_[effective_time,termination_time)
+      - runtime_constraint: effective_time < termination_time when replaced
+
+  - object_id: eligibility_decision
+    schema_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/type_closure/schemas/eligibility_decision
+    kind: BUSINESS_DECISION
+    additional_properties: false
+    fields:
+      - field_path: eligible
+        type: boolean
+        required: true
+      - field_path: basis.reason_code
+        type: string
+        required: true
+        enum: [MEMBERSHIP_VALID, MEMBER_TERMINATED, NO_EFFECTIVE_MEMBERSHIP]
+      - field_path: basis.check_purpose
+        type: string
+        required: true
+        enum: [membership_validity]
+      - field_path: basis.decision_time
+        type: string
+        format: date-time
+        required: true
+      - field_path: basis.member_status_at_decision
+        type: string
+        required: true
+        enum: [active, terminated]
+      - field_path: basis.membership_refs_considered
+        type: array
+        items: string
+        required: true
+        unique_items: true
+        max_items: 1
+    conditional_branches:
+      - eligible: true
+        reason_code: MEMBERSHIP_VALID
+        member_status_at_decision: active
+        considered_count: 1
+      - eligible: false
+        reason_code: MEMBER_TERMINATED
+        member_status_at_decision: terminated
+        considered_count: [0, 1]
+      - eligible: false
+        reason_code: NO_EFFECTIVE_MEMBERSHIP
+        member_status_at_decision: active
+        considered_count: 0
+    reason_priority_status: PROPOSED_FROM_BUSINESS_DESCRIPTION_NOT_OWNER_APPROVED
+
+  - object_id: membership_plan_resolution_binding
+    schema_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/type_closure/schemas/membership_plan_resolution_binding
+    kind: DEPENDENCY_RESOLUTION_BINDING
+    owner: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBERSHIP_PLAN@V0105
+    additional_properties: false
+    fields:
+      - field_path: membership_plan_ref
+        type: string
+        required: true
+      - field_path: name
+        type: string
+        required: true
+      - field_path: benefit_refs
+        type: array
+        items: string
+        required: true
+        unique_items: true
+      - field_path: commercial_terms_ref
+        type: string
+        required: true
+      - field_path: state
+        type: string
+        required: true
+        enum: [active, inactive]
+
+payload_contracts:
+  request:
+    - create_member_request_contract
+    - resolve_member_request_contract
+    - update_member_profile_request_contract
+    - update_member_status_request_contract
+    - create_membership_request_contract
+    - update_membership_plan_request_contract
+    - lookup_membership_request_contract
+    - evaluate_membership_eligibility_request_contract
+    - resolve_membership_request_contract
+  response:
+    - create_member_response_contract
+    - resolve_member_response_contract
+    - update_member_profile_response_contract
+    - update_member_status_response_contract
+    - create_membership_response_contract
+    - update_membership_plan_response_contract
+    - lookup_membership_response_contract
+    - evaluate_membership_eligibility_response_contract
+    - resolve_membership_response_contract
+  schema_language: JSON_SCHEMA_DRAFT_2020_12

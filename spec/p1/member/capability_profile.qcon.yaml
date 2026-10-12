@@ -1,0 +1,137 @@
+# 统一会员能力 V0103 — Capability Profile（物理投影，非独立语义权威）
+# projection_only: true
+# source_of_truth: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103
+# desc: Q.MEMBERSHIP.DESC.CAPABILITY.MEMBER@V0103
+# drt:  Q.MEMBERSHIP.DRT.CAPABILITY.MEMBER@V0103
+q_header: '1'
+q_id: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER
+q_version: V0103
+q_stage: P1
+q_role: capability_profile_projection
+q_status: candidate
+
+identity:
+  capability_ref: Q.MEMBERSHIP.CAPABILITY.MEMBER@V0103
+  capability_id: member
+  stable_code: MEMBER
+  canonical_name: member
+  capability_version: V0103
+  repository_owner_namespace: Q.MEMBERSHIP
+
+materialization:
+  profile: CAPABILITY_IMPLEMENTATION_CONTRACT
+  language: TypeScript
+  operation_count: 9
+  public_operation_count: 8
+  internal_operation_count: 1
+  gate_pass_implied: false
+  activation_implied: false
+  publication_executed: false
+  candidate_not_production_authorization: true
+
+purpose:
+  business_goal: >-
+    统一管理稳定会员身份、可维护会员档案及生命周期、会员与外部方案的有效及历史关系，
+    并在指定时点确定会员关系有效性资格。
+  does_not_own:
+    - 登录认证
+    - 支付交易和退款
+    - 营销活动执行
+    - 商品和订单
+    - 积分核算
+    - 权益履约
+  business_fact_separations:
+    - 会员存在不等于会员关系在指定时点有效
+    - 会员生命周期状态独立于会员关系的生效区间和更换状态
+    - 会员关系有效性判断不蕴含支付成功或具体权益可用
+    - 不拥有 Membership Plan 方案目录、定价及权益定义
+
+operations:
+  - operation_id: create_member
+    formal_object_id: q.p1.operation.create_member
+    publicity: public
+    purpose: 创建唯一且可稳定引用的会员身份及基本档案
+  - operation_id: resolve_member
+    formal_object_id: q.p1.operation.resolve_member
+    publicity: public
+    purpose: 按稳定身份读取会员及获准披露的档案与当前生命周期状态
+  - operation_id: update_member_profile
+    formal_object_id: q.p1.capability.member.operation.update_member_profile
+    publicity: public
+    purpose: 仅修改会员可维护的展示名称和可选联系邮箱
+  - operation_id: update_member_status
+    formal_object_id: q.p1.operation.update_member_status
+    publicity: public
+    purpose: 按唯一允许的业务迁移终止一位当前有效的会员
+  - operation_id: create_membership
+    formal_object_id: q.p1.operation.create_membership
+    publicity: public
+    purpose: 为已存在会员在有效业务时点建立与外部真实方案的一条有效关系
+  - operation_id: update_membership_plan
+    formal_object_id: q.p1.capability.member.operation.update_membership_plan
+    publicity: public
+    purpose: 将指定会员既有一条允许更换的关系原子替换为另一真实有效方案
+  - operation_id: lookup_membership
+    formal_object_id: q.p1.operation.lookup_membership
+    publicity: public
+    purpose: 按会员与当前/指定历史业务时点查询唯一生效关系
+  - operation_id: evaluate_membership_eligibility
+    formal_object_id: q.p1.operation.evaluate_membership_eligibility
+    publicity: public
+    purpose: 仅判断某会员在指定时点是否具有 membership_validity 资格
+  - operation_id: resolve_membership
+    formal_object_id: q.p1.operation.resolve_membership
+    publicity: internal
+    purpose: 供本 Capability 内部以精确 membership_ref 解析唯一已有关系
+
+state_machines:
+  member:
+    state_field_path: member_status
+    initial_state: active
+    allowed_business_states: [active, terminated]
+    terminal_states: [terminated]
+    transitions:
+      - from_state: active
+        to_state: terminated
+        via_operation: update_member_status
+  membership:
+    state_field_path: membership_status
+    initial_state: active
+    allowed_business_states: [active, replaced]
+    terminal_states: [replaced]
+    transitions:
+      - from_state: active
+        to_state: replaced
+        via_operation: update_membership_plan
+
+dependencies:
+  local_dependencies:
+    membership_plan:
+      local_dependency_ref: q.membership.member.dependency.membership_plan
+      classification: PROVIDER_INTERNAL_DEPENDENCY
+      connection_mode: INTRA_DOMAIN
+      provider_capability_contract_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBERSHIP_PLAN@V0105
+      allowed_provider_operation: resolve_membership_plan
+      post_resolution_required_condition: membership_plan.state == active
+      stable_error_mode: PRESERVE_EXACT
+  implicit_dependency_forbidden: true
+  direct_cross_capability_handler_import_forbidden: true
+
+persistence:
+  owner_local_persistence_required: true
+  semantic_subjects:
+    - member
+    - membership
+    - member_status_event
+    - membership_relation_event
+    - member_identity_exact_index
+  unique_identity_scope: EXACT_PAIR_IDENTITY_NAMESPACE_AND_IDENTITY_VALUE
+  membership_temporal_overlap_forbidden: true
+  append_only_history_required: true
+  no_payment_or_order_persistence: true
+
+publication:
+  mode: PUBLICATION_ELIGIBLE
+  publication_executed: false
+  internal_interface_publication_forbidden: true
+  security_gate: DO_NOT_EXPOSE_PUBLIC_INTERFACES_UNTIL_ACTOR_BINDINGS_RESOLVE
