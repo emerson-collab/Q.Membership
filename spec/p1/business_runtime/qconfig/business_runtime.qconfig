@@ -18,7 +18,7 @@ event_listener_transport_lifecycle_requires_exact_capability_contract: true
 event_listener_execution_runtime: EXISTING_P0_RUNTIME_ONLY
 event_input_semantic_transformation_forbidden: true
 overlay_slot_catalog_ref: Q.SS.STD.P1.CONTRACT.BUSINESS_RUNTIME@V0186#/overlay_slot_catalog
-capability_general_slots_source: Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0116#/p1_general_runtime_overlay_export_contract
+capability_general_slots_source: Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@${CURRENT}#/p1_general_runtime_overlay_export_contract
 slot_ref_is_exact_predeclared_target_token_ref: true
 field_name_only_slot_binding_forbidden: true
 route_key_owner: P1_BUSINESS_RUNTIME

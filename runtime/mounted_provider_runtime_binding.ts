@@ -4,15 +4,14 @@ import {
   StableRuntimeError,
   deep_freeze,
   exact_ref,
-} from "../src/p0/runtime_contract.ts";
+} from "#q/p0/runtime_contract";
 import type {
   HookBinding,
   RuntimeContext,
   RuntimeOperation,
-  RuntimeProvider,
   StageExtensionContract,
-} from "../src/p0/runtime_contract.ts";
-import { runtime_provider } from "../src/p0/stage_handler.ts";
+} from "#q/p0/runtime_contract";
+import { runtime_provider } from "#q/p0/stage_handler";
 import {
   ImplementationMaterialRuntimeError,
   readAndVerifyInstalledImplementationMaterial,
@@ -56,7 +55,6 @@ export interface PreparedMountedProviderOperationPort {
 export interface MountedProviderRuntimeBindingDependencies {
   readonly material_read_port: LocalImplementationMaterialReadPort;
   readonly prepared_operation_port: PreparedMountedProviderOperationPort;
-  readonly p0_runtime_provider?: RuntimeProvider;
 }
 
 export interface MountedProviderLocalP0Invocation {
@@ -173,7 +171,15 @@ function verifyPreparedOperation(
 export function createMountedProviderLocalP0Invoker(
   dependencies: MountedProviderRuntimeBindingDependencies,
 ): MountedProviderLocalP0Invoker {
-  const p0 = dependencies.p0_runtime_provider ?? runtime_provider;
+  // V0134 permits only the process-local immutable P0 singleton. A fake or
+  // injected alternative RuntimeProvider cannot become execution authority.
+  if (Object.prototype.hasOwnProperty.call(dependencies, "p0_runtime_provider")) {
+    throw new MountedProviderRuntimeBindingError(
+      "MOUNTED_PROVIDER_SECOND_RUNTIME_FORBIDDEN",
+      "P2 cannot override the exact local P0 RuntimeProvider",
+    );
+  }
+  const p0 = runtime_provider;
   const probe = p0.probe();
   if (probe.runtime_provider_count !== 1 || probe.runtime_pipeline_count !== 1) {
     throw new MountedProviderRuntimeBindingError("MOUNTED_PROVIDER_SECOND_RUNTIME_FORBIDDEN", "mounted provider execution requires the receiving repository's single P0 runtime");
