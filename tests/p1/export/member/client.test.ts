@@ -1,3 +1,4 @@
+import { testAuthorizer } from '../../member/test_authorizer';
 import { describe, expect, it } from 'vitest';
 import {
   InMemoryMemberRepository,
@@ -36,6 +37,7 @@ function setup(now: string = T3) {
   const client = new MemberCapabilityClient({
     repository,
     planProvider,
+    authorizer: testAuthorizer,
     clock: () => now,
   });
   return { client, repository };

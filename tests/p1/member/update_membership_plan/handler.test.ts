@@ -1,3 +1,4 @@
+import { testAuthorizer } from '../test_authorizer';
 import { describe, expect, it } from 'vitest';
 import { createUpdateMembershipPlanHandler } from '../../../../src/p1/member/update_membership_plan/handler';
 import { createCreateMemberHandler } from '../../../../src/p1/member/create_member/handler';
@@ -42,6 +43,7 @@ function deps() {
   return {
     repository: new InMemoryMemberRepository(),
     planProvider: staticMembershipPlanProvider([PLAN_A, PLAN_B, PLAN_INACTIVE]),
+    authorizer: testAuthorizer,
     clock: () => T2,
   };
 }
@@ -350,6 +352,7 @@ describe('update_membership_plan handler', () => {
     const d = {
       repository: new InMemoryMemberRepository(),
       planProvider: mismatchProvider,
+      authorizer: testAuthorizer,
       clock: () => T2,
     };
     const memberRef = await seedMember(d);
@@ -395,6 +398,7 @@ describe('update_membership_plan handler', () => {
     const d = {
       repository: new InMemoryMemberRepository(),
       planProvider: malformedProvider,
+      authorizer: testAuthorizer,
       clock: () => T2,
     };
     const memberRef = await seedMember(d);

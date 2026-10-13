@@ -6,6 +6,7 @@ import {
   STABLE_ERROR_CODE_SETS,
   staticMembershipPlanProvider,
   trustedEntryAuthorizer,
+  stableError,
 } from '../../../../src/p1/export/member/entry';
 
 describe('member capability entry 公共出口', () => {
@@ -70,7 +71,7 @@ describe('member capability entry 公共出口', () => {
     ]);
   });
 
-  it('默认授权策略为 DENY：无证据、证据不完整均拒绝；显式授权通过', () => {
+  it('V0117 默认授权必须拒绝调用方自称已获授权', () => {
     const base = {
       operation_id: 'create_member' as const,
       request: {},
@@ -113,7 +114,14 @@ describe('member capability entry 公共出口', () => {
           },
         },
       }),
-    ).toBe(true);
+    ).toBe(false);
+  });
+
+  it('V0117 StableError 不能跨 Operation 使用其他声明的错误码', () => {
+    expect(stableError('create_member', 'MEMBER_DUPLICATE_REGISTRATION').code)
+      .toBe('MEMBER_DUPLICATE_REGISTRATION');
+    expect(() => stableError('create_member', 'MEMBERSHIP_NOT_FOUND' as never))
+      .toThrow(/Undeclared stable error for exact Operation create_member/);
   });
 
   it('静态 Plan Provider：精确解析存在的方案，不存在返回稳定错误', async () => {

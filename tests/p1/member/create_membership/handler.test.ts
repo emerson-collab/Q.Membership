@@ -1,3 +1,4 @@
+import { testAuthorizer } from '../test_authorizer';
 import { describe, expect, it } from 'vitest';
 import { createCreateMembershipHandler } from '../../../../src/p1/member/create_membership/handler';
 import { createCreateMemberHandler } from '../../../../src/p1/member/create_member/handler';
@@ -37,6 +38,7 @@ function deps(
   return {
     repository: new InMemoryMemberRepository(),
     planProvider: planProvider ?? staticMembershipPlanProvider(plans),
+    authorizer: testAuthorizer,
     clock: () => T1,
   };
 }
