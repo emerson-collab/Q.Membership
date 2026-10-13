@@ -158,6 +158,174 @@ for(const key of ['rule_ref','enforcement_phase','evaluation_realization_mode','
  'human_decision_actor_class_refs','human_decision_field_binding','human_allow_values',
  'human_deny_values','failure_stable_error_code'])
   check((rb.match(new RegExp('^\\s{6}'+key+':','gm'))||[]).length===21, 'Incomplete rule binding field '+key);
+
+/**
+ * Stateful branch table, checked per Operation x State Machine (not globally
+ * by name). The owner Source declares each state machine's nine bindings.
+ */
+const branchModes = {};
+function bindingEntries(stateText) {
+  const lines=stateText.split('\n'), entries=[];
+  let inOperations=false, current=null;
+  const push=()=>{if(current){entries.push(current);current=null;}};
+  for(const line of lines) {
+    if (/^      operation_state_bindings:$/.test(line)) {inOperations=true;continue;}
+    if(inOperations && /^      transitions:$/.test(line)) {push();inOperations=false;continue;}
+    if(!inOperations)continue;
+    const name=line.match(/^        ([a-z_]+):$/);
+    if(name) {push();current={operation:name[1],body:[]};continue;}
+    if(current)current.body.push(line);
+  }
+  push();
+  return entries;
+}
+const stateEntries=bindingEntries(state);
+check(stateEntries.length===18, 'Each of two state machines requires nine exact Operation bindings');
+for(const b of stateEntries) {
+  const t=b.body.join('\n');
+  const mode=t.match(/^\s+applicability_mode:\s*([A-Z_]+)$/m)?.[1] ?? '';
+  const get=key=>t.match(new RegExp('^\\s+'+key+':\\s*(.*)
+check(instance.includes('mode: NONE')&&instance.includes('instance_variables: []'),'Invented an undeclared Capability Instance');
+
+check(!/\bstate_machines\s*:|\bvia:\s*|\bprovider_operation\s*:/.test(files.metadata), 'Metadata still contains legacy semantic shadow');
+const general = files.metadata.match(/return Object\.freeze\(\{([\s\S]*?)\n  \}\);/)?.[1] ?? '';
+const keys=[...general.matchAll(/^\s{4}([a-z_]+):/gm)].map(x=>x[1]);
+const expected=['capability_ref','capability_id','capability_version','capability_contract_ref',
+ 'capability_contract_content_hash','stage_contract_ref','runtime_contract_ref','operation_id',
+ 'operation_ref','interface_ref','surface','kind','method_ref'];
+check(JSON.stringify(keys)===JSON.stringify(expected), '13 exact candidate GENERAL facts not present in source order');
+for (const key of ['capability_contract_content_hash','stage_contract_ref','runtime_contract_ref'])
+  check(new RegExp('^\\s{4}'+key+': null,','m').test(general),'Unresolved authority fabricated: '+key);
+for(const item of ['MemberCapabilityClient','InMemoryMemberRepository','staticMembershipPlanProvider'])
+  check(!new RegExp('\\b'+item+'\\b').test(files.entry),'Local test runtime leaked from public Capability entry');
+check(manifest.scoped_whitelist_status === 'UNRESOLVED' && manifest.gate_pass_claimed===false,
+ 'Candidate claims a verified whitelist/Gate');
+
+const blockers=[
+ 'Member V0103 remains candidate; exact external owner source/hash freeze unavailable',
+ 'Nine RESTRICTED Operation permission bindings lack authorized actor-class evidence',
+ 'User-provided 255-field/75-constraint projection is SOURCE_ONLY, not approved Scoped Whitelist',
+ 'Exact governed interface/runtime materialization, receipt and Gate evidence not produced'
+];
+export const report = {
+  source_ref: fixture.source_ref,
+  source_hash: fixture.source_hash,
+  evidence_level: fixture.verification_level,
+  candidate_field_occurrences: fixture.source_field_candidates.length,
+  declared_conditional_constraints: fixture.source_constraints.length,
+  semantic_annotations: annotations.length,
+  semantic_kinds: semanticCounts,
+  checked_state_binding_modes: branchModes,
+  checked_rule_evaluation_modes: evaluationModeCounts,
+  verified_operation_errors: Object.values(errors).reduce((n,v)=>n+v.length,0),
+  source_projection_status: violations.length===0?'SOURCE_ALIGNED_CANDIDATE':'FAILED',
+  scoped_whitelist_status: 'UNRESOLVED',
+  ready_for_production: false,
+  blockers,
+  violations,
+};
+if (process.argv[1] && resolve(process.argv[1])===fileURLToPath(import.meta.url)) {
+  console.log(JSON.stringify(report,null,2));
+  if(violations.length)process.exitCode=1;
+}
+,'m'))?.[1] ?? '';
+  branchModes[mode]=(branchModes[mode]||0)+1;
+  check(get('operation_ref').endsWith('/'+b.operation), 'State binding exact operation mismatch: '+b.operation);
+  if (mode==='NOT_APPLICABLE') {
+    for(const key of ['subject_identity_cardinality','subject_identity_input_path','subject_identity_result_path'])
+      check(get(key)==='null', 'NOT_APPLICABLE requires null '+key+' for '+b.operation);
+    for(const key of ['allowed_states','guard_rule_refs','transition_refs'])
+      check(get(key)==='[]', 'NOT_APPLICABLE requires empty '+key+' for '+b.operation);
+  } else if (mode==='EXISTING_SUBJECT') {
+    check(get('subject_identity_cardinality')==='ONE' && get('subject_identity_input_path')!=='' &&
+      get('subject_identity_input_path')!=='null' && get('subject_identity_result_path')==='null',
+      'EXISTING_SUBJECT identity cardinality/input/result violation for '+b.operation);
+  } else if (mode==='CREATES_SUBJECT') {
+    check(get('subject_identity_cardinality')==='ONE' && get('subject_identity_input_path')==='null' &&
+      get('subject_identity_result_path')!=='' && get('subject_identity_result_path')!=='null',
+      'CREATES_SUBJECT identity result violation for '+b.operation);
+    for(const key of ['allowed_states','guard_rule_refs','transition_refs'])
+      check(get(key)==='[]', 'CREATES_SUBJECT must not infer '+key+' for '+b.operation);
+  } else {
+    check(false,'Unexpected state applicability mode '+mode+' for '+b.operation);
+  }
+  if(get('availability_mode')==='ANY_STATE')
+    check(get('allowed_states')==='[]', 'ANY_STATE cannot impose undeclared allowed state guard for '+b.operation);
+}
+
+/** Rule binding branch semantics remain tied to their exact declared modes. */
+const evaluationModeCounts={};
+const rbLines=rb.split('\n');
+let currentRule=null;
+function checkRule() {
+  if(!currentRule)return;
+  const t=currentRule.lines.join('\n');
+  const get=key=>t.match(new RegExp('^\\s+'+key+':\\s*(.*)
+check(instance.includes('mode: NONE')&&instance.includes('instance_variables: []'),'Invented an undeclared Capability Instance');
+
+check(!/\bstate_machines\s*:|\bvia:\s*|\bprovider_operation\s*:/.test(files.metadata), 'Metadata still contains legacy semantic shadow');
+const general = files.metadata.match(/return Object\.freeze\(\{([\s\S]*?)\n  \}\);/)?.[1] ?? '';
+const keys=[...general.matchAll(/^\s{4}([a-z_]+):/gm)].map(x=>x[1]);
+const expected=['capability_ref','capability_id','capability_version','capability_contract_ref',
+ 'capability_contract_content_hash','stage_contract_ref','runtime_contract_ref','operation_id',
+ 'operation_ref','interface_ref','surface','kind','method_ref'];
+check(JSON.stringify(keys)===JSON.stringify(expected), '13 exact candidate GENERAL facts not present in source order');
+for (const key of ['capability_contract_content_hash','stage_contract_ref','runtime_contract_ref'])
+  check(new RegExp('^\\s{4}'+key+': null,','m').test(general),'Unresolved authority fabricated: '+key);
+for(const item of ['MemberCapabilityClient','InMemoryMemberRepository','staticMembershipPlanProvider'])
+  check(!new RegExp('\\b'+item+'\\b').test(files.entry),'Local test runtime leaked from public Capability entry');
+check(manifest.scoped_whitelist_status === 'UNRESOLVED' && manifest.gate_pass_claimed===false,
+ 'Candidate claims a verified whitelist/Gate');
+
+const blockers=[
+ 'Member V0103 remains candidate; exact external owner source/hash freeze unavailable',
+ 'Nine RESTRICTED Operation permission bindings lack authorized actor-class evidence',
+ 'User-provided 255-field/75-constraint projection is SOURCE_ONLY, not approved Scoped Whitelist',
+ 'Exact governed interface/runtime materialization, receipt and Gate evidence not produced'
+];
+export const report = {
+  source_ref: fixture.source_ref,
+  source_hash: fixture.source_hash,
+  evidence_level: fixture.verification_level,
+  candidate_field_occurrences: fixture.source_field_candidates.length,
+  declared_conditional_constraints: fixture.source_constraints.length,
+  semantic_annotations: annotations.length,
+  semantic_kinds: semanticCounts,
+  verified_operation_errors: Object.values(errors).reduce((n,v)=>n+v.length,0),
+  source_projection_status: violations.length===0?'SOURCE_ALIGNED_CANDIDATE':'FAILED',
+  scoped_whitelist_status: 'UNRESOLVED',
+  ready_for_production: false,
+  blockers,
+  violations,
+};
+if (process.argv[1] && resolve(process.argv[1])===fileURLToPath(import.meta.url)) {
+  console.log(JSON.stringify(report,null,2));
+  if(violations.length)process.exitCode=1;
+}
+,'m'))?.[1]??'';
+  const mode=get('evaluation_realization_mode'),phase=get('enforcement_phase');
+  evaluationModeCounts[mode]=(evaluationModeCounts[mode]||0)+1;
+  if(mode==='INFORMATIONAL') {
+    check(get('failure_stable_error_code')==='null','INFORMATIONAL rule cannot fail: '+currentRule.ref);
+    check(['INFORMATIONAL','EVIDENCE_ONLY'].includes(phase),'INFORMATIONAL rule has a blocking phase: '+currentRule.ref);
+  } else if(mode==='OPERATION_ENFORCED') {
+    check(get('decision_operational_relation_ref')==='null','OPERATION_ENFORCED cannot invent dependency decision '+currentRule.ref);
+    check(/^\s+target_operation_refs:\n\s+- /m.test(t),'OPERATION_ENFORCED must bind an Operation '+currentRule.ref);
+  } else if(mode==='DEPENDENCY_DECISION') {
+    check(get('decision_operational_relation_ref')!=='null' && get('decision_consumer_binding_key')!=='null',
+      'DEPENDENCY_DECISION lacks exact relation/consumer binding '+currentRule.ref);
+  } else if(mode==='HUMAN_DECISION') {
+    check(get('human_decision_field_binding')!=='null','HUMAN_DECISION lacks request binding '+currentRule.ref);
+  } else check(false,'Unexpected rule evaluation realization '+mode);
+}
+for (const line of rbLines) {
+  const m=line.match(/^    (RB-\d+):$/);
+  if(m){checkRule();currentRule={ref:m[1],lines:[]};continue;}
+  if(currentRule)currentRule.lines.push(line);
+}
+checkRule();
+
+
 const instance=topSection(files.profile,'instance_variability');
 check(instance.includes('mode: NONE')&&instance.includes('instance_variables: []'),'Invented an undeclared Capability Instance');
 
