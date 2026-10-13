@@ -17,7 +17,10 @@
     "test:member:boundary": "node --experimental-transform-types --test tests/p1/export/member/v0117_boundary.node.test.ts",
     "test:member:branches": "node tools/member/verify_v0117_branches.mjs",
     "typecheck:member": "tsc --noEmit -p tsconfig.member.json",
-    "test:member:whitelist": "node tools/member/verify_v0104_compact_whitelist.mjs"
+    "test:member:whitelist": "node tools/member/verify_v0104_compact_whitelist.mjs",
+    "inspect:member:p1-handoff": "node tools/member/inspect_p1_handoff.mjs",
+    "check:member:triad-ready": "node tools/member/inspect_p1_handoff.mjs --require-ready",
+    "test:member:handoff": "node --test tests/p1/export/member/handoff_preflight.node.test.mjs"
   },
   "imports": {
     "#q/p0/runtime_contract": "./src/p0/runtime_contract.ts",
