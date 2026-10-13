@@ -6,6 +6,7 @@ import {
   STABLE_ERROR_CODE_SETS,
   trustedEntryAuthorizer,
   stableError,
+  preserveExactProviderStableError,
 } from '../../../../src/p1/export/member/entry';
 import {
   InMemoryMemberRepository,
@@ -136,6 +137,17 @@ describe('member capability entry 公共出口', () => {
       .toBe('MEMBER_DUPLICATE_REGISTRATION');
     expect(() => stableError('create_member', 'MEMBERSHIP_NOT_FOUND' as never))
       .toThrow(/Undeclared stable error for exact Operation create_member/);
+  });
+
+  it('未知 Provider StableError 不能绕过 Member Operation 错误码封闭', () => {
+    expect(() => preserveExactProviderStableError('create_membership', {
+      code: 'NOT_DECLARED_BY_MEMBER',
+      message: 'opaque error',
+    })).toThrow(/outside exact Member Operation create_membership/);
+    expect(preserveExactProviderStableError('create_membership', {
+      code: 'MEMBERSHIP_PLAN_NOT_FOUND',
+      message: 'exact declared failure',
+    }).code).toBe('MEMBERSHIP_PLAN_NOT_FOUND');
   });
 
   it('静态 Plan Provider：精确解析存在的方案，不存在返回稳定错误', async () => {

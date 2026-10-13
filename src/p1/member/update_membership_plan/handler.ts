@@ -10,7 +10,7 @@
  */
 
 import {
-  StableError,
+  preserveExactProviderStableError,
   fail,
   generateMembershipRef,
   parseDateTime,
@@ -145,9 +145,9 @@ export function createUpdateMembershipPlanHandler(
     if (planResult.outcome_type === 'STABLE_ERROR') {
       return fail(
         context,
-        new StableError(
-          planResult.stable_error.code,
-          planResult.stable_error.message,
+        preserveExactProviderStableError(
+          'update_membership_plan',
+          planResult.stable_error,
         ),
       );
     }

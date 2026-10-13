@@ -179,6 +179,32 @@ export function stableError<TOperation extends OperationId>(
   return new StableError(code);
 }
 
+/**
+ * No dependency is allowed to widen an Operation-local StableError carrier.
+ * Preserve exact provider code/message only if already admitted by the
+ * receiving Operation's declared closed set. Unknown codes cannot be
+ * fabricated as Member business facts: reject before returning an outcome.
+ * This verifies the output carrier, not unresolved Provider authority proof.
+ */
+export function preserveExactProviderStableError(
+  operationId: OperationId,
+  payload: StableErrorPayload,
+): StableError {
+  if (
+    payload === null ||
+    typeof payload !== 'object' ||
+    typeof payload.code !== 'string' ||
+    typeof payload.message !== 'string' ||
+    payload.message.length === 0 ||
+    !(STABLE_ERROR_CODE_SETS[operationId] as readonly string[]).includes(payload.code)
+  ) {
+    throw new TypeError(
+      `Provider stable error is outside exact Member Operation ${operationId} closure`,
+    );
+  }
+  return new StableError(payload.code, payload.message);
+}
+
 // ---------------------------------------------------------------------------
 // 四、Outcome 构造
 // ---------------------------------------------------------------------------

@@ -11,7 +11,7 @@
  */
 
 import {
-  StableError,
+  preserveExactProviderStableError,
   fail,
   generateMembershipRef,
   parseDateTime,
@@ -137,9 +137,9 @@ export function createCreateMembershipHandler(
       // stable_error_mode: PRESERVE_EXACT
       return fail(
         context,
-        new StableError(
-          planResult.stable_error.code,
-          planResult.stable_error.message,
+        preserveExactProviderStableError(
+          'create_membership',
+          planResult.stable_error,
         ),
       );
     }
