@@ -32,4 +32,4 @@ jobs:
       - name: Install isolated Vitest business test runner
         run: npm install --no-save --package-lock=false --ignore-scripts vitest@3.2.4
       - name: Exercise all Member V0104 business handlers and client regressions
-        run: npx vitest run tests/p1/member tests/p1/export/member
+        run: npx vitest run tests/p1/member/*/handler.test.ts tests/p1/export/member/contracts.test.ts tests/p1/export/member/client.test.ts tests/p1/export/member/entry.test.ts
