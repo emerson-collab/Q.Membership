@@ -1,4 +1,4 @@
-# 统一会员能力 V0103 — Capability Profile（物理投影，非独立语义权威）
+# 统一会员能力 V0103 — V0117 业务结构的 Source-bound 物理投影，非独立语义权威
 # projection_only: true
 # source_of_truth: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103
 # desc: Q.MEMBERSHIP.DESC.CAPABILITY.MEMBER@V0103
@@ -84,26 +84,260 @@ operations:
     publicity: internal
     purpose: 供本 Capability 内部以精确 membership_ref 解析唯一已有关系
 
-state_machines:
-  member:
-    state_field_path: member_status
-    initial_state: active
-    allowed_business_states: [active, terminated]
-    terminal_states: [terminated]
-    transitions:
-      - from_state: active
-        to_state: terminated
-        via_operation: update_member_status
-  membership:
-    state_field_path: membership_status
-    initial_state: active
-    allowed_business_states: [active, replaced]
-    terminal_states: [replaced]
-    transitions:
-      - from_state: active
-        to_state: replaced
-        via_operation: update_membership_plan
-
+state_model:
+  mode: STATEFUL
+  state_machines:
+    member:
+      state_machine_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/state_model/state_machines/member
+      subject_schema_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/type_closure/schemas/member
+      subject_identity_field_path: member_ref
+      state_field_path: member_status
+      allowed_business_states:
+      - active
+      - terminated
+      initial_state: active
+      terminal_states:
+      - terminated
+      invalid_state_stable_error_code: INVALID_STATE_TRANSITION
+      operation_state_bindings:
+        create_member:
+          operation_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/create_member
+          applicability_mode: CREATES_SUBJECT
+          subject_identity_cardinality: ONE
+          subject_identity_input_path: null
+          subject_identity_result_path: member_ref
+          availability_mode: INITIALIZATION_ONLY
+          allowed_states: []
+          guard_rule_refs: []
+          transition_refs: []
+        resolve_member:
+          operation_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/resolve_member
+          applicability_mode: EXISTING_SUBJECT
+          subject_identity_cardinality: ONE
+          subject_identity_input_path: member_ref
+          subject_identity_result_path: null
+          availability_mode: ANY_STATE
+          allowed_states: []
+          guard_rule_refs: []
+          transition_refs: []
+        update_member_profile:
+          operation_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/update_member_profile
+          applicability_mode: EXISTING_SUBJECT
+          subject_identity_cardinality: ONE
+          subject_identity_input_path: member_ref
+          subject_identity_result_path: null
+          availability_mode: ANY_STATE
+          allowed_states: []
+          guard_rule_refs:
+          - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/capability_rules/rules/R-IDENTITY-STABLE
+          transition_refs: []
+        update_member_status:
+          operation_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/update_member_status
+          applicability_mode: EXISTING_SUBJECT
+          subject_identity_cardinality: ONE
+          subject_identity_input_path: member_ref
+          subject_identity_result_path: null
+          availability_mode: STATE_GUARDED
+          allowed_states:
+          - active
+          guard_rule_refs:
+          - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/capability_rules/rules/R-STATE-TRANSITION-GUARD
+          transition_refs:
+          - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/state_model/state_machines/member/transitions/terminate_member
+        create_membership:
+          operation_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/create_membership
+          applicability_mode: EXISTING_SUBJECT
+          subject_identity_cardinality: ONE
+          subject_identity_input_path: member_ref
+          subject_identity_result_path: null
+          availability_mode: ANY_STATE
+          allowed_states: []
+          guard_rule_refs: []
+          transition_refs: []
+          x_guard_semantics: 历史生效时点的会员状态遵循对应 Operation 的业务判定规则；不得用当前状态替代历史状态。
+        update_membership_plan:
+          operation_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/update_membership_plan
+          applicability_mode: EXISTING_SUBJECT
+          subject_identity_cardinality: ONE
+          subject_identity_input_path: member_ref
+          subject_identity_result_path: null
+          availability_mode: ANY_STATE
+          allowed_states: []
+          guard_rule_refs: []
+          transition_refs: []
+          x_guard_semantics: 只使用该操作声明的旧关系可更换条件，不能凭当前会员状态增加业务前置条件。
+        lookup_membership:
+          operation_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/lookup_membership
+          applicability_mode: EXISTING_SUBJECT
+          subject_identity_cardinality: ONE
+          subject_identity_input_path: member_ref
+          subject_identity_result_path: null
+          availability_mode: ANY_STATE
+          allowed_states: []
+          guard_rule_refs: []
+          transition_refs: []
+        evaluate_membership_eligibility:
+          operation_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/evaluate_membership_eligibility
+          applicability_mode: EXISTING_SUBJECT
+          subject_identity_cardinality: ONE
+          subject_identity_input_path: member_ref
+          subject_identity_result_path: null
+          availability_mode: ANY_STATE
+          allowed_states: []
+          guard_rule_refs: []
+          transition_refs: []
+        resolve_membership:
+          operation_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/resolve_membership
+          applicability_mode: NOT_APPLICABLE
+          subject_identity_cardinality: null
+          subject_identity_input_path: null
+          subject_identity_result_path: null
+          availability_mode: NOT_APPLICABLE
+          allowed_states: []
+          guard_rule_refs: []
+          transition_refs: []
+      transitions:
+        terminate_member:
+          transition_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/state_model/state_machines/member/transitions/terminate_member
+          operation_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/update_member_status
+          from_states:
+          - active
+          to_state: terminated
+          guard_rule_refs:
+          - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/capability_rules/rules/R-STATE-TRANSITION-GUARD
+          permission_refs:
+          - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/permission_model/operation_permission_bindings/update_member_status
+      x_authoring_blocker_ref: null
+      x_validation_status: PROPOSED_DESIGN_CLOSED
+      x_business_owner_resolution_ref: null
+      x_no_default_state_inferred: false
+      x_design_status: NEW_BUSINESS_RULES_PROPOSED_AWAITING_OWNER_APPROVAL
+    membership:
+      state_machine_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/state_model/state_machines/membership
+      subject_schema_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/type_closure/schemas/membership
+      subject_identity_field_path: membership_ref
+      state_field_path: membership_status
+      allowed_business_states:
+      - active
+      - replaced
+      initial_state: active
+      terminal_states:
+      - replaced
+      invalid_state_stable_error_code: INVALID_STATE_TRANSITION
+      operation_state_bindings:
+        create_member:
+          operation_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/create_member
+          applicability_mode: NOT_APPLICABLE
+          subject_identity_cardinality: null
+          subject_identity_input_path: null
+          subject_identity_result_path: null
+          availability_mode: NOT_APPLICABLE
+          allowed_states: []
+          guard_rule_refs: []
+          transition_refs: []
+        resolve_member:
+          operation_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/resolve_member
+          applicability_mode: NOT_APPLICABLE
+          subject_identity_cardinality: null
+          subject_identity_input_path: null
+          subject_identity_result_path: null
+          availability_mode: NOT_APPLICABLE
+          allowed_states: []
+          guard_rule_refs: []
+          transition_refs: []
+        update_member_profile:
+          operation_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/update_member_profile
+          applicability_mode: NOT_APPLICABLE
+          subject_identity_cardinality: null
+          subject_identity_input_path: null
+          subject_identity_result_path: null
+          availability_mode: NOT_APPLICABLE
+          allowed_states: []
+          guard_rule_refs: []
+          transition_refs: []
+        update_member_status:
+          operation_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/update_member_status
+          applicability_mode: NOT_APPLICABLE
+          subject_identity_cardinality: null
+          subject_identity_input_path: null
+          subject_identity_result_path: null
+          availability_mode: NOT_APPLICABLE
+          allowed_states: []
+          guard_rule_refs: []
+          transition_refs: []
+        create_membership:
+          operation_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/create_membership
+          applicability_mode: CREATES_SUBJECT
+          subject_identity_cardinality: ONE
+          subject_identity_input_path: null
+          subject_identity_result_path: membership_ref
+          availability_mode: INITIALIZATION_ONLY
+          allowed_states: []
+          guard_rule_refs: []
+          transition_refs: []
+        update_membership_plan:
+          operation_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/update_membership_plan
+          applicability_mode: EXISTING_SUBJECT
+          subject_identity_cardinality: ONE
+          subject_identity_input_path: current_membership_ref
+          subject_identity_result_path: null
+          availability_mode: STATE_GUARDED
+          allowed_states:
+          - active
+          guard_rule_refs:
+          - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/capability_rules/rules/R-STATE-TRANSITION-GUARD
+          transition_refs:
+          - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/state_model/state_machines/membership/transitions/replace_membership
+        lookup_membership:
+          operation_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/lookup_membership
+          applicability_mode: NOT_APPLICABLE
+          subject_identity_cardinality: null
+          subject_identity_input_path: null
+          subject_identity_result_path: null
+          availability_mode: NOT_APPLICABLE
+          allowed_states: []
+          guard_rule_refs: []
+          transition_refs: []
+        evaluate_membership_eligibility:
+          operation_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/evaluate_membership_eligibility
+          applicability_mode: NOT_APPLICABLE
+          subject_identity_cardinality: null
+          subject_identity_input_path: null
+          subject_identity_result_path: null
+          availability_mode: NOT_APPLICABLE
+          allowed_states: []
+          guard_rule_refs: []
+          transition_refs: []
+        resolve_membership:
+          operation_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/resolve_membership
+          applicability_mode: EXISTING_SUBJECT
+          subject_identity_cardinality: ONE
+          subject_identity_input_path: membership_ref
+          subject_identity_result_path: null
+          availability_mode: ANY_STATE
+          allowed_states: []
+          guard_rule_refs: []
+          transition_refs: []
+      transitions:
+        replace_membership:
+          transition_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/state_model/state_machines/membership/transitions/replace_membership
+          operation_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/update_membership_plan
+          from_states:
+          - active
+          to_state: replaced
+          guard_rule_refs:
+          - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/capability_rules/rules/R-STATE-TRANSITION-GUARD
+          permission_refs:
+          - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/permission_model/operation_permission_bindings/update_membership_plan
+      x_authoring_blocker_ref: null
+      x_validation_status: PROPOSED_DESIGN_CLOSED
+      x_business_owner_resolution_ref: null
+      x_no_default_state_inferred: false
+      x_design_status: NEW_BUSINESS_RULES_PROPOSED_AWAITING_OWNER_APPROVAL
+  x_missing_owner_state_enumerations_and_transitions: []
+  undeclared_state_inference_forbidden: true
+  x_no_implicit_state_or_transition: true
+  x_authoring_status: PROPOSED_DESIGN_CLOSED_SUBJECT_TO_OWNER_ACCEPTANCE
 dependencies:
   local_dependencies:
     membership_plan:
@@ -111,12 +345,18 @@ dependencies:
       classification: PROVIDER_INTERNAL_DEPENDENCY
       connection_mode: INTRA_DOMAIN
       provider_capability_contract_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBERSHIP_PLAN@V0105
-      allowed_provider_operation: resolve_membership_plan
-      post_resolution_required_condition: membership_plan.state == active
-      stable_error_mode: PRESERVE_EXACT
+      allowed_operation_refs:
+      - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBERSHIP_PLAN@V0105#/operations/resolve_membership_plan
+      allowed_interface_refs:
+      - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBERSHIP_PLAN@V0105#/interfaces/membership_plan_resolution_invoke
+      reference_resolution_only: false
+      direct_operation_invocation_declared: true
+      resolved_provider_contract_ref_and_hash_required_before_use: true
+  external_dependencies: {}
   implicit_dependency_forbidden: true
   direct_cross_capability_handler_import_forbidden: true
-
+  x_pending_dependency_ownership_decisions: []
+  x_no_plan_owner_inference_from_field_name: true
 persistence:
   owner_local_persistence_required: true
   semantic_subjects:
@@ -130,8 +370,67 @@ persistence:
   append_only_history_required: true
   no_payment_or_order_persistence: true
 
-publication:
+external_provider_surface:
   mode: PUBLICATION_ELIGIBLE
+  provider_interface_refs:
+  - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/interfaces/member_creation_invoke
+  - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/interfaces/member_resolution_invoke
+  - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/interfaces/member_profile_update_invoke
+  - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/interfaces/member_status_update_invoke
+  - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/interfaces/membership_creation_invoke
+  - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/interfaces/membership_plan_update_invoke
+  - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/interfaces/membership_lookup_invoke
+  - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/interfaces/membership_eligibility_evaluation_invoke
+  internal_interface_ref_publication_forbidden: true
   publication_executed: false
-  internal_interface_publication_forbidden: true
-  security_gate: DO_NOT_EXPOSE_PUBLIC_INTERFACES_UNTIL_ACTOR_BINDINGS_RESOLVE
+  x_publication_blocked_until_exact_payload_state_permission_closure: true
+  x_publication_blocked_until_business_and_security_owner_acceptance: true
+  x_security_gate: DO_NOT_EXPOSE_PUBLIC_INTERFACES_UNTIL_ACTOR_BINDINGS_RESOLVE
+p2_handoff:
+  capability_publication:
+    mode: PUBLICATION_ELIGIBLE
+    external_provider_surface_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/external_provider_surface
+    publication_execution_implied: false
+  governed_data_exposure:
+    mode: NONE
+    bindings: []
+interface_inventory:
+  SPECIFICATION:
+  - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/interfaces/member_creation_invoke
+  - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/interfaces/member_resolution_invoke
+  - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/interfaces/member_profile_update_invoke
+  - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/interfaces/member_status_update_invoke
+  - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/interfaces/membership_creation_invoke
+  - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/interfaces/membership_plan_update_invoke
+  - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/interfaces/membership_lookup_invoke
+  - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/interfaces/membership_eligibility_evaluation_invoke
+  PAYLOAD:
+  - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/contracts/create_member_request_contract
+  - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/contracts/create_member_response_contract
+  - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/stable_errors/create_member
+  - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/contracts/resolve_member_request_contract
+  - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/contracts/resolve_member_response_contract
+  - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/stable_errors/resolve_member
+  - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/contracts/update_member_profile_request_contract
+  - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/contracts/update_member_profile_response_contract
+  - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/stable_errors/update_member_profile
+  - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/contracts/update_member_status_request_contract
+  - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/contracts/update_member_status_response_contract
+  - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/stable_errors/update_member_status
+  - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/contracts/create_membership_request_contract
+  - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/contracts/create_membership_response_contract
+  - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/stable_errors/create_membership
+  - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/contracts/update_membership_plan_request_contract
+  - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/contracts/update_membership_plan_response_contract
+  - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/stable_errors/update_membership_plan
+  - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/contracts/lookup_membership_request_contract
+  - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/contracts/lookup_membership_response_contract
+  - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/stable_errors/lookup_membership
+  - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/contracts/evaluate_membership_eligibility_request_contract
+  - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/contracts/evaluate_membership_eligibility_response_contract
+  - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/stable_errors/evaluate_membership_eligibility
+  - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/contracts/resolve_membership_request_contract
+  - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/contracts/resolve_membership_response_contract
+  - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/stable_errors/resolve_membership
+  INTERNAL:
+  - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/interfaces/membership_exact_resolution_invoke

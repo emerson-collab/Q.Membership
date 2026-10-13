@@ -1,4 +1,4 @@
-# 统一会员能力 V0103 — Capability Policy Config（物理投影）
+# 统一会员能力 V0103 — V0117 Rule/Permission/Relation 精确 Source 投影（非权威）
 # projection_only: true
 # source_of_truth:
 #   - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/capability_rules
@@ -15,182 +15,771 @@ q_role: capability_policy_projection
 permission_model:
   mode: DECLARED
   default_decision: DENY
-  effective_until_approved_actor_mapping: DENY_ALL
-  denial_stable_error_code: OPERATION_NOT_AUTHORIZED
-  applies_to_operations:
-    - create_member
-    - resolve_member
-    - update_member_profile
-    - update_member_status
-    - create_membership
-    - update_membership_plan
-    - lookup_membership
-    - evaluate_membership_eligibility
-    - resolve_membership
-  internal_purpose_required:
-    resolve_membership: true
-  x_missing_exact_actor_identity_and_auth_rule: true
-
-rules:
-  R-REQUIRED-DATA-COMPLETENESS: 请求需通过固定 Owner Schema：身份二元键、非空档案、非空变更、合法时间、方案精确可解析；不得从扩展字段补造语义。
-  R-DUPLICATE-REGISTRATION: 注册以 (identity_namespace, identity_value) 原始字节组合作精确唯一键；同键存在即 MEMBER_DUPLICATE_REGISTRATION；并发由单一原子唯一性写入保证。
-  R-IDENTITY-STABLE: 会员身份必须稳定且可精确解析；稳定会员标识不得因资料修改而变化。
-  R-THREE-STATE-SEPARATION: 会员档案状态、会员关系状态、资格判断结果三类状态不得混用。
-  R-EXISTENCE-NOT-ELIGIBILITY: 会员存在、会员关系时间有效和会员权益履约为三个独立事实；本能力只判定 membership_validity。
-  R-ELIGIBILITY-BASIS: 仅支持 membership_validity；先验证必需历史事实与合法 decision_time，不能把不可判定映射为 false。eligible=true 当且仅当该时点会员 active 且恰好一条有效关系。
-  R-ELIGIBILITY-DECISION: eligible=false 是正常判定结果，不触发 StableError；不得把 false 解释为 true。
-  R-CONSISTENT-RESULT: 相同会员、用途、历史时点和权威业务事实得出一致结果；失败写操作保持原状。
-  R-PLAN-EXISTENCE: 建立及替换关系时必须精确调用 Membership Plan Provider 的 resolve_membership_plan，只接受 state=active 的真实方案。
-  R-STATE-TRANSITION-GUARD: member 仅 active->terminated；membership 仅 active->replaced；终态无隐式恢复与重叠转移。
-  R-AUTH-DEFAULT-DENY: 所有 9 个 Operation 必须有真实业务授权；未声明、不可验证或无法映射到可信 Actor 的调用一律拒绝。
-  R-EFFECTIVE-TIME-MEMBER-STATUS: create_membership 只在拟生效时点 member_status=active 时可建立关系，历史时点必须读状态历史。
-  R-TEMPORAL-BOUNDS: 未填时点使用提交时点；显式时点 <= 提交时点；建立关系不能早于会员创建，更换不能早于旧关系开始。
-  R-ONE-EFFECTIVE-RELATION: 任一会员在同一时点最多一条生效方案关系；创建/更换不得造成有效区间重叠，并发原子保护。
-  R-ATOMIC-RELATION-REPLACEMENT: 更换方案原子结束旧关系并创建新关系；历史不覆盖，响应必须有新旧关系标识。
-  R-HISTORICAL-INTERVAL-LOOKUP: 关系查询按 effective_time <= as_of_time < termination_time 选择至多一条；冲突不能伪造成功。
-  R-ELIGIBILITY-REASON-PRIORITY: 资格原因先判断会员在判定时点是否 terminated，再在 active 情形判断关系有效性；数据未知不能返回 false。
-  R-OWNER-PROFILE-DISCLOSURE: 公开查询默认仅提供展示资料，不因保存 contact_email 就公开联系方式。
-  R-RETRY-NO-DUPLICATE-RELATION: 重复创建及重复更换按已有业务状态重新判断；replaced 旧关系不得产生第二个后继。
-  R-EXACT-INTERNAL-MEMBERSHIP-READ: 内部 resolve_membership 严格按 membership_ref 查一条历史记录，绝不自动选最新。
-  R-NO-PAYMENT-OR-ENTITLEMENT-INFERENCE: 建立关系不要求支付凭据；任何写操作不产生支付、订单或权益履约事实。
-
+  actor_classes: []
+  operation_permission_bindings:
+    create_member:
+      permission_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/permission_model/operation_permission_bindings/create_member
+      operation_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/create_member
+      access_mode: RESTRICTED
+      actor_class_refs: []
+      authorization_rule_refs:
+      - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/capability_rules/rules/R-AUTH-DEFAULT-DENY
+      denial_stable_error_code: OPERATION_NOT_AUTHORIZED
+      x_missing_exact_actor_identity_and_auth_rule: true
+      x_effective_until_approved_actor_mapping: DENY_ALL
+    resolve_member:
+      permission_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/permission_model/operation_permission_bindings/resolve_member
+      operation_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/resolve_member
+      access_mode: RESTRICTED
+      actor_class_refs: []
+      authorization_rule_refs:
+      - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/capability_rules/rules/R-AUTH-DEFAULT-DENY
+      denial_stable_error_code: OPERATION_NOT_AUTHORIZED
+      x_missing_exact_actor_identity_and_auth_rule: true
+      x_effective_until_approved_actor_mapping: DENY_ALL
+    update_member_profile:
+      permission_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/permission_model/operation_permission_bindings/update_member_profile
+      operation_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/update_member_profile
+      access_mode: RESTRICTED
+      actor_class_refs: []
+      authorization_rule_refs:
+      - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/capability_rules/rules/R-AUTH-DEFAULT-DENY
+      denial_stable_error_code: OPERATION_NOT_AUTHORIZED
+      x_missing_exact_actor_identity_and_auth_rule: true
+      x_effective_until_approved_actor_mapping: DENY_ALL
+    update_member_status:
+      permission_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/permission_model/operation_permission_bindings/update_member_status
+      operation_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/update_member_status
+      access_mode: RESTRICTED
+      actor_class_refs: []
+      authorization_rule_refs:
+      - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/capability_rules/rules/R-AUTH-DEFAULT-DENY
+      denial_stable_error_code: OPERATION_NOT_AUTHORIZED
+      x_missing_exact_actor_identity_and_auth_rule: true
+      x_effective_until_approved_actor_mapping: DENY_ALL
+    create_membership:
+      permission_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/permission_model/operation_permission_bindings/create_membership
+      operation_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/create_membership
+      access_mode: RESTRICTED
+      actor_class_refs: []
+      authorization_rule_refs:
+      - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/capability_rules/rules/R-AUTH-DEFAULT-DENY
+      denial_stable_error_code: OPERATION_NOT_AUTHORIZED
+      x_missing_exact_actor_identity_and_auth_rule: true
+      x_effective_until_approved_actor_mapping: DENY_ALL
+    update_membership_plan:
+      permission_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/permission_model/operation_permission_bindings/update_membership_plan
+      operation_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/update_membership_plan
+      access_mode: RESTRICTED
+      actor_class_refs: []
+      authorization_rule_refs:
+      - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/capability_rules/rules/R-AUTH-DEFAULT-DENY
+      denial_stable_error_code: OPERATION_NOT_AUTHORIZED
+      x_missing_exact_actor_identity_and_auth_rule: true
+      x_effective_until_approved_actor_mapping: DENY_ALL
+    lookup_membership:
+      permission_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/permission_model/operation_permission_bindings/lookup_membership
+      operation_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/lookup_membership
+      access_mode: RESTRICTED
+      actor_class_refs: []
+      authorization_rule_refs:
+      - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/capability_rules/rules/R-AUTH-DEFAULT-DENY
+      denial_stable_error_code: OPERATION_NOT_AUTHORIZED
+      x_missing_exact_actor_identity_and_auth_rule: true
+      x_effective_until_approved_actor_mapping: DENY_ALL
+    evaluate_membership_eligibility:
+      permission_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/permission_model/operation_permission_bindings/evaluate_membership_eligibility
+      operation_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/evaluate_membership_eligibility
+      access_mode: RESTRICTED
+      actor_class_refs: []
+      authorization_rule_refs:
+      - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/capability_rules/rules/R-AUTH-DEFAULT-DENY
+      denial_stable_error_code: OPERATION_NOT_AUTHORIZED
+      x_missing_exact_actor_identity_and_auth_rule: true
+      x_effective_until_approved_actor_mapping: DENY_ALL
+    resolve_membership:
+      permission_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/permission_model/operation_permission_bindings/resolve_membership
+      operation_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/resolve_membership
+      access_mode: RESTRICTED
+      actor_class_refs: []
+      authorization_rule_refs:
+      - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/capability_rules/rules/R-AUTH-DEFAULT-DENY
+      denial_stable_error_code: OPERATION_NOT_AUTHORIZED
+      x_missing_exact_actor_identity_and_auth_rule: true
+      x_effective_until_approved_actor_mapping: DENY_ALL
+  x_authoring_blocker_ref: business_description:124-129 / authorization_owner_identity_unresolved
+  x_authoring_status: DECLARED_RESTRICTED_ALL_OPERATIONS_PENDING_REAL_ACTOR_AUTHORITY
+  x_deny_by_default_is_not_actor_authority: true
+  x_security_caveat: No trusted ingress actor mapping or approved authorization rules exist in the supplied Source. RESTRICTED
+    bindings are intentionally unresolved and cannot grant access.
+  x_missing_actor_identity_authority_blocks_materialization: true
+  x_security_owner_approval_blocks_production: true
+capability_rules:
+  mode: DECLARED
+  rule_set_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/capability_rules
+  rule_count: 21
+  rules:
+    R-REQUIRED-DATA-COMPLETENESS:
+      rule_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/capability_rules/rules/R-REQUIRED-DATA-COMPLETENESS
+      rule_id: R-REQUIRED-DATA-COMPLETENESS
+      statement: 请求需通过固定 Owner Schema：身份二元键、非空档案、非空变更、合法时间、方案精确可解析；不得从扩展字段补造语义。
+      source_section: 四/十
+    R-DUPLICATE-REGISTRATION:
+      rule_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/capability_rules/rules/R-DUPLICATE-REGISTRATION
+      rule_id: R-DUPLICATE-REGISTRATION
+      statement: 注册以 (identity_namespace, identity_value) 原始字节组合作精确唯一键；同键存在即 MEMBER_DUPLICATE_REGISTRATION；跨线程并发由单一原子唯一性写入保证。
+      source_section: 四.1
+    R-IDENTITY-STABLE:
+      rule_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/capability_rules/rules/R-IDENTITY-STABLE
+      rule_id: R-IDENTITY-STABLE
+      statement: 会员身份必须稳定且可精确解析；稳定会员标识不得因资料修改而变化（业务语义 V0100 第五节确认）。
+      source_section: 四.3/五
+    R-THREE-STATE-SEPARATION:
+      rule_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/capability_rules/rules/R-THREE-STATE-SEPARATION
+      rule_id: R-THREE-STATE-SEPARATION
+      statement: 会员档案状态、会员关系状态、资格判断结果三类状态不得混用（业务语义 V0100 第五节确认）。
+      source_section: 五
+    R-EXISTENCE-NOT-ELIGIBILITY:
+      rule_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/capability_rules/rules/R-EXISTENCE-NOT-ELIGIBILITY
+      rule_id: R-EXISTENCE-NOT-ELIGIBILITY
+      statement: 会员存在、会员关系时间有效和会员权益履约为三个独立事实；本能力只判定 membership_validity，不判定具体权益或订单支付。
+      source_section: 五
+    R-ELIGIBILITY-BASIS:
+      rule_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/capability_rules/rules/R-ELIGIBILITY-BASIS
+      rule_id: R-ELIGIBILITY-BASIS
+      statement: 仅支持 membership_validity；先验证必需历史事实与合法 decision_time，不能把不可判定映射为 false。eligible=true 当且仅当该时点会员 active 且恰好一条有效关系；已终止时
+        false/MEMBER_TERMINATED；active 且无关系时 false/NO_EFFECTIVE_MEMBERSHIP。多条件拒绝原因按说明书第 08 Operation 的【补充候选】顺序。
+      source_section: 二.08（103-113）
+    R-ELIGIBILITY-DECISION:
+      rule_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/capability_rules/rules/R-ELIGIBILITY-DECISION
+      rule_id: R-ELIGIBILITY-DECISION
+      statement: eligible=false 是正常判定结果，不触发 StableError；任何调用方不得把 false 解释为 true；业务不支持用此判定替代具体权益核销。
+      source_section: 九.场景D/十
+    R-CONSISTENT-RESULT:
+      rule_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/capability_rules/rules/R-CONSISTENT-RESULT
+      rule_id: R-CONSISTENT-RESULT
+      statement: 相同会员、用途、历史时点和权威业务事实得出一致结果；失败写操作保持原状；跨操作的历史事实不得由即时快照覆盖。
+      source_section: 一.4/一.5，二.01-09
+    R-PLAN-EXISTENCE:
+      rule_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/capability_rules/rules/R-PLAN-EXISTENCE
+      rule_id: R-PLAN-EXISTENCE
+      statement: 建立及替换关系时必须精确调用已声明 Membership Plan Provider 的 resolve_membership_plan，只接受 state=active 的真实方案；不得凭名称、空引用或调用成功标识推断方案可用。
+      source_section: 一.5，二.05/06
+    R-STATE-TRANSITION-GUARD:
+      rule_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/capability_rules/rules/R-STATE-TRANSITION-GUARD
+      rule_id: R-STATE-TRANSITION-GUARD
+      statement: member 仅 active->terminated；membership 仅 active->replaced（变更方案的旧关系）。终止或替换都是终态；没有隐式恢复与重叠转移。
+      source_section: 四.4/六
+    R-AUTH-DEFAULT-DENY:
+      rule_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/capability_rules/rules/R-AUTH-DEFAULT-DENY
+      rule_id: R-AUTH-DEFAULT-DENY
+      statement: 所有 9 个 Operation 必须有真实业务授权；未声明、不可验证或无法映射到可信 Actor 的调用一律拒绝（OPERATION_NOT_AUTHORIZED）。不得把权限未定义推断为 UNRESTRICTED。
+      source_section: 一.5（49）及二.01-09；附记（124-129）
+      x_authorization_actor_source_status: NOT_SUPPLIED_NO_ALLOW_LIST_AUTHORIZED
+    R-EFFECTIVE-TIME-MEMBER-STATUS:
+      rule_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/capability_rules/rules/R-EFFECTIVE-TIME-MEMBER-STATUS
+      rule_id: R-EFFECTIVE-TIME-MEMBER-STATUS
+      statement: create_membership 只在拟生效时点 member_status=active 时可建立方案关系，历史时点必须读取会员状态历史；不得拿当前状态替代。
+      source_section: 会员说明书 82-87
+      x_source_status: DECLARED_V0103_CANDIDATE_BUSINESS_LOGIC
+    R-TEMPORAL-BOUNDS:
+      rule_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/capability_rules/rules/R-TEMPORAL-BOUNDS
+      rule_id: R-TEMPORAL-BOUNDS
+      statement: 建立关系及更换方案时，未填时点使用提交时点；显式时点 <= 提交时点；建立关系不能早于会员创建，更换不能早于旧关系开始。
+      source_section: 会员说明书 42-50,82-94
+      x_source_status: DECLARED_V0103_CANDIDATE_BUSINESS_LOGIC
+    R-ONE-EFFECTIVE-RELATION:
+      rule_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/capability_rules/rules/R-ONE-EFFECTIVE-RELATION
+      rule_id: R-ONE-EFFECTIVE-RELATION
+      statement: 任一会员在同一时点最多一条生效方案关系；创建/更换不得造成有效区间重叠，并发操作必须原子保护此不变量。
+      source_section: 会员说明书 42-50,82-94
+      x_source_status: DECLARED_V0103_CANDIDATE_BUSINESS_LOGIC
+    R-ATOMIC-RELATION-REPLACEMENT:
+      rule_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/capability_rules/rules/R-ATOMIC-RELATION-REPLACEMENT
+      rule_id: R-ATOMIC-RELATION-REPLACEMENT
+      statement: 更换方案只在旧关系属于该会员且 active、目标方案不同且可用时，原子结束旧关系并创建新关系；历史不覆盖，响应必须有新旧关系标识。
+      source_section: 会员说明书 89-94
+      x_source_status: DECLARED_V0103_CANDIDATE_BUSINESS_LOGIC
+    R-HISTORICAL-INTERVAL-LOOKUP:
+      rule_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/capability_rules/rules/R-HISTORICAL-INTERVAL-LOOKUP
+      rule_id: R-HISTORICAL-INTERVAL-LOOKUP
+      statement: 关系查询按 effective_time <= as_of_time < termination_time 选择至多一条关系；当无结束时点表示未结束；资料缺失或历史冲突不能返回伪造成功。
+      source_section: 会员说明书 96-113
+      x_source_status: DECLARED_V0103_CANDIDATE_BUSINESS_LOGIC
+    R-ELIGIBILITY-REASON-PRIORITY:
+      rule_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/capability_rules/rules/R-ELIGIBILITY-REASON-PRIORITY
+      rule_id: R-ELIGIBILITY-REASON-PRIORITY
+      statement: 资格原因严格按本版说明书第 08 Operation 的【补充候选】先判断会员在判定时点是否 terminated，再在 active 情形判断关系有效性；数据未知不能返回 false。
+      source_section: 会员说明书 103-113
+      x_source_status: DECLARED_V0103_CANDIDATE_BUSINESS_LOGIC
+    R-OWNER-PROFILE-DISCLOSURE:
+      rule_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/capability_rules/rules/R-OWNER-PROFILE-DISCLOSURE
+      rule_id: R-OWNER-PROFILE-DISCLOSURE
+      statement: 会员档案读取只返回获准披露的资料；本版公开查询默认仅提供展示资料，不因保存 contact_email 就公开联系方式。
+      source_section: 会员说明书 61-66
+      x_source_status: DECLARED_V0103_CANDIDATE_BUSINESS_LOGIC
+    R-RETRY-NO-DUPLICATE-RELATION:
+      rule_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/capability_rules/rules/R-RETRY-NO-DUPLICATE-RELATION
+      rule_id: R-RETRY-NO-DUPLICATE-RELATION
+      statement: 重复创建及重复更换必须按已有业务状态重新判断；重复关系更换不得从已 replaced 的旧关系成功创建第二个后继关系。
+      source_section: 会员说明书 42-50,54-59,82-94
+      x_source_status: DECLARED_V0103_CANDIDATE_BUSINESS_LOGIC
+    R-EXACT-INTERNAL-MEMBERSHIP-READ:
+      rule_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/capability_rules/rules/R-EXACT-INTERNAL-MEMBERSHIP-READ
+      rule_id: R-EXACT-INTERNAL-MEMBERSHIP-READ
+      statement: 内部 resolve_membership 严格使用提供的 membership_ref 查一条历史记录，绝不自动选最新、不以其它关系代替。
+      source_section: 会员说明书 115-120
+      x_source_status: DECLARED_V0103_CANDIDATE_BUSINESS_LOGIC
+    R-NO-PAYMENT-OR-ENTITLEMENT-INFERENCE:
+      rule_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/capability_rules/rules/R-NO-PAYMENT-OR-ENTITLEMENT-INFERENCE
+      rule_id: R-NO-PAYMENT-OR-ENTITLEMENT-INFERENCE
+      statement: 本版建立关系候选业务逻辑不要求支付凭据；任何写操作不产生支付、订单或具体权益履约事实。
+      source_section: 会员说明书 20-22,42-50,82-94
+      x_source_status: DECLARED_V0103_CANDIDATE_BUSINESS_LOGIC
+  x_unapproved_business_policy_summary: 身份去重、方案选择、关系并存、生命周期、资格及原因优先级、免支付前置是已写明候选逻辑，不等于获得 Owner 批准。
 rule_bindings:
-  RB-01:
-    rule: R-REQUIRED-DATA-COMPLETENESS
-    phase: REQUEST_VALIDATION
-    realization: OPERATION_ENFORCED
-    applies_to: ALL_OPERATIONS
-    failure_code: MEMBERSHIP_REQUIRED_INPUT_MISSING
-  RB-02:
-    rule: R-DUPLICATE-REGISTRATION
-    phase: PRECONDITION
-    realization: OPERATION_ENFORCED
-    applies_to: [create_member]
-    failure_code: MEMBER_DUPLICATE_REGISTRATION
-  RB-03:
-    rule: R-IDENTITY-STABLE
-    phase: REQUEST_VALIDATION
-    realization: OPERATION_ENFORCED
-    applies_to: [update_member_profile]
-    failure_code: MEMBER_PROFILE_FIELD_NOT_MODIFIABLE
-  RB-04:
-    rule: R-THREE-STATE-SEPARATION
-    phase: INFORMATIONAL
-    realization: INFORMATIONAL
-    applies_to: []
-  RB-05:
-    rule: R-EXISTENCE-NOT-ELIGIBILITY
-    phase: INFORMATIONAL
-    realization: INFORMATIONAL
-    applies_to: [evaluate_membership_eligibility]
-  RB-06:
-    rule: R-ELIGIBILITY-BASIS
-    phase: PRECONDITION
-    realization: OPERATION_ENFORCED
-    applies_to: [evaluate_membership_eligibility]
-    failure_code: DEPENDENCY_INFORMATION_INCOMPLETE
-    x_no_false_eligibility_for_missing_basis: true
-  RB-07:
-    rule: R-ELIGIBILITY-DECISION
-    phase: INFORMATIONAL
-    realization: INFORMATIONAL
-    applies_to: [evaluate_membership_eligibility]
-  RB-08:
-    rule: R-CONSISTENT-RESULT
-    phase: INFORMATIONAL
-    realization: INFORMATIONAL
-    applies_to: [evaluate_membership_eligibility]
-  RB-09:
-    rule: R-PLAN-EXISTENCE
-    phase: DEPENDENCY_PRECONDITION
-    realization: OPERATION_ENFORCED
-    applies_to: [create_membership, update_membership_plan]
-    operational_relations: [create_verify_membership_plan, update_verify_target_plan]
-    failure_code: MEMBERSHIP_PLAN_NOT_FOUND
-  RB-10:
-    rule: R-STATE-TRANSITION-GUARD
-    phase: STATE_GUARD
-    realization: OPERATION_ENFORCED
-    applies_to: [update_member_status, update_membership_plan]
-    failure_code: INVALID_STATE_TRANSITION
-  RB-11:
-    rule: R-AUTH-DEFAULT-DENY
-    phase: AUTHORIZATION
-    realization: OPERATION_ENFORCED
-    applies_to: ALL_OPERATIONS
-    failure_code: OPERATION_NOT_AUTHORIZED
-  RB-12:
-    rule: R-EFFECTIVE-TIME-MEMBER-STATUS
-    phase: PRECONDITION
-    realization: OPERATION_ENFORCED
-    applies_to: [create_membership]
-    failure_code: INVALID_STATE_TRANSITION
-  RB-13:
-    rule: R-TEMPORAL-BOUNDS
-    phase: PRECONDITION
-    realization: OPERATION_ENFORCED
-    applies_to: [create_membership, update_membership_plan]
-    failure_code: INVALID_BUSINESS_TIME
-  RB-14:
-    rule: R-ONE-EFFECTIVE-RELATION
-    phase: PRECONDITION
-    realization: OPERATION_ENFORCED
-    applies_to: [create_membership, update_membership_plan]
-    failure_code: MEMBERSHIP_RELATION_CONFLICT
-  RB-15:
-    rule: R-ATOMIC-RELATION-REPLACEMENT
-    phase: POSTCONDITION
-    realization: OPERATION_ENFORCED
-    applies_to: [update_membership_plan]
-    failure_code: CONCURRENT_MODIFICATION_CONFLICT
-  RB-16:
-    rule: R-HISTORICAL-INTERVAL-LOOKUP
-    phase: PRECONDITION
-    realization: OPERATION_ENFORCED
-    applies_to: [lookup_membership, evaluate_membership_eligibility]
-    failure_code: DEPENDENCY_INFORMATION_INCOMPLETE
-  RB-17:
-    rule: R-ELIGIBILITY-REASON-PRIORITY
-    phase: POSTCONDITION
-    realization: OPERATION_ENFORCED
-    applies_to: [evaluate_membership_eligibility]
-    failure_code: DEPENDENCY_INFORMATION_INCOMPLETE
-  RB-18:
-    rule: R-OWNER-PROFILE-DISCLOSURE
-    phase: POSTCONDITION
-    realization: OPERATION_ENFORCED
-    applies_to: [resolve_member]
-    failure_code: OPERATION_NOT_AUTHORIZED
-  RB-19:
-    rule: R-RETRY-NO-DUPLICATE-RELATION
-    phase: PRECONDITION
-    realization: OPERATION_ENFORCED
-    applies_to: [create_member, create_membership, update_membership_plan]
-    failure_code: CONCURRENT_MODIFICATION_CONFLICT
-  RB-20:
-    rule: R-EXACT-INTERNAL-MEMBERSHIP-READ
-    phase: PRECONDITION
-    realization: OPERATION_ENFORCED
-    applies_to: [resolve_membership]
-    failure_code: MEMBERSHIP_NOT_FOUND
-  RB-21:
-    rule: R-NO-PAYMENT-OR-ENTITLEMENT-INFERENCE
-    phase: INFORMATIONAL
-    realization: INFORMATIONAL
-    applies_to: []
-
+  mode: DECLARED
+  bindings:
+    RB-01:
+      binding_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/rule_bindings/bindings/RB-01
+      rule_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/capability_rules/rules/R-REQUIRED-DATA-COMPLETENESS
+      enforcement_phase: REQUEST_VALIDATION
+      evaluation_realization_mode: OPERATION_ENFORCED
+      target_operation_refs:
+      - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/create_member
+      - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/resolve_member
+      - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/update_member_profile
+      - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/update_member_status
+      - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/create_membership
+      - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/update_membership_plan
+      - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/lookup_membership
+      - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/evaluate_membership_eligibility
+      - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/resolve_membership
+      target_field_bindings: []
+      target_transition_refs: []
+      target_operational_relation_refs: []
+      target_permission_refs: []
+      decision_operational_relation_ref: null
+      decision_consumer_binding_key: null
+      human_decision_actor_class_refs: []
+      human_decision_field_binding: null
+      human_allow_values: []
+      human_deny_values: []
+      failure_stable_error_code: MEMBERSHIP_REQUIRED_INPUT_MISSING
+      x_pending_owner_evaluation_logic: false
+    RB-02:
+      binding_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/rule_bindings/bindings/RB-02
+      rule_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/capability_rules/rules/R-DUPLICATE-REGISTRATION
+      enforcement_phase: PRECONDITION
+      evaluation_realization_mode: OPERATION_ENFORCED
+      target_operation_refs:
+      - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/create_member
+      target_field_bindings:
+      - operation_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/create_member
+        boundary: REQUEST
+        field_path: member_identity
+      target_transition_refs: []
+      target_operational_relation_refs: []
+      target_permission_refs: []
+      decision_operational_relation_ref: null
+      decision_consumer_binding_key: null
+      human_decision_actor_class_refs: []
+      human_decision_field_binding: null
+      human_allow_values: []
+      human_deny_values: []
+      failure_stable_error_code: MEMBER_DUPLICATE_REGISTRATION
+      x_pending_owner_evaluation_logic: false
+      x_binding_semantic_status: PROPOSED_DESIGN_RULE_CLOSED
+    RB-03:
+      binding_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/rule_bindings/bindings/RB-03
+      rule_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/capability_rules/rules/R-IDENTITY-STABLE
+      enforcement_phase: REQUEST_VALIDATION
+      evaluation_realization_mode: OPERATION_ENFORCED
+      target_operation_refs:
+      - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/update_member_profile
+      target_field_bindings:
+      - operation_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/update_member_profile
+        boundary: REQUEST
+        field_path: member_ref
+      target_transition_refs: []
+      target_operational_relation_refs: []
+      target_permission_refs: []
+      decision_operational_relation_ref: null
+      decision_consumer_binding_key: null
+      human_decision_actor_class_refs: []
+      human_decision_field_binding: null
+      human_allow_values: []
+      human_deny_values: []
+      failure_stable_error_code: MEMBER_PROFILE_FIELD_NOT_MODIFIABLE
+      x_pending_owner_evaluation_logic: false
+    RB-04:
+      binding_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/rule_bindings/bindings/RB-04
+      rule_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/capability_rules/rules/R-THREE-STATE-SEPARATION
+      enforcement_phase: INFORMATIONAL
+      evaluation_realization_mode: INFORMATIONAL
+      target_operation_refs: []
+      target_field_bindings: []
+      target_transition_refs: []
+      target_operational_relation_refs: []
+      target_permission_refs: []
+      decision_operational_relation_ref: null
+      decision_consumer_binding_key: null
+      human_decision_actor_class_refs: []
+      human_decision_field_binding: null
+      human_allow_values: []
+      human_deny_values: []
+      failure_stable_error_code: null
+      x_pending_owner_evaluation_logic: false
+    RB-05:
+      binding_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/rule_bindings/bindings/RB-05
+      rule_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/capability_rules/rules/R-EXISTENCE-NOT-ELIGIBILITY
+      enforcement_phase: INFORMATIONAL
+      evaluation_realization_mode: INFORMATIONAL
+      target_operation_refs:
+      - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/evaluate_membership_eligibility
+      target_field_bindings: []
+      target_transition_refs: []
+      target_operational_relation_refs: []
+      target_permission_refs: []
+      decision_operational_relation_ref: null
+      decision_consumer_binding_key: null
+      human_decision_actor_class_refs: []
+      human_decision_field_binding: null
+      human_allow_values: []
+      human_deny_values: []
+      failure_stable_error_code: null
+      x_pending_owner_evaluation_logic: false
+    RB-06:
+      binding_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/rule_bindings/bindings/RB-06
+      rule_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/capability_rules/rules/R-ELIGIBILITY-BASIS
+      enforcement_phase: PRECONDITION
+      evaluation_realization_mode: OPERATION_ENFORCED
+      target_operation_refs:
+      - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/evaluate_membership_eligibility
+      target_field_bindings:
+      - operation_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/evaluate_membership_eligibility
+        boundary: REQUEST
+        field_path: member_ref
+      - operation_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/evaluate_membership_eligibility
+        boundary: REQUEST
+        field_path: check_purpose
+      - operation_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/evaluate_membership_eligibility
+        boundary: REQUEST
+        field_path: decision_time
+      target_transition_refs: []
+      target_operational_relation_refs: []
+      target_permission_refs: []
+      decision_operational_relation_ref: null
+      decision_consumer_binding_key: null
+      human_decision_actor_class_refs: []
+      human_decision_field_binding: null
+      human_allow_values: []
+      human_deny_values: []
+      failure_stable_error_code: DEPENDENCY_INFORMATION_INCOMPLETE
+      x_pending_owner_evaluation_logic: false
+      x_binding_semantic_status: PROPOSED_DESIGN_RULE_CLOSED
+      x_no_false_eligibility_for_missing_basis: true
+    RB-07:
+      binding_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/rule_bindings/bindings/RB-07
+      rule_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/capability_rules/rules/R-ELIGIBILITY-DECISION
+      enforcement_phase: INFORMATIONAL
+      evaluation_realization_mode: INFORMATIONAL
+      target_operation_refs:
+      - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/evaluate_membership_eligibility
+      target_field_bindings: []
+      target_transition_refs: []
+      target_operational_relation_refs: []
+      target_permission_refs: []
+      decision_operational_relation_ref: null
+      decision_consumer_binding_key: null
+      human_decision_actor_class_refs: []
+      human_decision_field_binding: null
+      human_allow_values: []
+      human_deny_values: []
+      failure_stable_error_code: null
+      x_pending_owner_evaluation_logic: false
+    RB-08:
+      binding_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/rule_bindings/bindings/RB-08
+      rule_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/capability_rules/rules/R-CONSISTENT-RESULT
+      enforcement_phase: INFORMATIONAL
+      evaluation_realization_mode: INFORMATIONAL
+      target_operation_refs:
+      - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/evaluate_membership_eligibility
+      target_field_bindings: []
+      target_transition_refs: []
+      target_operational_relation_refs: []
+      target_permission_refs: []
+      decision_operational_relation_ref: null
+      decision_consumer_binding_key: null
+      human_decision_actor_class_refs: []
+      human_decision_field_binding: null
+      human_allow_values: []
+      human_deny_values: []
+      failure_stable_error_code: null
+      x_pending_owner_evaluation_logic: false
+    RB-09:
+      binding_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/rule_bindings/bindings/RB-09
+      rule_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/capability_rules/rules/R-PLAN-EXISTENCE
+      enforcement_phase: DEPENDENCY_PRECONDITION
+      evaluation_realization_mode: OPERATION_ENFORCED
+      target_operation_refs:
+      - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/create_membership
+      - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/update_membership_plan
+      target_field_bindings:
+      - operation_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/create_membership
+        boundary: REQUEST
+        field_path: plan_ref
+      - operation_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/update_membership_plan
+        boundary: REQUEST
+        field_path: target_plan_ref
+      target_transition_refs: []
+      target_operational_relation_refs:
+      - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operational_relations/relations/create_verify_membership_plan
+      - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operational_relations/relations/update_verify_target_plan
+      target_permission_refs: []
+      decision_operational_relation_ref: null
+      decision_consumer_binding_key: null
+      human_decision_actor_class_refs: []
+      human_decision_field_binding: null
+      human_allow_values: []
+      human_deny_values: []
+      failure_stable_error_code: MEMBERSHIP_PLAN_NOT_FOUND
+      x_pending_owner_evaluation_logic: false
+      x_binding_semantic_status: PROPOSED_DESIGN_RULE_CLOSED
+      x_plan_validation_dependency_required_before_success: true
+    RB-10:
+      binding_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/rule_bindings/bindings/RB-10
+      rule_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/capability_rules/rules/R-STATE-TRANSITION-GUARD
+      enforcement_phase: STATE_GUARD
+      evaluation_realization_mode: OPERATION_ENFORCED
+      target_operation_refs:
+      - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/update_member_status
+      - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/update_membership_plan
+      target_field_bindings:
+      - operation_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/update_member_status
+        boundary: REQUEST
+        field_path: target_status
+      target_transition_refs:
+      - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/state_model/state_machines/member/transitions/terminate_member
+      - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/state_model/state_machines/membership/transitions/replace_membership
+      target_operational_relation_refs: []
+      target_permission_refs: []
+      decision_operational_relation_ref: null
+      decision_consumer_binding_key: null
+      human_decision_actor_class_refs: []
+      human_decision_field_binding: null
+      human_allow_values: []
+      human_deny_values: []
+      failure_stable_error_code: INVALID_STATE_TRANSITION
+      x_pending_owner_evaluation_logic: false
+      x_binding_semantic_status: EXACT_STATE_TRANSITIONS_DECLARED_BUT_OWNER_POLICY_PROPOSED
+    RB-11:
+      binding_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/rule_bindings/bindings/RB-11
+      rule_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/capability_rules/rules/R-AUTH-DEFAULT-DENY
+      enforcement_phase: AUTHORIZATION
+      evaluation_realization_mode: OPERATION_ENFORCED
+      target_operation_refs:
+      - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/create_member
+      - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/resolve_member
+      - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/update_member_profile
+      - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/update_member_status
+      - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/create_membership
+      - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/update_membership_plan
+      - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/lookup_membership
+      - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/evaluate_membership_eligibility
+      - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/resolve_membership
+      target_field_bindings: []
+      target_transition_refs: []
+      target_operational_relation_refs: []
+      target_permission_refs:
+      - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/permission_model/operation_permission_bindings/create_member
+      - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/permission_model/operation_permission_bindings/resolve_member
+      - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/permission_model/operation_permission_bindings/update_member_profile
+      - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/permission_model/operation_permission_bindings/update_member_status
+      - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/permission_model/operation_permission_bindings/create_membership
+      - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/permission_model/operation_permission_bindings/update_membership_plan
+      - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/permission_model/operation_permission_bindings/lookup_membership
+      - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/permission_model/operation_permission_bindings/evaluate_membership_eligibility
+      - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/permission_model/operation_permission_bindings/resolve_membership
+      decision_operational_relation_ref: null
+      decision_consumer_binding_key: null
+      human_decision_actor_class_refs: []
+      human_decision_field_binding: null
+      human_allow_values: []
+      human_deny_values: []
+      failure_stable_error_code: OPERATION_NOT_AUTHORIZED
+      x_pending_owner_evaluation_logic: false
+      x_actor_semantic_authority_pending: EXACT_ACTOR_SOURCE_AND_OPERATION_MAPPING_NOT_IN_DESCRIPTION
+      x_binding_semantic_status: DENY_ONLY_NO_ALLOW_RULE_INVENTED
+      x_missing_actor_identity_authority_blocks_materialization: true
+    RB-12:
+      binding_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/rule_bindings/bindings/RB-12
+      rule_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/capability_rules/rules/R-EFFECTIVE-TIME-MEMBER-STATUS
+      enforcement_phase: PRECONDITION
+      evaluation_realization_mode: OPERATION_ENFORCED
+      target_operation_refs:
+      - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/create_membership
+      target_field_bindings:
+      - operation_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/create_membership
+        boundary: REQUEST
+        field_path: member_ref
+      target_transition_refs: []
+      target_operational_relation_refs: []
+      target_permission_refs: []
+      decision_operational_relation_ref: null
+      decision_consumer_binding_key: null
+      human_decision_actor_class_refs: []
+      human_decision_field_binding: null
+      human_allow_values: []
+      human_deny_values: []
+      failure_stable_error_code: INVALID_STATE_TRANSITION
+      x_business_description_source_lines: 82-87
+      x_no_new_business_policy: true
+    RB-13:
+      binding_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/rule_bindings/bindings/RB-13
+      rule_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/capability_rules/rules/R-TEMPORAL-BOUNDS
+      enforcement_phase: PRECONDITION
+      evaluation_realization_mode: OPERATION_ENFORCED
+      target_operation_refs:
+      - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/create_membership
+      - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/update_membership_plan
+      target_field_bindings:
+      - operation_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/create_membership
+        boundary: REQUEST
+        field_path: requested_effective_time
+      - operation_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/update_membership_plan
+        boundary: REQUEST
+        field_path: requested_effective_time
+      target_transition_refs: []
+      target_operational_relation_refs: []
+      target_permission_refs: []
+      decision_operational_relation_ref: null
+      decision_consumer_binding_key: null
+      human_decision_actor_class_refs: []
+      human_decision_field_binding: null
+      human_allow_values: []
+      human_deny_values: []
+      failure_stable_error_code: INVALID_BUSINESS_TIME
+      x_business_description_source_lines: 42-50,82-94
+      x_no_new_business_policy: true
+    RB-14:
+      binding_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/rule_bindings/bindings/RB-14
+      rule_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/capability_rules/rules/R-ONE-EFFECTIVE-RELATION
+      enforcement_phase: PRECONDITION
+      evaluation_realization_mode: OPERATION_ENFORCED
+      target_operation_refs:
+      - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/create_membership
+      - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/update_membership_plan
+      target_field_bindings: []
+      target_transition_refs: []
+      target_operational_relation_refs: []
+      target_permission_refs: []
+      decision_operational_relation_ref: null
+      decision_consumer_binding_key: null
+      human_decision_actor_class_refs: []
+      human_decision_field_binding: null
+      human_allow_values: []
+      human_deny_values: []
+      failure_stable_error_code: MEMBERSHIP_RELATION_CONFLICT
+      x_business_description_source_lines: 42-50,82-94
+      x_no_new_business_policy: true
+    RB-15:
+      binding_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/rule_bindings/bindings/RB-15
+      rule_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/capability_rules/rules/R-ATOMIC-RELATION-REPLACEMENT
+      enforcement_phase: POSTCONDITION
+      evaluation_realization_mode: OPERATION_ENFORCED
+      target_operation_refs:
+      - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/update_membership_plan
+      target_field_bindings:
+      - operation_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/update_membership_plan
+        boundary: REQUEST
+        field_path: current_membership_ref
+      - operation_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/update_membership_plan
+        boundary: REQUEST
+        field_path: target_plan_ref
+      target_transition_refs: []
+      target_operational_relation_refs: []
+      target_permission_refs: []
+      decision_operational_relation_ref: null
+      decision_consumer_binding_key: null
+      human_decision_actor_class_refs: []
+      human_decision_field_binding: null
+      human_allow_values: []
+      human_deny_values: []
+      failure_stable_error_code: CONCURRENT_MODIFICATION_CONFLICT
+      x_business_description_source_lines: 89-94
+      x_no_new_business_policy: true
+    RB-16:
+      binding_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/rule_bindings/bindings/RB-16
+      rule_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/capability_rules/rules/R-HISTORICAL-INTERVAL-LOOKUP
+      enforcement_phase: PRECONDITION
+      evaluation_realization_mode: OPERATION_ENFORCED
+      target_operation_refs:
+      - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/lookup_membership
+      - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/evaluate_membership_eligibility
+      target_field_bindings: []
+      target_transition_refs: []
+      target_operational_relation_refs: []
+      target_permission_refs: []
+      decision_operational_relation_ref: null
+      decision_consumer_binding_key: null
+      human_decision_actor_class_refs: []
+      human_decision_field_binding: null
+      human_allow_values: []
+      human_deny_values: []
+      failure_stable_error_code: DEPENDENCY_INFORMATION_INCOMPLETE
+      x_business_description_source_lines: 96-113
+      x_no_new_business_policy: true
+    RB-17:
+      binding_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/rule_bindings/bindings/RB-17
+      rule_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/capability_rules/rules/R-ELIGIBILITY-REASON-PRIORITY
+      enforcement_phase: POSTCONDITION
+      evaluation_realization_mode: OPERATION_ENFORCED
+      target_operation_refs:
+      - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/evaluate_membership_eligibility
+      target_field_bindings: []
+      target_transition_refs: []
+      target_operational_relation_refs: []
+      target_permission_refs: []
+      decision_operational_relation_ref: null
+      decision_consumer_binding_key: null
+      human_decision_actor_class_refs: []
+      human_decision_field_binding: null
+      human_allow_values: []
+      human_deny_values: []
+      failure_stable_error_code: DEPENDENCY_INFORMATION_INCOMPLETE
+      x_business_description_source_lines: 103-113
+      x_no_new_business_policy: true
+    RB-18:
+      binding_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/rule_bindings/bindings/RB-18
+      rule_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/capability_rules/rules/R-OWNER-PROFILE-DISCLOSURE
+      enforcement_phase: POSTCONDITION
+      evaluation_realization_mode: OPERATION_ENFORCED
+      target_operation_refs:
+      - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/resolve_member
+      target_field_bindings: []
+      target_transition_refs: []
+      target_operational_relation_refs: []
+      target_permission_refs: []
+      decision_operational_relation_ref: null
+      decision_consumer_binding_key: null
+      human_decision_actor_class_refs: []
+      human_decision_field_binding: null
+      human_allow_values: []
+      human_deny_values: []
+      failure_stable_error_code: OPERATION_NOT_AUTHORIZED
+      x_business_description_source_lines: 61-66
+      x_no_new_business_policy: true
+    RB-19:
+      binding_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/rule_bindings/bindings/RB-19
+      rule_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/capability_rules/rules/R-RETRY-NO-DUPLICATE-RELATION
+      enforcement_phase: PRECONDITION
+      evaluation_realization_mode: OPERATION_ENFORCED
+      target_operation_refs:
+      - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/create_member
+      - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/create_membership
+      - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/update_membership_plan
+      target_field_bindings: []
+      target_transition_refs: []
+      target_operational_relation_refs: []
+      target_permission_refs: []
+      decision_operational_relation_ref: null
+      decision_consumer_binding_key: null
+      human_decision_actor_class_refs: []
+      human_decision_field_binding: null
+      human_allow_values: []
+      human_deny_values: []
+      failure_stable_error_code: CONCURRENT_MODIFICATION_CONFLICT
+      x_business_description_source_lines: 42-50,54-59,82-94
+      x_no_new_business_policy: true
+    RB-20:
+      binding_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/rule_bindings/bindings/RB-20
+      rule_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/capability_rules/rules/R-EXACT-INTERNAL-MEMBERSHIP-READ
+      enforcement_phase: PRECONDITION
+      evaluation_realization_mode: OPERATION_ENFORCED
+      target_operation_refs:
+      - Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/resolve_membership
+      target_field_bindings:
+      - operation_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/resolve_membership
+        boundary: REQUEST
+        field_path: membership_ref
+      target_transition_refs: []
+      target_operational_relation_refs: []
+      target_permission_refs: []
+      decision_operational_relation_ref: null
+      decision_consumer_binding_key: null
+      human_decision_actor_class_refs: []
+      human_decision_field_binding: null
+      human_allow_values: []
+      human_deny_values: []
+      failure_stable_error_code: MEMBERSHIP_NOT_FOUND
+      x_business_description_source_lines: 115-120
+      x_no_new_business_policy: true
+    RB-21:
+      binding_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/rule_bindings/bindings/RB-21
+      rule_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/capability_rules/rules/R-NO-PAYMENT-OR-ENTITLEMENT-INFERENCE
+      enforcement_phase: INFORMATIONAL
+      evaluation_realization_mode: INFORMATIONAL
+      target_operation_refs: []
+      target_field_bindings: []
+      target_transition_refs: []
+      target_operational_relation_refs: []
+      target_permission_refs: []
+      decision_operational_relation_ref: null
+      decision_consumer_binding_key: null
+      human_decision_actor_class_refs: []
+      human_decision_field_binding: null
+      human_allow_values: []
+      human_deny_values: []
+      failure_stable_error_code: null
+      x_business_description_source_lines: 20-22,42-50,82-94
+      x_no_new_business_policy: true
 operational_relations:
-  create_verify_membership_plan:
-    consumer_operation: create_membership
-    provider_operation: resolve_membership_plan
-    request_mapping: plan_ref -> membership_plan_ref
-    response_binding: membership_plan_resolution
-    required_condition: membership_plan.state == active
-    stable_error_mode: PRESERVE_EXACT
-  update_verify_target_plan:
-    consumer_operation: update_membership_plan
-    provider_operation: resolve_membership_plan
-    request_mapping: target_plan_ref -> membership_plan_ref
-    response_binding: membership_plan_resolution
-    required_condition: membership_plan.state == active
-    stable_error_mode: PRESERVE_EXACT
+  mode: DECLARED
+  relations:
+    create_verify_membership_plan:
+      relation_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operational_relations/relations/create_verify_membership_plan
+      consumer_operation_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/create_membership
+      local_dependency_ref: q.membership.member.dependency.membership_plan
+      provider_capability_contract_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBERSHIP_PLAN@V0105
+      provider_operation_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBERSHIP_PLAN@V0105#/operations/resolve_membership_plan
+      provider_interface_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBERSHIP_PLAN@V0105#/interfaces/membership_plan_resolution_invoke
+      connection_mode: INTRA_DOMAIN
+      invocation_mode: SINGLE
+      response_aggregation_mode: DIRECT
+      for_each_error_mode: null
+      request_mapping:
+      - provider_request_field_path: membership_plan_ref
+        source_kind: CONSUMER_INPUT
+        consumer_source_path: plan_ref
+      response_mapping:
+      - provider_runtime_result_path: membership_plan
+        consumer_binding_key: membership_plan_resolution
+        consumer_binding_schema_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/type_closure/schemas/membership_plan_resolution_binding
+        required: true
+      stable_error_mode: PRESERVE_EXACT
+      consumer_post_resolution_required_condition: membership_plan.state == active
+    update_verify_target_plan:
+      relation_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operational_relations/relations/update_verify_target_plan
+      consumer_operation_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/update_membership_plan
+      local_dependency_ref: q.membership.member.dependency.membership_plan
+      provider_capability_contract_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBERSHIP_PLAN@V0105
+      provider_operation_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBERSHIP_PLAN@V0105#/operations/resolve_membership_plan
+      provider_interface_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBERSHIP_PLAN@V0105#/interfaces/membership_plan_resolution_invoke
+      connection_mode: INTRA_DOMAIN
+      invocation_mode: SINGLE
+      response_aggregation_mode: DIRECT
+      for_each_error_mode: null
+      request_mapping:
+      - provider_request_field_path: membership_plan_ref
+        source_kind: CONSUMER_INPUT
+        consumer_source_path: target_plan_ref
+      response_mapping:
+      - provider_runtime_result_path: membership_plan
+        consumer_binding_key: membership_plan_resolution
+        consumer_binding_schema_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/type_closure/schemas/membership_plan_resolution_binding
+        required: true
+      stable_error_mode: PRESERVE_EXACT
+      consumer_post_resolution_required_condition: membership_plan.state == active
+  x_unresolved_external_operation_relations: []
+  x_authoring_status: PROPOSED_DESIGN_CLOSED_SUBJECT_TO_OWNER_ACCEPTANCE
