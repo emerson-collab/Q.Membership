@@ -1,0 +1,54 @@
+{
+  "projection_only": true,
+  "source_ref": "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103",
+  "owner_source_status": "candidate",
+  "governing_source_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117",
+  "source_hash_authority": "EXTERNAL_EXACT_BYTES_BINDING_NOT_RESOLVED",
+  "declared_source_sections": {
+    "spec/p1/member/capability_profile.qcon.yaml": [
+      "identity",
+      "ownership",
+      "purpose",
+      "operations",
+      "state_model",
+      "dependencies",
+      "persistence_requirements",
+      "external_provider_surface",
+      "p2_handoff",
+      "interface_inventory",
+      "extraction",
+      "compatibility",
+      "source_integrity",
+      "capability_contract_integrity_binding",
+      "instance_variability",
+      "materialization_readiness"
+    ],
+    "spec/p1/member/capability_objects.qreg": [
+      "type_closure",
+      "contracts",
+      "stable_errors"
+    ],
+    "spec/p1/member/capability_policy.qconfig": [
+      "permission_model",
+      "capability_rules",
+      "rule_bindings",
+      "operational_relations"
+    ],
+    "spec/p1/member/capability_interfaces.json": [
+      "interfaces",
+      "interface_inventory",
+      "external_provider_surface"
+    ]
+  },
+  "verification_claim": "EXACT_OWNER_SOURCE_SECTION_TEXT_PROJECTION_ONLY",
+  "scoped_whitelist_status": "UNRESOLVED",
+  "authority_lock_status": "UNRESOLVED",
+  "executable_materialization_complete": false,
+  "gate_pass_claimed": false,
+  "unresolved_source_obligations": [
+    "Exact owner Capability Contract registered bytes/hash and frozen authority bindings",
+    "Approved exact RESTRICTED actor-class identity and authorization-rule binding",
+    "Production scoped field whitelist including owner_schema_ref, exact placement and conditional FORBIDDEN checks",
+    "Exact interface anchor and runtime/general/phase bindings with independently verified receipts"
+  ]
+}

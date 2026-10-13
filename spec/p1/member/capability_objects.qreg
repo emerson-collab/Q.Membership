@@ -1,177 +1,1365 @@
-# 统一会员能力 V0103 — Capability Objects Registry（物理投影）
-# projection_only: true
-# source_of_truth: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/type_closure
-# closure_mode: EXACT_OWNER_LOCAL_PROPOSED_SCHEMAS
-# transitive_public_type_closure_complete: true
-# undeclared_type_inference_forbidden: true
+# SOURCE-BOUND candidate projection; NOT a new business authority, whitelist, Gate or activation receipt.
+# exact_member_owner: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103
+# governed_semantic_standard: Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117
+# source_status: candidate; exact external hash / actor authority still unresolved.
 q_header: '1'
 q_id: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER
 q_version: V0103
 q_stage: P1
 q_role: capability_objects_registry_projection
+q_status: candidate
 
-objects:
-  - object_id: member
-    schema_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/type_closure/schemas/member
-    kind: BUSINESS_OBJECT
-    identity_field_path: member_ref
-    state_field_path: member_status
-    additional_properties: false
-    fields:
-      - field_path: member_ref
-        type: string
-        required: true
-        semantic_kind: BUSINESS_REFERENCE
-        reference_owner_mode: SELF
-        min_length: 1
-      - field_path: member_status
-        type: string
-        required: true
-        enum: [active, terminated]
-        design_status: EXPLICIT_PROPOSED_ENUM_PENDING_OWNER_APPROVAL
-      - field_path: member_profile
-        type: object
-        required: true
-        additional_properties: false
-        fields:
-          - field_path: display_name
+type_closure:
+  closure_mode: EXACT_OWNER_LOCAL_PROPOSED_SCHEMAS
+  schemas:
+    member:
+      type: object
+      additionalProperties: false
+      properties:
+        member_ref:
+          type: string
+          minLength: 1
+        member_status:
+          type: string
+          minLength: 1
+          x_owner_decision_refs:
+          - PD-4
+          x_exact_business_enum_owner_decision_ref: PD-4
+          x_free_string_does_not_constitute_confirmed_business_state_set: false
+          enum:
+          - active
+          - terminated
+          x_design_status: EXPLICIT_PROPOSED_ENUM_PENDING_OWNER_APPROVAL
+        member_profile:
+          type: object
+          additionalProperties: false
+          properties:
+            display_name:
+              type: string
+              minLength: 1
+              maxLength: 256
+          required:
+          - display_name
+          description: 仅含已获准展示的资料；不默认披露 contact_email。
+      required:
+      - member_ref
+      - member_status
+      - member_profile
+    membership:
+      type: object
+      additionalProperties: false
+      properties:
+        membership_ref:
+          type: string
+          minLength: 1
+        member_ref:
+          type: string
+          minLength: 1
+        plan_ref:
+          type: string
+          minLength: 1
+        membership_status:
+          type: string
+          minLength: 1
+          x_owner_decision_refs:
+          - PD-4
+          x_exact_business_enum_owner_decision_ref: PD-4
+          x_free_string_does_not_constitute_confirmed_business_state_set: false
+          enum:
+          - active
+          - replaced
+          x_design_status: EXPLICIT_PROPOSED_ENUM_PENDING_OWNER_APPROVAL
+        effective_time:
+          type: string
+          format: date-time
+          x_owner_decision_refs:
+          - PD-4
+        termination_time:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          x_owner_decision_refs:
+          - PD-4
+      required:
+      - membership_ref
+      - member_ref
+      - plan_ref
+      - membership_status
+      - effective_time
+      allOf:
+      - if:
+          properties:
+            membership_status:
+              const: replaced
+          required:
+          - membership_status
+        then:
+          required:
+          - termination_time
+          properties:
+            termination_time:
+              type: string
+              format: date-time
+      - if:
+          properties:
+            membership_status:
+              const: active
+          required:
+          - membership_status
+        then:
+          properties:
+            termination_time:
+              type: 'null'
+      x_runtime_interval_constraint: effective_time < termination_time when status=replaced; JSON Schema cannot compare timestamps,
+        enforced by exact operation rule.
+    eligibility_decision:
+      type: object
+      additionalProperties: false
+      properties:
+        eligible:
+          type: boolean
+        basis:
+          type: object
+          additionalProperties: false
+          properties:
+            reason_code:
+              type: string
+              enum:
+              - MEMBERSHIP_VALID
+              - MEMBER_TERMINATED
+              - NO_EFFECTIVE_MEMBERSHIP
+            check_purpose:
+              type: string
+              enum:
+              - membership_validity
+            decision_time:
+              type: string
+              format: date-time
+            member_status_at_decision:
+              type: string
+              enum:
+              - active
+              - terminated
+            membership_refs_considered:
+              type: array
+              items:
+                type: string
+                minLength: 1
+              uniqueItems: true
+              maxItems: 1
+          required:
+          - reason_code
+          - check_purpose
+          - decision_time
+          - member_status_at_decision
+          - membership_refs_considered
+      required:
+      - eligible
+      - basis
+      oneOf:
+      - properties:
+          eligible:
+            const: true
+          basis:
+            properties:
+              reason_code:
+                const: MEMBERSHIP_VALID
+              member_status_at_decision:
+                const: active
+              membership_refs_considered:
+                minItems: 1
+                maxItems: 1
+      - properties:
+          eligible:
+            const: false
+          basis:
+            properties:
+              reason_code:
+                const: MEMBER_TERMINATED
+              member_status_at_decision:
+                const: terminated
+              membership_refs_considered:
+                maxItems: 1
+      - properties:
+          eligible:
+            const: false
+          basis:
+            properties:
+              reason_code:
+                const: NO_EFFECTIVE_MEMBERSHIP
+              member_status_at_decision:
+                const: active
+              membership_refs_considered:
+                maxItems: 0
+      x_reason_priority: PROPOSED_FROM_BUSINESS_DESCRIPTION_LINES_106_110_NOT_OWNER_APPROVED
+    membership_plan_resolution_binding:
+      type: object
+      additionalProperties: false
+      properties:
+        membership_plan_ref:
+          type: string
+          minLength: 1
+        name:
+          type: string
+          minLength: 1
+        benefit_refs:
+          type: array
+          items:
             type: string
-            required: true
-            min_length: 1
-            max_length: 256
-    disclosure_policy:
-      contact_email_disclosed_by_default: false
-
-  - object_id: membership
-    schema_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/type_closure/schemas/membership
-    kind: BUSINESS_OBJECT
-    identity_field_path: membership_ref
-    state_field_path: membership_status
-    additional_properties: false
-    fields:
-      - field_path: membership_ref
-        type: string
-        required: true
-        semantic_kind: BUSINESS_REFERENCE
-        reference_owner_mode: SELF
-      - field_path: member_ref
-        type: string
-        required: true
-        semantic_kind: BUSINESS_REFERENCE
-        reference_owner_mode: SELF
-      - field_path: plan_ref
-        type: string
-        required: true
-        semantic_kind: BUSINESS_REFERENCE
-        reference_owner_mode: DECLARED_DEPENDENCY
-        reference_owner_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBERSHIP_PLAN@V0105
-      - field_path: membership_status
-        type: string
-        required: true
-        enum: [active, replaced]
-      - field_path: effective_time
-        type: string
-        format: date-time
-        required: true
-      - field_path: termination_time
-        type: [string, 'null']
-        format: date-time
-        required: false
-    invariants:
-      - replaced_requires_termination_time: true
-      - active_requires_null_termination_time: true
-      - interval_semantics: half_open_[effective_time,termination_time)
-      - runtime_constraint: effective_time < termination_time when replaced
-
-  - object_id: eligibility_decision
-    schema_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/type_closure/schemas/eligibility_decision
-    kind: BUSINESS_DECISION
-    additional_properties: false
-    fields:
-      - field_path: eligible
-        type: boolean
-        required: true
-      - field_path: basis.reason_code
-        type: string
-        required: true
-        enum: [MEMBERSHIP_VALID, MEMBER_TERMINATED, NO_EFFECTIVE_MEMBERSHIP]
-      - field_path: basis.check_purpose
-        type: string
-        required: true
-        enum: [membership_validity]
-      - field_path: basis.decision_time
-        type: string
-        format: date-time
-        required: true
-      - field_path: basis.member_status_at_decision
-        type: string
-        required: true
-        enum: [active, terminated]
-      - field_path: basis.membership_refs_considered
-        type: array
-        items: string
-        required: true
-        unique_items: true
-        max_items: 1
-    conditional_branches:
-      - eligible: true
-        reason_code: MEMBERSHIP_VALID
-        member_status_at_decision: active
-        considered_count: 1
-      - eligible: false
-        reason_code: MEMBER_TERMINATED
-        member_status_at_decision: terminated
-        considered_count: [0, 1]
-      - eligible: false
-        reason_code: NO_EFFECTIVE_MEMBERSHIP
-        member_status_at_decision: active
-        considered_count: 0
-    reason_priority_status: PROPOSED_FROM_BUSINESS_DESCRIPTION_NOT_OWNER_APPROVED
-
-  - object_id: membership_plan_resolution_binding
-    schema_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/type_closure/schemas/membership_plan_resolution_binding
-    kind: DEPENDENCY_RESOLUTION_BINDING
-    owner: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBERSHIP_PLAN@V0105
-    additional_properties: false
-    fields:
-      - field_path: membership_plan_ref
-        type: string
-        required: true
-      - field_path: name
-        type: string
-        required: true
-      - field_path: benefit_refs
-        type: array
-        items: string
-        required: true
-        unique_items: true
-      - field_path: commercial_terms_ref
-        type: string
-        required: true
-      - field_path: state
-        type: string
-        required: true
-        enum: [active, inactive]
-
-payload_contracts:
-  request:
-    - create_member_request_contract
-    - resolve_member_request_contract
-    - update_member_profile_request_contract
-    - update_member_status_request_contract
-    - create_membership_request_contract
-    - update_membership_plan_request_contract
-    - lookup_membership_request_contract
-    - evaluate_membership_eligibility_request_contract
-    - resolve_membership_request_contract
-  response:
-    - create_member_response_contract
-    - resolve_member_response_contract
-    - update_member_profile_response_contract
-    - update_member_status_response_contract
-    - create_membership_response_contract
-    - update_membership_plan_response_contract
-    - lookup_membership_response_contract
-    - evaluate_membership_eligibility_response_contract
-    - resolve_membership_response_contract
-  schema_language: JSON_SCHEMA_DRAFT_2020_12
+          minItems: 0
+          uniqueItems: true
+        commercial_terms_ref:
+          type: string
+          minLength: 1
+        state:
+          type: string
+          enum:
+          - active
+          - inactive
+      required:
+      - membership_plan_ref
+      - name
+      - benefit_refs
+      - commercial_terms_ref
+      - state
+  transitive_public_type_closure_complete: true
+  undeclared_type_inference_forbidden: true
+contracts:
+  create_member_request_contract:
+    contract_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/contracts/create_member_request_contract
+    schema_language: JSON_SCHEMA_DRAFT_2020_12
+    payload_boundary: input
+    schema:
+      type: object
+      additionalProperties: false
+      properties:
+        member_identity:
+          type: object
+          additionalProperties: false
+          x_unresolved_owner_schema: false
+          x_q_field_semantics:
+            semantic_kind: PLAIN_VALUE
+            variability_class: GENERAL
+          x_owner_decision_refs:
+          - PD-1
+          x_interpretation_boundary: 仅以身份命名空间及原始身份值的精确字节组合作为本 Capability 的内部唯一性键；不推断登录账号、自然人或企业身份。
+          minProperties: 2
+          x_business_claim: A nonempty business identity carrier is required; unique identity semantics still require PD-1.
+          properties:
+            identity_namespace:
+              type: string
+              minLength: 1
+              maxLength: 128
+              x_q_field_semantics:
+                semantic_kind: PLAIN_VALUE
+                variability_class: GENERAL
+            identity_value:
+              type: string
+              minLength: 1
+              maxLength: 256
+              x_q_field_semantics:
+                semantic_kind: PLAIN_VALUE
+                variability_class: GENERAL
+          required:
+          - identity_namespace
+          - identity_value
+          x_pair_is_not_verified_external_authority: true
+          x_internal_uniqueness_scope: EXACT_PAIR_IDENTITY_NAMESPACE_AND_IDENTITY_VALUE
+        registration_profile:
+          type: object
+          additionalProperties: false
+          x_unresolved_owner_schema: false
+          x_q_field_semantics:
+            semantic_kind: PLAIN_VALUE
+            variability_class: GENERAL
+          x_owner_decision_refs:
+          - PD-1
+          - PD-6
+          x_required_owner_schema_decision_ref: PD-1
+          x_arbitrary_payload_fields_are_not_authorized_mutability_or_visibility: true
+          minProperties: 1
+          properties:
+            display_name:
+              type: string
+              minLength: 1
+              maxLength: 256
+              x_q_field_semantics:
+                semantic_kind: PLAIN_VALUE
+                variability_class: GENERAL
+            contact_email:
+              type: string
+              format: email
+              minLength: 3
+              maxLength: 320
+              x_q_field_semantics:
+                semantic_kind: PLAIN_VALUE
+                variability_class: GENERAL
+          required:
+          - display_name
+      required:
+      - member_identity
+      - registration_profile
+  create_member_response_contract:
+    contract_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/contracts/create_member_response_contract
+    schema_language: JSON_SCHEMA_DRAFT_2020_12
+    payload_boundary: runtime_result
+    schema:
+      type: object
+      additionalProperties: false
+      properties:
+        member_ref:
+          type: string
+          minLength: 1
+          x_q_field_semantics:
+            semantic_kind: BUSINESS_REFERENCE
+            reference_owner_mode: SELF
+            reference_owner_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103
+            resolution_mode: EXACT_READ
+            selection_cardinality: ONE
+            manual_entry_allowed: false
+            identity_field_path: member_ref
+            display_field_paths: []
+            read_operation_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/resolve_member
+            read_interface_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/interfaces/member_resolution_invoke
+            read_request_identity_field_path: member_ref
+            read_result_object_path: member
+            variability_class: GENERAL
+        member_status:
+          type: string
+          minLength: 1
+          x_q_field_semantics:
+            semantic_kind: PLAIN_VALUE
+            variability_class: GENERAL
+          x_owner_decision_refs:
+          - PD-4
+          enum:
+          - active
+          - terminated
+          x_design_status: EXPLICIT_PROPOSED_ENUM_PENDING_OWNER_APPROVAL
+          const: active
+          x_constant_semantics_source: 该 Operation 的明确成功状态；不是新的全局字段。
+      required:
+      - member_ref
+      - member_status
+  resolve_member_request_contract:
+    contract_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/contracts/resolve_member_request_contract
+    schema_language: JSON_SCHEMA_DRAFT_2020_12
+    payload_boundary: input
+    schema:
+      type: object
+      additionalProperties: false
+      properties:
+        member_ref:
+          type: string
+          minLength: 1
+          x_q_field_semantics:
+            semantic_kind: BUSINESS_REFERENCE
+            reference_owner_mode: SELF
+            reference_owner_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103
+            resolution_mode: EXACT_READ
+            selection_cardinality: ONE
+            manual_entry_allowed: false
+            identity_field_path: member_ref
+            display_field_paths: []
+            read_operation_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/resolve_member
+            read_interface_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/interfaces/member_resolution_invoke
+            read_request_identity_field_path: member_ref
+            read_result_object_path: member
+            variability_class: GENERAL
+      required:
+      - member_ref
+  resolve_member_response_contract:
+    contract_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/contracts/resolve_member_response_contract
+    schema_language: JSON_SCHEMA_DRAFT_2020_12
+    payload_boundary: runtime_result
+    schema:
+      type: object
+      additionalProperties: false
+      properties:
+        member:
+          $ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/type_closure/schemas/member
+      required:
+      - member
+      x_default_contact_email_disclosure: false
+  update_member_profile_request_contract:
+    contract_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/contracts/update_member_profile_request_contract
+    schema_language: JSON_SCHEMA_DRAFT_2020_12
+    payload_boundary: input
+    schema:
+      type: object
+      additionalProperties: false
+      properties:
+        member_ref:
+          type: string
+          minLength: 1
+          x_q_field_semantics:
+            semantic_kind: BUSINESS_REFERENCE
+            reference_owner_mode: SELF
+            reference_owner_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103
+            resolution_mode: EXACT_READ
+            selection_cardinality: ONE
+            manual_entry_allowed: false
+            identity_field_path: member_ref
+            display_field_paths: []
+            read_operation_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/resolve_member
+            read_interface_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/interfaces/member_resolution_invoke
+            read_request_identity_field_path: member_ref
+            read_result_object_path: member
+            variability_class: GENERAL
+        profile_changes:
+          type: object
+          additionalProperties: false
+          x_unresolved_owner_schema: false
+          x_q_field_semantics:
+            semantic_kind: PLAIN_VALUE
+            variability_class: GENERAL
+          x_owner_decision_refs:
+          - PD-1
+          - PD-6
+          not:
+            anyOf:
+            - required:
+              - member_ref
+            - required:
+              - member_status
+          x_business_claim: Profile update must not modify stable member_ref or use profile update as the distinct status-change
+            operation.
+          x_required_owner_schema_decision_ref: PD-1
+          x_arbitrary_payload_fields_are_not_authorized_mutability_or_visibility: true
+          minProperties: 1
+          x_source_confirmed_invariant: member_ref must not be modified through profile_changes
+          properties:
+            display_name:
+              type: string
+              minLength: 1
+              maxLength: 256
+              x_q_field_semantics:
+                semantic_kind: PLAIN_VALUE
+                variability_class: GENERAL
+            contact_email:
+              type: string
+              format: email
+              minLength: 3
+              maxLength: 320
+              x_q_field_semantics:
+                semantic_kind: PLAIN_VALUE
+                variability_class: GENERAL
+      required:
+      - member_ref
+      - profile_changes
+  update_member_profile_response_contract:
+    contract_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/contracts/update_member_profile_response_contract
+    schema_language: JSON_SCHEMA_DRAFT_2020_12
+    payload_boundary: runtime_result
+    schema:
+      type: object
+      additionalProperties: false
+      properties:
+        member_ref:
+          type: string
+          minLength: 1
+          x_q_field_semantics:
+            semantic_kind: BUSINESS_REFERENCE
+            reference_owner_mode: SELF
+            reference_owner_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103
+            resolution_mode: EXACT_READ
+            selection_cardinality: ONE
+            manual_entry_allowed: false
+            identity_field_path: member_ref
+            display_field_paths: []
+            read_operation_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/resolve_member
+            read_interface_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/interfaces/member_resolution_invoke
+            read_request_identity_field_path: member_ref
+            read_result_object_path: member
+            variability_class: GENERAL
+        update_result:
+          type: string
+          minLength: 1
+          x_q_field_semantics:
+            semantic_kind: PLAIN_VALUE
+            variability_class: GENERAL
+        member_profile:
+          type: object
+          additionalProperties: false
+          x_unresolved_owner_schema: false
+          x_q_field_semantics:
+            semantic_kind: PLAIN_VALUE
+            variability_class: GENERAL
+          x_owner_decision_refs:
+          - PD-8
+          x_required_visibility_policy_decision_ref: PD-8
+          properties:
+            display_name:
+              type: string
+              minLength: 1
+              maxLength: 256
+          required:
+          - display_name
+      required:
+      - member_ref
+      - update_result
+      - member_profile
+  update_member_status_request_contract:
+    contract_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/contracts/update_member_status_request_contract
+    schema_language: JSON_SCHEMA_DRAFT_2020_12
+    payload_boundary: input
+    schema:
+      type: object
+      additionalProperties: false
+      properties:
+        member_ref:
+          type: string
+          minLength: 1
+          x_q_field_semantics:
+            semantic_kind: BUSINESS_REFERENCE
+            reference_owner_mode: SELF
+            reference_owner_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103
+            resolution_mode: EXACT_READ
+            selection_cardinality: ONE
+            manual_entry_allowed: false
+            identity_field_path: member_ref
+            display_field_paths: []
+            read_operation_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/resolve_member
+            read_interface_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/interfaces/member_resolution_invoke
+            read_request_identity_field_path: member_ref
+            read_result_object_path: member
+            variability_class: GENERAL
+        target_status:
+          type: string
+          minLength: 1
+          x_q_field_semantics:
+            semantic_kind: PLAIN_VALUE
+            variability_class: GENERAL
+          x_owner_decision_refs:
+          - PD-4
+          enum:
+          - terminated
+        reason:
+          type: string
+          minLength: 1
+          x_q_field_semantics:
+            semantic_kind: PLAIN_VALUE
+            variability_class: GENERAL
+      required:
+      - member_ref
+      - target_status
+  update_member_status_response_contract:
+    contract_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/contracts/update_member_status_response_contract
+    schema_language: JSON_SCHEMA_DRAFT_2020_12
+    payload_boundary: runtime_result
+    schema:
+      type: object
+      additionalProperties: false
+      properties:
+        member_ref:
+          type: string
+          minLength: 1
+          x_q_field_semantics:
+            semantic_kind: BUSINESS_REFERENCE
+            reference_owner_mode: SELF
+            reference_owner_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103
+            resolution_mode: EXACT_READ
+            selection_cardinality: ONE
+            manual_entry_allowed: false
+            identity_field_path: member_ref
+            display_field_paths: []
+            read_operation_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/resolve_member
+            read_interface_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/interfaces/member_resolution_invoke
+            read_request_identity_field_path: member_ref
+            read_result_object_path: member
+            variability_class: GENERAL
+        member_status:
+          type: string
+          minLength: 1
+          x_q_field_semantics:
+            semantic_kind: PLAIN_VALUE
+            variability_class: GENERAL
+          x_owner_decision_refs:
+          - PD-4
+          enum:
+          - active
+          - terminated
+          x_design_status: EXPLICIT_PROPOSED_ENUM_PENDING_OWNER_APPROVAL
+          const: terminated
+          x_constant_semantics_source: 该 Operation 的明确成功状态；不是新的全局字段。
+      required:
+      - member_ref
+      - member_status
+  create_membership_request_contract:
+    contract_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/contracts/create_membership_request_contract
+    schema_language: JSON_SCHEMA_DRAFT_2020_12
+    payload_boundary: input
+    schema:
+      type: object
+      additionalProperties: false
+      properties:
+        member_ref:
+          type: string
+          minLength: 1
+          x_q_field_semantics:
+            semantic_kind: BUSINESS_REFERENCE
+            reference_owner_mode: SELF
+            reference_owner_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103
+            resolution_mode: EXACT_READ
+            selection_cardinality: ONE
+            manual_entry_allowed: false
+            identity_field_path: member_ref
+            display_field_paths: []
+            read_operation_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/resolve_member
+            read_interface_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/interfaces/member_resolution_invoke
+            read_request_identity_field_path: member_ref
+            read_result_object_path: member
+            variability_class: GENERAL
+        plan_ref:
+          type: string
+          minLength: 1
+          x_q_field_semantics:
+            semantic_kind: BUSINESS_REFERENCE
+            variability_class: GENERAL
+            reference_owner_mode: DECLARED_DEPENDENCY
+            reference_owner_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBERSHIP_PLAN@V0105
+            local_dependency_ref: q.membership.member.dependency.membership_plan
+            resolution_mode: EXACT_READ
+            selection_cardinality: ONE
+            manual_entry_allowed: false
+            identity_field_path: membership_plan_ref
+            display_field_paths:
+            - name
+            read_operation_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBERSHIP_PLAN@V0105#/operations/resolve_membership_plan
+            read_interface_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBERSHIP_PLAN@V0105#/interfaces/membership_plan_resolution_invoke
+            read_request_identity_field_path: membership_plan_ref
+            read_result_object_path: membership_plan
+          x_owner_decision_refs:
+          - PD-2
+          x_interpretation_boundary: 仅据被声明的独立 Plan Provider 精确 resolve 结果判定方案是否存在及当前状态是否 active，不自行制定方案价格或权益。
+          x_business_reference_validation_status: EXACT_DEPENDENCY_READ_THEN_PLAN_ACTIVE_CHECK
+          x_required_owner_source_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBERSHIP_PLAN@V0105
+          x_cannot_claim_existence_or_applicability_from_opaque_reference: false
+        requested_effective_time:
+          type: string
+          minLength: 1
+          format: date-time
+          x_q_field_semantics:
+            semantic_kind: TEMPORAL
+            temporal_kind: DATE_TIME
+            variability_class: GENERAL
+          x_effective_time_policy: OMITTED_USE_TRANSACTION_COMMIT_UTC; PRESENT_NONFUTURE_AND_NOT_BEFORE_PREDECESSOR_OR_MEMBER_CREATION
+      required:
+      - member_ref
+      - plan_ref
+  create_membership_response_contract:
+    contract_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/contracts/create_membership_response_contract
+    schema_language: JSON_SCHEMA_DRAFT_2020_12
+    payload_boundary: runtime_result
+    schema:
+      type: object
+      additionalProperties: false
+      properties:
+        membership_ref:
+          type: string
+          minLength: 1
+          x_business_reference_meaning_owner_confirmation_required: false
+          x_q_field_semantics:
+            semantic_kind: BUSINESS_REFERENCE
+            variability_class: GENERAL
+            reference_owner_mode: SELF
+            reference_owner_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103
+            resolution_mode: EXACT_READ
+            selection_cardinality: ONE
+            manual_entry_allowed: false
+            identity_field_path: membership_ref
+            display_field_paths: []
+            read_operation_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/resolve_membership
+            read_interface_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/interfaces/membership_exact_resolution_invoke
+            read_request_identity_field_path: membership_ref
+            read_result_object_path: membership
+        membership_status:
+          type: string
+          minLength: 1
+          x_q_field_semantics:
+            semantic_kind: PLAIN_VALUE
+            variability_class: GENERAL
+          x_owner_decision_refs:
+          - PD-4
+          enum:
+          - active
+          - replaced
+          x_design_status: EXPLICIT_PROPOSED_ENUM_PENDING_OWNER_APPROVAL
+          const: active
+          x_constant_semantics_source: 该 Operation 的明确成功状态；不是新的全局字段。
+        effective_time:
+          type: string
+          minLength: 1
+          format: date-time
+          x_q_field_semantics:
+            semantic_kind: TEMPORAL
+            temporal_kind: DATE_TIME
+            variability_class: GENERAL
+      required:
+      - membership_ref
+      - membership_status
+      - effective_time
+  update_membership_plan_request_contract:
+    contract_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/contracts/update_membership_plan_request_contract
+    schema_language: JSON_SCHEMA_DRAFT_2020_12
+    payload_boundary: input
+    schema:
+      type: object
+      additionalProperties: false
+      properties:
+        member_ref:
+          type: string
+          minLength: 1
+          x_q_field_semantics:
+            semantic_kind: BUSINESS_REFERENCE
+            reference_owner_mode: SELF
+            reference_owner_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103
+            resolution_mode: EXACT_READ
+            selection_cardinality: ONE
+            manual_entry_allowed: false
+            identity_field_path: member_ref
+            display_field_paths: []
+            read_operation_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/resolve_member
+            read_interface_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/interfaces/member_resolution_invoke
+            read_request_identity_field_path: member_ref
+            read_result_object_path: member
+            variability_class: GENERAL
+        current_membership_ref:
+          type: string
+          minLength: 1
+          x_q_field_semantics:
+            semantic_kind: BUSINESS_REFERENCE
+            variability_class: GENERAL
+            reference_owner_mode: SELF
+            reference_owner_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103
+            resolution_mode: EXACT_READ
+            selection_cardinality: ONE
+            manual_entry_allowed: false
+            identity_field_path: membership_ref
+            display_field_paths: []
+            read_operation_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/resolve_membership
+            read_interface_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/interfaces/membership_exact_resolution_invoke
+            read_request_identity_field_path: membership_ref
+            read_result_object_path: membership
+        target_plan_ref:
+          type: string
+          minLength: 1
+          x_q_field_semantics:
+            semantic_kind: BUSINESS_REFERENCE
+            variability_class: GENERAL
+            reference_owner_mode: DECLARED_DEPENDENCY
+            reference_owner_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBERSHIP_PLAN@V0105
+            local_dependency_ref: q.membership.member.dependency.membership_plan
+            resolution_mode: EXACT_READ
+            selection_cardinality: ONE
+            manual_entry_allowed: false
+            identity_field_path: membership_plan_ref
+            display_field_paths:
+            - name
+            read_operation_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBERSHIP_PLAN@V0105#/operations/resolve_membership_plan
+            read_interface_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBERSHIP_PLAN@V0105#/interfaces/membership_plan_resolution_invoke
+            read_request_identity_field_path: membership_plan_ref
+            read_result_object_path: membership_plan
+          x_owner_decision_refs:
+          - PD-2
+          x_interpretation_boundary: 仅据被声明的独立 Plan Provider 精确 resolve 结果判定方案是否存在及当前状态是否 active，不自行制定方案价格或权益。
+          x_business_reference_validation_status: EXACT_DEPENDENCY_READ_THEN_PLAN_ACTIVE_CHECK
+          x_required_owner_source_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBERSHIP_PLAN@V0105
+          x_cannot_claim_existence_or_applicability_from_opaque_reference: false
+        requested_effective_time:
+          type: string
+          minLength: 1
+          format: date-time
+          x_q_field_semantics:
+            semantic_kind: TEMPORAL
+            temporal_kind: DATE_TIME
+            variability_class: GENERAL
+          x_effective_time_policy: OMITTED_USE_TRANSACTION_COMMIT_UTC; PRESENT_NONFUTURE_AND_NOT_BEFORE_PREDECESSOR_OR_MEMBER_CREATION
+      required:
+      - member_ref
+      - current_membership_ref
+      - target_plan_ref
+  update_membership_plan_response_contract:
+    contract_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/contracts/update_membership_plan_response_contract
+    schema_language: JSON_SCHEMA_DRAFT_2020_12
+    payload_boundary: runtime_result
+    schema:
+      type: object
+      additionalProperties: false
+      properties:
+        membership_ref:
+          type: string
+          minLength: 1
+          x_business_reference_meaning_owner_confirmation_required: false
+          x_q_field_semantics:
+            semantic_kind: BUSINESS_REFERENCE
+            variability_class: GENERAL
+            reference_owner_mode: SELF
+            reference_owner_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103
+            resolution_mode: EXACT_READ
+            selection_cardinality: ONE
+            manual_entry_allowed: false
+            identity_field_path: membership_ref
+            display_field_paths: []
+            read_operation_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/resolve_membership
+            read_interface_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/interfaces/membership_exact_resolution_invoke
+            read_request_identity_field_path: membership_ref
+            read_result_object_path: membership
+        previous_membership_ref:
+          type: string
+          minLength: 1
+          x_business_reference_meaning_owner_confirmation_required: false
+          x_q_field_semantics:
+            semantic_kind: BUSINESS_REFERENCE
+            variability_class: GENERAL
+            reference_owner_mode: SELF
+            reference_owner_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103
+            resolution_mode: EXACT_READ
+            selection_cardinality: ONE
+            manual_entry_allowed: false
+            identity_field_path: membership_ref
+            display_field_paths: []
+            read_operation_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/resolve_membership
+            read_interface_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/interfaces/membership_exact_resolution_invoke
+            read_request_identity_field_path: membership_ref
+            read_result_object_path: membership
+        membership_status:
+          type: string
+          minLength: 1
+          x_q_field_semantics:
+            semantic_kind: PLAIN_VALUE
+            variability_class: GENERAL
+          x_owner_decision_refs:
+          - PD-4
+          enum:
+          - active
+          - replaced
+          x_design_status: EXPLICIT_PROPOSED_ENUM_PENDING_OWNER_APPROVAL
+          const: active
+          x_constant_semantics_source: 该 Operation 的明确成功状态；不是新的全局字段。
+        effective_time:
+          type: string
+          minLength: 1
+          format: date-time
+          x_q_field_semantics:
+            semantic_kind: TEMPORAL
+            temporal_kind: DATE_TIME
+            variability_class: GENERAL
+      required:
+      - membership_ref
+      - membership_status
+      - effective_time
+      - previous_membership_ref
+      x_success_result_requires_predecessor_and_successor_ids: true
+  lookup_membership_request_contract:
+    contract_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/contracts/lookup_membership_request_contract
+    schema_language: JSON_SCHEMA_DRAFT_2020_12
+    payload_boundary: input
+    schema:
+      type: object
+      additionalProperties: false
+      properties:
+        member_ref:
+          type: string
+          minLength: 1
+          x_q_field_semantics:
+            semantic_kind: BUSINESS_REFERENCE
+            reference_owner_mode: SELF
+            reference_owner_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103
+            resolution_mode: EXACT_READ
+            selection_cardinality: ONE
+            manual_entry_allowed: false
+            identity_field_path: member_ref
+            display_field_paths: []
+            read_operation_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/resolve_member
+            read_interface_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/interfaces/member_resolution_invoke
+            read_request_identity_field_path: member_ref
+            read_result_object_path: member
+            variability_class: GENERAL
+        as_of_time:
+          type: string
+          minLength: 1
+          format: date-time
+          x_q_field_semantics:
+            semantic_kind: TEMPORAL
+            temporal_kind: DATE_TIME
+            variability_class: GENERAL
+          x_effective_time_policy: OMITTED_USE_TRANSACTION_COMMIT_UTC; PRESENT_ANY_PAST_TIMESTAMP_NOT_FUTURE
+      required:
+      - member_ref
+  lookup_membership_response_contract:
+    contract_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/contracts/lookup_membership_response_contract
+    schema_language: JSON_SCHEMA_DRAFT_2020_12
+    payload_boundary: runtime_result
+    schema:
+      type: object
+      additionalProperties: false
+      properties:
+        memberships:
+          type: array
+          items:
+            $ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/type_closure/schemas/membership
+          maxItems: 1
+      required:
+      - memberships
+      x_successful_empty_means_authoritative_no_active_relation: true
+  evaluate_membership_eligibility_request_contract:
+    contract_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/contracts/evaluate_membership_eligibility_request_contract
+    schema_language: JSON_SCHEMA_DRAFT_2020_12
+    payload_boundary: input
+    schema:
+      type: object
+      additionalProperties: false
+      properties:
+        member_ref:
+          type: string
+          minLength: 1
+          x_q_field_semantics:
+            semantic_kind: BUSINESS_REFERENCE
+            reference_owner_mode: SELF
+            reference_owner_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103
+            resolution_mode: EXACT_READ
+            selection_cardinality: ONE
+            manual_entry_allowed: false
+            identity_field_path: member_ref
+            display_field_paths: []
+            read_operation_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/resolve_member
+            read_interface_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/interfaces/member_resolution_invoke
+            read_request_identity_field_path: member_ref
+            read_result_object_path: member
+            variability_class: GENERAL
+        check_purpose:
+          type: string
+          minLength: 1
+          x_q_field_semantics:
+            semantic_kind: PLAIN_VALUE
+            variability_class: GENERAL
+          x_owner_decision_refs:
+          - PD-5
+          enum:
+          - membership_validity
+        decision_time:
+          type: string
+          minLength: 1
+          format: date-time
+          x_q_field_semantics:
+            semantic_kind: TEMPORAL
+            temporal_kind: DATE_TIME
+            variability_class: GENERAL
+          x_effective_time_policy: MUST_NOT_BE_AFTER_TRANSACTION_COMMIT_UTC
+      required:
+      - member_ref
+      - check_purpose
+      - decision_time
+  evaluate_membership_eligibility_response_contract:
+    contract_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/contracts/evaluate_membership_eligibility_response_contract
+    schema_language: JSON_SCHEMA_DRAFT_2020_12
+    payload_boundary: runtime_result
+    schema:
+      $ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/type_closure/schemas/eligibility_decision
+      x_source_owned_semantics: BSE_V0102_OPERATION_08
+  resolve_membership_request_contract:
+    contract_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/contracts/resolve_membership_request_contract
+    schema_language: JSON_SCHEMA_DRAFT_2020_12
+    payload_boundary: input
+    schema:
+      type: object
+      additionalProperties: false
+      properties:
+        membership_ref:
+          type: string
+          minLength: 1
+          x_q_field_semantics:
+            semantic_kind: BUSINESS_REFERENCE
+            variability_class: GENERAL
+            reference_owner_mode: SELF
+            reference_owner_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103
+            resolution_mode: EXACT_READ
+            selection_cardinality: ONE
+            manual_entry_allowed: false
+            identity_field_path: membership_ref
+            display_field_paths: []
+            read_operation_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/resolve_membership
+            read_interface_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/interfaces/membership_exact_resolution_invoke
+            read_request_identity_field_path: membership_ref
+            read_result_object_path: membership
+      required:
+      - membership_ref
+  resolve_membership_response_contract:
+    contract_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/contracts/resolve_membership_response_contract
+    schema_language: JSON_SCHEMA_DRAFT_2020_12
+    payload_boundary: runtime_result
+    schema:
+      type: object
+      additionalProperties: false
+      properties:
+        membership:
+          $ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/type_closure/schemas/membership
+      required:
+      - membership
+stable_errors:
+  create_member:
+    contract_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/stable_errors/create_member
+    carrier_field: stable_error
+    error_code_set:
+    - MEMBER_IDENTITY_MISSING
+    - MEMBER_DUPLICATE_REGISTRATION
+    - OPERATION_NOT_AUTHORIZED
+    - DEPENDENCY_INFORMATION_INCOMPLETE
+    - CONCURRENT_MODIFICATION_CONFLICT
+    - MEMBERSHIP_REQUIRED_INPUT_MISSING
+    errors:
+      MEMBER_IDENTITY_MISSING: 请求未携带已声明的会员标识，无法定位业务主体
+      MEMBER_DUPLICATE_REGISTRATION: 违反重复注册规则，未建立新会员身份（判定口径待 PD-1）
+      OPERATION_NOT_AUTHORIZED: 授权规则待业务确认（PD-6），默认拒绝；权限不满足时不返回未经授权数据
+      DEPENDENCY_INFORMATION_INCOMPLETE: 完成判定所需的必填依据（如资格判定五要素）不完整
+      CONCURRENT_MODIFICATION_CONFLICT: 同一业务对象的并发修改冲突；重试与幂等策略待 PD-8
+      MEMBERSHIP_REQUIRED_INPUT_MISSING: 请求违反该 Operation 已声明的必填字段要求。
+    schema_language: JSON_SCHEMA_DRAFT_2020_12
+    schema:
+      type: object
+      additionalProperties: false
+      properties:
+        code:
+          type: string
+          enum:
+          - MEMBER_IDENTITY_MISSING
+          - MEMBER_DUPLICATE_REGISTRATION
+          - OPERATION_NOT_AUTHORIZED
+          - DEPENDENCY_INFORMATION_INCOMPLETE
+          - CONCURRENT_MODIFICATION_CONFLICT
+          - MEMBERSHIP_REQUIRED_INPUT_MISSING
+        message:
+          type: string
+          minLength: 1
+      required:
+      - code
+      - message
+    unknown_error_code_forbidden: true
+  resolve_member:
+    contract_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/stable_errors/resolve_member
+    carrier_field: stable_error
+    error_code_set:
+    - MEMBER_IDENTITY_MISSING
+    - MEMBER_NOT_FOUND
+    - OPERATION_NOT_AUTHORIZED
+    - MEMBERSHIP_REQUIRED_INPUT_MISSING
+    errors:
+      MEMBER_IDENTITY_MISSING: 请求未携带已声明的会员标识，无法定位业务主体
+      MEMBER_NOT_FOUND: 按已声明标识未找到会员；存在性 ≠ 关系有效 ≠ 具权益
+      OPERATION_NOT_AUTHORIZED: 授权规则待业务确认（PD-6），默认拒绝；权限不满足时不返回未经授权数据
+      MEMBERSHIP_REQUIRED_INPUT_MISSING: 请求违反该 Operation 已声明的必填字段要求。
+    schema_language: JSON_SCHEMA_DRAFT_2020_12
+    schema:
+      type: object
+      additionalProperties: false
+      properties:
+        code:
+          type: string
+          enum:
+          - MEMBER_IDENTITY_MISSING
+          - MEMBER_NOT_FOUND
+          - OPERATION_NOT_AUTHORIZED
+          - MEMBERSHIP_REQUIRED_INPUT_MISSING
+        message:
+          type: string
+          minLength: 1
+      required:
+      - code
+      - message
+    unknown_error_code_forbidden: true
+  update_member_profile:
+    contract_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/stable_errors/update_member_profile
+    carrier_field: stable_error
+    error_code_set:
+    - MEMBER_IDENTITY_MISSING
+    - MEMBER_NOT_FOUND
+    - MEMBER_PROFILE_FIELD_NOT_MODIFIABLE
+    - OPERATION_NOT_AUTHORIZED
+    - DEPENDENCY_INFORMATION_INCOMPLETE
+    - CONCURRENT_MODIFICATION_CONFLICT
+    - MEMBERSHIP_REQUIRED_INPUT_MISSING
+    errors:
+      MEMBER_IDENTITY_MISSING: 请求未携带已声明的会员标识，无法定位业务主体
+      MEMBER_NOT_FOUND: 按已声明标识未找到会员；存在性 ≠ 关系有效 ≠ 具权益
+      MEMBER_PROFILE_FIELD_NOT_MODIFIABLE: OP3 确认语义——拒绝越权或非法字段修改；稳定标识不得因修改变化
+      OPERATION_NOT_AUTHORIZED: 授权规则待业务确认（PD-6），默认拒绝；权限不满足时不返回未经授权数据
+      DEPENDENCY_INFORMATION_INCOMPLETE: 完成判定所需的必填依据（如资格判定五要素）不完整
+      CONCURRENT_MODIFICATION_CONFLICT: 同一业务对象的并发修改冲突；重试与幂等策略待 PD-8
+      MEMBERSHIP_REQUIRED_INPUT_MISSING: 请求违反该 Operation 已声明的必填字段要求。
+    schema_language: JSON_SCHEMA_DRAFT_2020_12
+    schema:
+      type: object
+      additionalProperties: false
+      properties:
+        code:
+          type: string
+          enum:
+          - MEMBER_IDENTITY_MISSING
+          - MEMBER_NOT_FOUND
+          - MEMBER_PROFILE_FIELD_NOT_MODIFIABLE
+          - OPERATION_NOT_AUTHORIZED
+          - DEPENDENCY_INFORMATION_INCOMPLETE
+          - CONCURRENT_MODIFICATION_CONFLICT
+          - MEMBERSHIP_REQUIRED_INPUT_MISSING
+        message:
+          type: string
+          minLength: 1
+      required:
+      - code
+      - message
+    unknown_error_code_forbidden: true
+  update_member_status:
+    contract_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/stable_errors/update_member_status
+    carrier_field: stable_error
+    error_code_set:
+    - MEMBER_IDENTITY_MISSING
+    - MEMBER_NOT_FOUND
+    - INVALID_STATE_TRANSITION
+    - OPERATION_NOT_AUTHORIZED
+    - CONCURRENT_MODIFICATION_CONFLICT
+    - MEMBERSHIP_REQUIRED_INPUT_MISSING
+    errors:
+      MEMBER_IDENTITY_MISSING: 请求未携带已声明的会员标识，无法定位业务主体
+      MEMBER_NOT_FOUND: 按已声明标识未找到会员；存在性 ≠ 关系有效 ≠ 具权益
+      INVALID_STATE_TRANSITION: 目标状态或迁移不在已定义迁移规则内；迁移表确认前一律 FAIL_CLOSED（PD-4）
+      OPERATION_NOT_AUTHORIZED: 授权规则待业务确认（PD-6），默认拒绝；权限不满足时不返回未经授权数据
+      CONCURRENT_MODIFICATION_CONFLICT: 同一业务对象的并发修改冲突；重试与幂等策略待 PD-8
+      MEMBERSHIP_REQUIRED_INPUT_MISSING: 请求违反该 Operation 已声明的必填字段要求。
+    schema_language: JSON_SCHEMA_DRAFT_2020_12
+    schema:
+      type: object
+      additionalProperties: false
+      properties:
+        code:
+          type: string
+          enum:
+          - MEMBER_IDENTITY_MISSING
+          - MEMBER_NOT_FOUND
+          - INVALID_STATE_TRANSITION
+          - OPERATION_NOT_AUTHORIZED
+          - CONCURRENT_MODIFICATION_CONFLICT
+          - MEMBERSHIP_REQUIRED_INPUT_MISSING
+        message:
+          type: string
+          minLength: 1
+      required:
+      - code
+      - message
+    unknown_error_code_forbidden: true
+  create_membership:
+    contract_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/stable_errors/create_membership
+    carrier_field: stable_error
+    error_code_set:
+    - MEMBER_IDENTITY_MISSING
+    - MEMBER_NOT_FOUND
+    - MEMBERSHIP_PLAN_NOT_FOUND
+    - OPERATION_NOT_AUTHORIZED
+    - DEPENDENCY_INFORMATION_INCOMPLETE
+    - CONCURRENT_MODIFICATION_CONFLICT
+    - MEMBERSHIP_REQUIRED_INPUT_MISSING
+    - INVALID_BUSINESS_TIME
+    - INVALID_STATE_TRANSITION
+    - MEMBERSHIP_RELATION_CONFLICT
+    errors:
+      MEMBER_IDENTITY_MISSING: 请求未携带已声明的会员标识，无法定位业务主体
+      MEMBER_NOT_FOUND: 按已声明标识未找到会员；存在性 ≠ 关系有效 ≠ 具权益
+      MEMBERSHIP_PLAN_NOT_FOUND: 目标会员方案不存在或不可适用于该会员（方案所有权待 PD-2）
+      OPERATION_NOT_AUTHORIZED: 授权规则待业务确认（PD-6），默认拒绝；权限不满足时不返回未经授权数据
+      DEPENDENCY_INFORMATION_INCOMPLETE: 没有确定的方案 Owner/精确解析及适用条件依据时不可确立业务成功；不能将不透明引用视为已验证方案。
+      CONCURRENT_MODIFICATION_CONFLICT: 同一业务对象的并发修改冲突；重试与幂等策略待 PD-8
+      MEMBERSHIP_REQUIRED_INPUT_MISSING: 请求违反该 Operation 已声明的必填字段要求。
+      INVALID_BUSINESS_TIME: Requested business time violates the explicitly declared effective-time boundary.
+      INVALID_STATE_TRANSITION: 拟生效时点会员不处于允许建立关系的 active 状态。
+      MEMBERSHIP_RELATION_CONFLICT: 拟生效时点已经存在生效关系或形成不可唯一解释的重叠区间。
+    schema_language: JSON_SCHEMA_DRAFT_2020_12
+    schema:
+      type: object
+      additionalProperties: false
+      properties:
+        code:
+          type: string
+          enum:
+          - MEMBER_IDENTITY_MISSING
+          - MEMBER_NOT_FOUND
+          - MEMBERSHIP_PLAN_NOT_FOUND
+          - OPERATION_NOT_AUTHORIZED
+          - DEPENDENCY_INFORMATION_INCOMPLETE
+          - CONCURRENT_MODIFICATION_CONFLICT
+          - MEMBERSHIP_REQUIRED_INPUT_MISSING
+          - INVALID_BUSINESS_TIME
+          - INVALID_STATE_TRANSITION
+          - MEMBERSHIP_RELATION_CONFLICT
+        message:
+          type: string
+          minLength: 1
+      required:
+      - code
+      - message
+    unknown_error_code_forbidden: true
+    x_error_addition_basis: 业务说明书该操作的显式失败分支（不是新增经营政策）。
+  update_membership_plan:
+    contract_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/stable_errors/update_membership_plan
+    carrier_field: stable_error
+    error_code_set:
+    - MEMBER_IDENTITY_MISSING
+    - MEMBER_NOT_FOUND
+    - MEMBERSHIP_PLAN_NOT_FOUND
+    - INVALID_STATE_TRANSITION
+    - OPERATION_NOT_AUTHORIZED
+    - CONCURRENT_MODIFICATION_CONFLICT
+    - MEMBERSHIP_REQUIRED_INPUT_MISSING
+    - INVALID_BUSINESS_TIME
+    - MEMBERSHIP_NOT_FOUND
+    - MEMBERSHIP_RELATION_CONFLICT
+    - DEPENDENCY_INFORMATION_INCOMPLETE
+    errors:
+      MEMBER_IDENTITY_MISSING: 请求未携带已声明的会员标识，无法定位业务主体
+      MEMBER_NOT_FOUND: 按已声明标识未找到会员；存在性 ≠ 关系有效 ≠ 具权益
+      MEMBERSHIP_PLAN_NOT_FOUND: 目标会员方案不存在或不可适用于该会员（方案所有权待 PD-2）
+      INVALID_STATE_TRANSITION: 目标状态或迁移不在已定义迁移规则内；迁移表确认前一律 FAIL_CLOSED（PD-4）
+      OPERATION_NOT_AUTHORIZED: 授权规则待业务确认（PD-6），默认拒绝；权限不满足时不返回未经授权数据
+      CONCURRENT_MODIFICATION_CONFLICT: 同一业务对象的并发修改冲突；重试与幂等策略待 PD-8
+      MEMBERSHIP_REQUIRED_INPUT_MISSING: 请求违反该 Operation 已声明的必填字段要求。
+      INVALID_BUSINESS_TIME: Requested business time violates the explicitly declared effective-time boundary.
+      MEMBERSHIP_NOT_FOUND: 给定旧关系标识不存在或无法精确解析为属于该会员的关系。
+      MEMBERSHIP_RELATION_CONFLICT: 新旧关系有效区间或并发替换产生冲突。
+      DEPENDENCY_INFORMATION_INCOMPLETE: 目标方案或所需业务历史事实无法从权威来源完整解析。
+    schema_language: JSON_SCHEMA_DRAFT_2020_12
+    schema:
+      type: object
+      additionalProperties: false
+      properties:
+        code:
+          type: string
+          enum:
+          - MEMBER_IDENTITY_MISSING
+          - MEMBER_NOT_FOUND
+          - MEMBERSHIP_PLAN_NOT_FOUND
+          - INVALID_STATE_TRANSITION
+          - OPERATION_NOT_AUTHORIZED
+          - CONCURRENT_MODIFICATION_CONFLICT
+          - MEMBERSHIP_REQUIRED_INPUT_MISSING
+          - INVALID_BUSINESS_TIME
+          - MEMBERSHIP_NOT_FOUND
+          - MEMBERSHIP_RELATION_CONFLICT
+          - DEPENDENCY_INFORMATION_INCOMPLETE
+        message:
+          type: string
+          minLength: 1
+      required:
+      - code
+      - message
+    unknown_error_code_forbidden: true
+    x_error_addition_basis: 业务说明书该操作的显式失败分支（不是新增经营政策）。
+  lookup_membership:
+    contract_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/stable_errors/lookup_membership
+    carrier_field: stable_error
+    error_code_set:
+    - MEMBER_IDENTITY_MISSING
+    - MEMBER_NOT_FOUND
+    - OPERATION_NOT_AUTHORIZED
+    - MEMBERSHIP_REQUIRED_INPUT_MISSING
+    - INVALID_BUSINESS_TIME
+    - DEPENDENCY_INFORMATION_INCOMPLETE
+    errors:
+      MEMBER_IDENTITY_MISSING: 请求未携带已声明的会员标识，无法定位业务主体
+      MEMBER_NOT_FOUND: 按已声明标识未找到会员；存在性 ≠ 关系有效 ≠ 具权益
+      OPERATION_NOT_AUTHORIZED: 授权规则待业务确认（PD-6），默认拒绝；权限不满足时不返回未经授权数据
+      MEMBERSHIP_REQUIRED_INPUT_MISSING: 请求违反该 Operation 已声明的必填字段要求。
+      INVALID_BUSINESS_TIME: Requested business time violates the explicitly declared effective-time boundary.
+      DEPENDENCY_INFORMATION_INCOMPLETE: 历史关系事实不完整、重叠或无法唯一解释。
+    schema_language: JSON_SCHEMA_DRAFT_2020_12
+    schema:
+      type: object
+      additionalProperties: false
+      properties:
+        code:
+          type: string
+          enum:
+          - MEMBER_IDENTITY_MISSING
+          - MEMBER_NOT_FOUND
+          - OPERATION_NOT_AUTHORIZED
+          - MEMBERSHIP_REQUIRED_INPUT_MISSING
+          - INVALID_BUSINESS_TIME
+          - DEPENDENCY_INFORMATION_INCOMPLETE
+        message:
+          type: string
+          minLength: 1
+      required:
+      - code
+      - message
+    unknown_error_code_forbidden: true
+    x_error_addition_basis: 业务说明书该操作的显式失败分支（不是新增经营政策）。
+  evaluate_membership_eligibility:
+    contract_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/stable_errors/evaluate_membership_eligibility
+    carrier_field: stable_error
+    error_code_set:
+    - MEMBER_IDENTITY_MISSING
+    - MEMBER_NOT_FOUND
+    - DEPENDENCY_INFORMATION_INCOMPLETE
+    - OPERATION_NOT_AUTHORIZED
+    - MEMBERSHIP_REQUIRED_INPUT_MISSING
+    - INVALID_BUSINESS_TIME
+    errors:
+      MEMBER_IDENTITY_MISSING: 请求未携带已声明的会员标识，无法定位业务主体
+      MEMBER_NOT_FOUND: 按已声明标识未找到会员；存在性 ≠ 关系有效 ≠ 具权益
+      DEPENDENCY_INFORMATION_INCOMPLETE: 资格必需事实/判定政策未完全解析，不得返回 eligible=true 或 eligible=false。
+      OPERATION_NOT_AUTHORIZED: 授权规则待业务确认（PD-6），默认拒绝；权限不满足时不返回未经授权数据
+      MEMBERSHIP_REQUIRED_INPUT_MISSING: 请求违反该 Operation 已声明的必填字段要求。
+      INVALID_BUSINESS_TIME: Requested business time violates the explicitly declared effective-time boundary.
+    schema_language: JSON_SCHEMA_DRAFT_2020_12
+    schema:
+      type: object
+      additionalProperties: false
+      properties:
+        code:
+          type: string
+          enum:
+          - MEMBER_IDENTITY_MISSING
+          - MEMBER_NOT_FOUND
+          - DEPENDENCY_INFORMATION_INCOMPLETE
+          - OPERATION_NOT_AUTHORIZED
+          - MEMBERSHIP_REQUIRED_INPUT_MISSING
+          - INVALID_BUSINESS_TIME
+        message:
+          type: string
+          minLength: 1
+      required:
+      - code
+      - message
+    unknown_error_code_forbidden: true
+    x_negative_eligibility_is_normal_result_not_stable_error: true
+  resolve_membership:
+    contract_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/stable_errors/resolve_membership
+    carrier_field: stable_error
+    error_code_set:
+    - MEMBERSHIP_REF_REQUIRED
+    - MEMBERSHIP_NOT_FOUND
+    - OPERATION_NOT_AUTHORIZED
+    - MEMBERSHIP_REQUIRED_INPUT_MISSING
+    errors:
+      MEMBERSHIP_REF_REQUIRED: membership_ref 不能为空。
+      MEMBERSHIP_NOT_FOUND: 精确会员关系标识未找到。
+      OPERATION_NOT_AUTHORIZED: 调用者未获该操作的明确业务授权。
+      MEMBERSHIP_REQUIRED_INPUT_MISSING: 请求违反该 Operation 已声明的必填字段要求。
+    schema_language: JSON_SCHEMA_DRAFT_2020_12
+    schema:
+      type: object
+      additionalProperties: false
+      properties:
+        code:
+          type: string
+          enum:
+          - MEMBERSHIP_REF_REQUIRED
+          - MEMBERSHIP_NOT_FOUND
+          - OPERATION_NOT_AUTHORIZED
+          - MEMBERSHIP_REQUIRED_INPUT_MISSING
+        message:
+          type: string
+          minLength: 1
+      required:
+      - code
+      - message
+    unknown_error_code_forbidden: true
