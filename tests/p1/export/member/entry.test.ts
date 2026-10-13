@@ -39,7 +39,7 @@ describe('member capability entry 公共出口', () => {
     ).toHaveLength(1);
     expect(MEMBER_CAPABILITY_METADATA.capability_id).toBe('member');
     expect(MEMBER_CAPABILITY_METADATA.stable_code).toBe('MEMBER');
-    expect(MEMBER_CAPABILITY_METADATA.q_version).toBe('V0103');
+    expect(MEMBER_CAPABILITY_METADATA.q_version).toBe('V0104');
     expect(MEMBER_CAPABILITY_METADATA.gate_pass_implied).toBe(false);
     expect(MEMBER_CAPABILITY_METADATA.activation_implied).toBe(false);
   });

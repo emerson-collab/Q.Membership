@@ -1,5 +1,5 @@
 /**
- * Member V0103 candidate declaration-only export.
+ * Member V0104 candidate declaration-only export.
  *
  * This is NOT an approved external_provider_surface, production execution
  * entry, or P1CM V0117 runtime/whitelist completion receipt.

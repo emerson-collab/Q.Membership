@@ -1,5 +1,5 @@
 /**
- * P1CM V0117 specific conditional-branch checks for candidate Member V0103.
+ * P1CM V0117 specific conditional-branch checks for candidate Member V0104.
  * Only applies branches present in the exact Member Owner source.
  * Does not promote source-only candidates to an admitted whitelist.
  */

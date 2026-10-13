@@ -1,7 +1,7 @@
 /**
- * 统一会员能力（Member Capability）V0103 — 公共类型与端口定义
+ * 统一会员能力（Member Capability）V0104 — 公共类型与端口定义
  *
- * 唯一语义权威：Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103
+ * 唯一语义权威：Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104
  * 本文件为该 Contract 的 TypeScript 物化投影，不新增业务政策。
  * 候选规则（PD-1~PD-8）在业务 Owner 批准前不构成生产授权。
  */

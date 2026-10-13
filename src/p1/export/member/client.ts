@@ -1,5 +1,5 @@
 /**
- * 统一会员能力 V0103 — 能力客户端与本地开发适配器
+ * 统一会员能力 V0104 — 能力客户端与本地开发适配器
  *
  * MemberCapabilityClient：本地/候选业务逻辑测试客户端，不代表已完成 V0117
  * 的 exact Owner Contract / Interface Inventory / permission / rule closure。

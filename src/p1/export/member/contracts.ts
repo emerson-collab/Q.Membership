@@ -1,6 +1,6 @@
 /**
- * 统一会员能力 V0103 — 契约常量、稳定错误与运行时工具
- * 来源：Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/stable_errors 及 capability_rules
+ * 统一会员能力 V0104 — 契约常量、稳定错误与运行时工具
+ * 来源：Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/stable_errors 及 capability_rules
  */
 
 import type {

@@ -176,7 +176,7 @@ check(manifest.scoped_whitelist_status === 'UNRESOLVED' && manifest.gate_pass_cl
  'Candidate claims a verified whitelist/Gate');
 
 const blockers=[
- 'Member V0103 remains candidate; exact external owner source/hash freeze unavailable',
+ 'Member V0104 remains candidate; exact external owner source/hash freeze unavailable',
  'Nine RESTRICTED Operation permission bindings lack authorized actor-class evidence',
  'User-provided 255-field/75-constraint projection is SOURCE_ONLY, not approved Scoped Whitelist',
  'Exact governed interface/runtime materialization, receipt and Gate evidence not produced'

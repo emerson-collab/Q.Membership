@@ -1,5 +1,5 @@
 /**
- * Candidate, read-only projection of the exact Member owner Contract V0103.
+ * Candidate, read-only projection of the exact Member owner Contract V0104.
  * P1CM V0117 supplies structure; this module neither creates business
  * semantics nor certifies an accepted scoped field whitelist or runtime path.
  *
@@ -9,8 +9,8 @@
 import { ALL_OPERATION_IDS, INTERNAL_OPERATION_IDS, PUBLIC_OPERATION_IDS, STABLE_ERROR_CODE_SETS } from './contracts';
 import type { OperationId } from './types';
 
-const MEMBER_CONTRACT_REF = 'Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103' as const;
-const MEMBER_CAPABILITY_REF = 'Q.MEMBERSHIP.CAPABILITY.MEMBER@V0103' as const;
+const MEMBER_CONTRACT_REF = 'Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104' as const;
+const MEMBER_CAPABILITY_REF = 'Q.MEMBERSHIP.CAPABILITY.MEMBER@V0104' as const;
 
 export const MEMBER_OPERATION_INTERFACE_IDS = Object.freeze({
   "create_member": "member_creation_invoke",
@@ -38,12 +38,12 @@ const declaredOperations = ALL_OPERATION_IDS.map((operationId) => Object.freeze(
 
 export const MEMBER_CAPABILITY_METADATA = Object.freeze({
   q_id: 'Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER',
-  q_version: 'V0103',
+  q_version: 'V0104',
   q_role: 'capability_contract',
   q_status: 'candidate' as const,
   capability_ref: MEMBER_CAPABILITY_REF,
   capability_id: 'member',
-  capability_version: 'V0103',
+  capability_version: 'V0104',
   capability_contract_ref: MEMBER_CONTRACT_REF,
   capability_contract_integrity_binding_ref: `${MEMBER_CONTRACT_REF}#/capability_contract_integrity_binding`,
   stable_code: 'MEMBER',
@@ -70,7 +70,7 @@ export function getMemberGeneralExportCandidate(operationId: OperationId) {
   return Object.freeze({
     capability_ref: MEMBER_CAPABILITY_REF,
     capability_id: 'member' as const,
-    capability_version: 'V0103' as const,
+    capability_version: 'V0104' as const,
     capability_contract_ref: MEMBER_CONTRACT_REF,
     capability_contract_content_hash: null,
     stage_contract_ref: null,
