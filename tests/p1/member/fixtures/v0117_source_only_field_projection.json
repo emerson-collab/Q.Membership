@@ -1,0 +1,2341 @@
+{
+  "kind": "V0117_STANDARD_SOURCE_FIELD_PROJECTION",
+  "source_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117",
+  "source_hash": "sha256:cc1d1933d88125b400b8a6f3fd0042b521f22276ff74b2dda19798ddce76757f",
+  "permission_claim": "SOURCE_DECLARATIONS_NOT_AN_AUTHORIZED_BUSINESS_WHITELIST",
+  "source_constraints": [
+    {
+      "field_name": "reference_owner_ref",
+      "owner_record": "capability_contract.interfaces.request_field.x_q_field_semantics",
+      "source_value": true,
+      "raw_predicate": "reference_owner_ref_required",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/payload_field_semantic_closure/semantic_kinds/BUSINESS_REFERENCE/self_owner_contract/reference_owner_ref_required",
+      "requirement_kind": "CONDITIONAL_REQUIRED",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/payload_field_semantic_closure/semantic_kinds/BUSINESS_REFERENCE/self_owner_contract"
+    },
+    {
+      "field_name": "local_dependency_ref",
+      "owner_record": "capability_contract.interfaces.request_field.x_q_field_semantics",
+      "source_value": true,
+      "raw_predicate": "local_dependency_ref_forbidden",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/payload_field_semantic_closure/semantic_kinds/BUSINESS_REFERENCE/self_owner_contract/local_dependency_ref_forbidden",
+      "requirement_kind": "FORBIDDEN",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/payload_field_semantic_closure/semantic_kinds/BUSINESS_REFERENCE/self_owner_contract"
+    },
+    {
+      "field_name": "reference_owner_ref",
+      "owner_record": "capability_contract.interfaces.request_field.x_q_field_semantics",
+      "source_value": true,
+      "raw_predicate": "reference_owner_ref_required",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/payload_field_semantic_closure/semantic_kinds/BUSINESS_REFERENCE/declared_dependency_owner_contract/reference_owner_ref_required",
+      "requirement_kind": "CONDITIONAL_REQUIRED",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/payload_field_semantic_closure/semantic_kinds/BUSINESS_REFERENCE/declared_dependency_owner_contract"
+    },
+    {
+      "field_name": "local_dependency_ref",
+      "owner_record": "capability_contract.interfaces.request_field.x_q_field_semantics",
+      "source_value": true,
+      "raw_predicate": "local_dependency_ref_required",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/payload_field_semantic_closure/semantic_kinds/BUSINESS_REFERENCE/declared_dependency_owner_contract/local_dependency_ref_required",
+      "requirement_kind": "CONDITIONAL_REQUIRED",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/payload_field_semantic_closure/semantic_kinds/BUSINESS_REFERENCE/declared_dependency_owner_contract"
+    },
+    {
+      "field_name": "reference_owner_ref",
+      "owner_record": "capability_contract.interfaces.request_field.x_q_field_semantics",
+      "source_value": true,
+      "raw_predicate": "reference_owner_ref_optional",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/payload_field_semantic_closure/semantic_kinds/BUSINESS_REFERENCE/external_opaque_resolution/reference_owner_ref_optional",
+      "requirement_kind": "OPTIONAL",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/payload_field_semantic_closure/semantic_kinds/BUSINESS_REFERENCE/external_opaque_resolution"
+    },
+    {
+      "field_name": "local_dependency_ref",
+      "owner_record": "capability_contract.interfaces.request_field.x_q_field_semantics",
+      "source_value": true,
+      "raw_predicate": "local_dependency_ref_forbidden",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/payload_field_semantic_closure/semantic_kinds/BUSINESS_REFERENCE/external_opaque_resolution/local_dependency_ref_forbidden",
+      "requirement_kind": "FORBIDDEN",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/payload_field_semantic_closure/semantic_kinds/BUSINESS_REFERENCE/external_opaque_resolution"
+    },
+    {
+      "field_name": "identity_field_path",
+      "owner_record": "capability_contract.interfaces.request_field.x_q_field_semantics",
+      "source_value": true,
+      "raw_predicate": "identity_field_path_forbidden",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/payload_field_semantic_closure/semantic_kinds/BUSINESS_REFERENCE/external_opaque_resolution/identity_field_path_forbidden",
+      "requirement_kind": "FORBIDDEN",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/payload_field_semantic_closure/semantic_kinds/BUSINESS_REFERENCE/external_opaque_resolution"
+    },
+    {
+      "field_name": "display_field_paths",
+      "owner_record": "capability_contract.interfaces.request_field.x_q_field_semantics",
+      "source_value": true,
+      "raw_predicate": "display_field_paths_forbidden",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/payload_field_semantic_closure/semantic_kinds/BUSINESS_REFERENCE/external_opaque_resolution/display_field_paths_forbidden",
+      "requirement_kind": "FORBIDDEN",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/payload_field_semantic_closure/semantic_kinds/BUSINESS_REFERENCE/external_opaque_resolution"
+    },
+    {
+      "field_name": "read_operation_ref",
+      "owner_record": "capability_contract.interfaces.request_field.x_q_field_semantics",
+      "source_value": true,
+      "raw_predicate": "read_operation_ref_forbidden",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/payload_field_semantic_closure/semantic_kinds/BUSINESS_REFERENCE/external_opaque_resolution/read_operation_ref_forbidden",
+      "requirement_kind": "FORBIDDEN",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/payload_field_semantic_closure/semantic_kinds/BUSINESS_REFERENCE/external_opaque_resolution"
+    },
+    {
+      "field_name": "read_interface_ref",
+      "owner_record": "capability_contract.interfaces.request_field.x_q_field_semantics",
+      "source_value": true,
+      "raw_predicate": "read_interface_ref_forbidden",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/payload_field_semantic_closure/semantic_kinds/BUSINESS_REFERENCE/external_opaque_resolution/read_interface_ref_forbidden",
+      "requirement_kind": "FORBIDDEN",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/payload_field_semantic_closure/semantic_kinds/BUSINESS_REFERENCE/external_opaque_resolution"
+    },
+    {
+      "field_name": "read_request_identity_field_path",
+      "owner_record": "capability_contract.interfaces.request_field.x_q_field_semantics",
+      "source_value": true,
+      "raw_predicate": "read_request_identity_field_path_forbidden",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/payload_field_semantic_closure/semantic_kinds/BUSINESS_REFERENCE/external_opaque_resolution/read_request_identity_field_path_forbidden",
+      "requirement_kind": "FORBIDDEN",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/payload_field_semantic_closure/semantic_kinds/BUSINESS_REFERENCE/external_opaque_resolution"
+    },
+    {
+      "field_name": "read_result_object_path",
+      "owner_record": "capability_contract.interfaces.request_field.x_q_field_semantics",
+      "source_value": true,
+      "raw_predicate": "read_result_object_path_forbidden",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/payload_field_semantic_closure/semantic_kinds/BUSINESS_REFERENCE/external_opaque_resolution/read_result_object_path_forbidden",
+      "requirement_kind": "FORBIDDEN",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/payload_field_semantic_closure/semantic_kinds/BUSINESS_REFERENCE/external_opaque_resolution"
+    },
+    {
+      "field_name": "lookup_operation_ref",
+      "owner_record": "capability_contract.interfaces.request_field.x_q_field_semantics",
+      "source_value": true,
+      "raw_predicate": "lookup_operation_ref_forbidden",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/payload_field_semantic_closure/semantic_kinds/BUSINESS_REFERENCE/external_opaque_resolution/lookup_operation_ref_forbidden",
+      "requirement_kind": "FORBIDDEN",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/payload_field_semantic_closure/semantic_kinds/BUSINESS_REFERENCE/external_opaque_resolution"
+    },
+    {
+      "field_name": "lookup_interface_ref",
+      "owner_record": "capability_contract.interfaces.request_field.x_q_field_semantics",
+      "source_value": true,
+      "raw_predicate": "lookup_interface_ref_forbidden",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/payload_field_semantic_closure/semantic_kinds/BUSINESS_REFERENCE/external_opaque_resolution/lookup_interface_ref_forbidden",
+      "requirement_kind": "FORBIDDEN",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/payload_field_semantic_closure/semantic_kinds/BUSINESS_REFERENCE/external_opaque_resolution"
+    },
+    {
+      "field_name": "lookup_request_input_template",
+      "owner_record": "capability_contract.interfaces.request_field.x_q_field_semantics",
+      "source_value": true,
+      "raw_predicate": "lookup_request_input_template_forbidden",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/payload_field_semantic_closure/semantic_kinds/BUSINESS_REFERENCE/external_opaque_resolution/lookup_request_input_template_forbidden",
+      "requirement_kind": "FORBIDDEN",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/payload_field_semantic_closure/semantic_kinds/BUSINESS_REFERENCE/external_opaque_resolution"
+    },
+    {
+      "field_name": "lookup_result_collection_path",
+      "owner_record": "capability_contract.interfaces.request_field.x_q_field_semantics",
+      "source_value": true,
+      "raw_predicate": "lookup_result_collection_path_forbidden",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/payload_field_semantic_closure/semantic_kinds/BUSINESS_REFERENCE/external_opaque_resolution/lookup_result_collection_path_forbidden",
+      "requirement_kind": "FORBIDDEN",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/payload_field_semantic_closure/semantic_kinds/BUSINESS_REFERENCE/external_opaque_resolution"
+    },
+    {
+      "field_name": "iteration_source_path",
+      "owner_record": "capability_contract.operational_relations.relation_entry",
+      "source_value": true,
+      "raw_predicate": "iteration_source_path_forbidden",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/operational_relation_closure/invocation_modes/SINGLE/iteration_source_path_forbidden",
+      "requirement_kind": "FORBIDDEN",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/operational_relation_closure/invocation_modes/SINGLE"
+    },
+    {
+      "field_name": null,
+      "owner_record": "capability_contract.operational_relations.relation_entry",
+      "source_value": true,
+      "raw_predicate": "for_each_error_mode_must_be_null",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/operational_relation_closure/invocation_modes/SINGLE/for_each_error_mode_must_be_null",
+      "requirement_kind": "SEMANTIC_PREDICATE",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/operational_relation_closure/invocation_modes/SINGLE"
+    },
+    {
+      "field_name": "iteration_source_path",
+      "owner_record": "capability_contract.operational_relations.relation_entry",
+      "source_value": true,
+      "raw_predicate": "iteration_source_path_required",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/operational_relation_closure/invocation_modes/FOR_EACH/iteration_source_path_required",
+      "requirement_kind": "CONDITIONAL_REQUIRED",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/operational_relation_closure/invocation_modes/FOR_EACH"
+    },
+    {
+      "field_name": "consumer_source_path",
+      "owner_record": "capability_contract.operational_relations.request_mapping_entry",
+      "source_value": true,
+      "raw_predicate": "consumer_source_path_required",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/operational_relation_closure/request_mapping/CONSUMER_INPUT/consumer_source_path_required",
+      "requirement_kind": "CONDITIONAL_REQUIRED",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/operational_relation_closure/request_mapping/CONSUMER_INPUT"
+    },
+    {
+      "field_name": "literal_value",
+      "owner_record": "capability_contract.operational_relations.request_mapping_entry",
+      "source_value": true,
+      "raw_predicate": "literal_value_forbidden",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/operational_relation_closure/request_mapping/CONSUMER_INPUT/literal_value_forbidden",
+      "requirement_kind": "FORBIDDEN",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/operational_relation_closure/request_mapping/CONSUMER_INPUT"
+    },
+    {
+      "field_name": "consumer_source_path",
+      "owner_record": "capability_contract.operational_relations.request_mapping_entry",
+      "source_value": true,
+      "raw_predicate": "consumer_source_path_required",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/operational_relation_closure/request_mapping/RUNTIME_CONTEXT/consumer_source_path_required",
+      "requirement_kind": "CONDITIONAL_REQUIRED",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/operational_relation_closure/request_mapping/RUNTIME_CONTEXT"
+    },
+    {
+      "field_name": "literal_value",
+      "owner_record": "capability_contract.operational_relations.request_mapping_entry",
+      "source_value": true,
+      "raw_predicate": "literal_value_forbidden",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/operational_relation_closure/request_mapping/RUNTIME_CONTEXT/literal_value_forbidden",
+      "requirement_kind": "FORBIDDEN",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/operational_relation_closure/request_mapping/RUNTIME_CONTEXT"
+    },
+    {
+      "field_name": "literal_value",
+      "owner_record": "capability_contract.operational_relations.request_mapping_entry",
+      "source_value": true,
+      "raw_predicate": "literal_value_required",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/operational_relation_closure/request_mapping/STATIC_LITERAL/literal_value_required",
+      "requirement_kind": "CONDITIONAL_REQUIRED",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/operational_relation_closure/request_mapping/STATIC_LITERAL"
+    },
+    {
+      "field_name": "consumer_source_path",
+      "owner_record": "capability_contract.operational_relations.request_mapping_entry",
+      "source_value": true,
+      "raw_predicate": "consumer_source_path_forbidden",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/operational_relation_closure/request_mapping/STATIC_LITERAL/consumer_source_path_forbidden",
+      "requirement_kind": "FORBIDDEN",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/operational_relation_closure/request_mapping/STATIC_LITERAL"
+    },
+    {
+      "field_name": "consumer_source_path",
+      "owner_record": "capability_contract.operational_relations.request_mapping_entry",
+      "source_value": true,
+      "raw_predicate": "consumer_source_path_required",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/operational_relation_closure/request_mapping/ITERATION_ITEM/consumer_source_path_required",
+      "requirement_kind": "CONDITIONAL_REQUIRED",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/operational_relation_closure/request_mapping/ITERATION_ITEM"
+    },
+    {
+      "field_name": "literal_value",
+      "owner_record": "capability_contract.operational_relations.request_mapping_entry",
+      "source_value": true,
+      "raw_predicate": "literal_value_forbidden",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/operational_relation_closure/request_mapping/ITERATION_ITEM/literal_value_forbidden",
+      "requirement_kind": "FORBIDDEN",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/operational_relation_closure/request_mapping/ITERATION_ITEM"
+    },
+    {
+      "field_name": "subject_identity_cardinality",
+      "owner_record": "capability_contract.state_model.operation_state_binding",
+      "source_value": true,
+      "raw_predicate": "subject_identity_cardinality_must_be_null",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/state_transition_closure/operation_state_binding/NOT_APPLICABLE/subject_identity_cardinality_must_be_null",
+      "requirement_kind": "NULL_REQUIRED",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/state_transition_closure/operation_state_binding/NOT_APPLICABLE"
+    },
+    {
+      "field_name": "subject_identity_input_path",
+      "owner_record": "capability_contract.state_model.operation_state_binding",
+      "source_value": true,
+      "raw_predicate": "subject_identity_input_path_must_be_null",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/state_transition_closure/operation_state_binding/NOT_APPLICABLE/subject_identity_input_path_must_be_null",
+      "requirement_kind": "NULL_REQUIRED",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/state_transition_closure/operation_state_binding/NOT_APPLICABLE"
+    },
+    {
+      "field_name": "subject_identity_result_path",
+      "owner_record": "capability_contract.state_model.operation_state_binding",
+      "source_value": true,
+      "raw_predicate": "subject_identity_result_path_must_be_null",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/state_transition_closure/operation_state_binding/NOT_APPLICABLE/subject_identity_result_path_must_be_null",
+      "requirement_kind": "NULL_REQUIRED",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/state_transition_closure/operation_state_binding/NOT_APPLICABLE"
+    },
+    {
+      "field_name": "allowed_states_guard_rule_refs_transition_refs",
+      "owner_record": "capability_contract.state_model.operation_state_binding",
+      "source_value": true,
+      "raw_predicate": "allowed_states_guard_rule_refs_transition_refs_must_be_empty",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/state_transition_closure/operation_state_binding/NOT_APPLICABLE/allowed_states_guard_rule_refs_transition_refs_must_be_empty",
+      "requirement_kind": "EMPTY_REQUIRED",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/state_transition_closure/operation_state_binding/NOT_APPLICABLE"
+    },
+    {
+      "field_name": "subject_identity_cardinality",
+      "owner_record": "capability_contract.state_model.operation_state_binding",
+      "source_value": true,
+      "raw_predicate": "subject_identity_cardinality_required",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/state_transition_closure/operation_state_binding/EXISTING_SUBJECT/subject_identity_cardinality_required",
+      "requirement_kind": "CONDITIONAL_REQUIRED",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/state_transition_closure/operation_state_binding/EXISTING_SUBJECT"
+    },
+    {
+      "field_name": "subject_identity_input_path",
+      "owner_record": "capability_contract.state_model.operation_state_binding",
+      "source_value": true,
+      "raw_predicate": "subject_identity_input_path_required",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/state_transition_closure/operation_state_binding/EXISTING_SUBJECT/subject_identity_input_path_required",
+      "requirement_kind": "CONDITIONAL_REQUIRED",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/state_transition_closure/operation_state_binding/EXISTING_SUBJECT"
+    },
+    {
+      "field_name": "subject_identity_result_path",
+      "owner_record": "capability_contract.state_model.operation_state_binding",
+      "source_value": true,
+      "raw_predicate": "subject_identity_result_path_must_be_null",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/state_transition_closure/operation_state_binding/EXISTING_SUBJECT/subject_identity_result_path_must_be_null",
+      "requirement_kind": "NULL_REQUIRED",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/state_transition_closure/operation_state_binding/EXISTING_SUBJECT"
+    },
+    {
+      "field_name": "subject_identity_cardinality",
+      "owner_record": "capability_contract.state_model.operation_state_binding",
+      "source_value": true,
+      "raw_predicate": "subject_identity_cardinality_required",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/state_transition_closure/operation_state_binding/CREATES_SUBJECT/subject_identity_cardinality_required",
+      "requirement_kind": "CONDITIONAL_REQUIRED",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/state_transition_closure/operation_state_binding/CREATES_SUBJECT"
+    },
+    {
+      "field_name": "subject_identity_input_path",
+      "owner_record": "capability_contract.state_model.operation_state_binding",
+      "source_value": true,
+      "raw_predicate": "subject_identity_input_path_must_be_null",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/state_transition_closure/operation_state_binding/CREATES_SUBJECT/subject_identity_input_path_must_be_null",
+      "requirement_kind": "NULL_REQUIRED",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/state_transition_closure/operation_state_binding/CREATES_SUBJECT"
+    },
+    {
+      "field_name": "subject_identity_result_path",
+      "owner_record": "capability_contract.state_model.operation_state_binding",
+      "source_value": true,
+      "raw_predicate": "subject_identity_result_path_required",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/state_transition_closure/operation_state_binding/CREATES_SUBJECT/subject_identity_result_path_required",
+      "requirement_kind": "CONDITIONAL_REQUIRED",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/state_transition_closure/operation_state_binding/CREATES_SUBJECT"
+    },
+    {
+      "field_name": "allowed_states_guard_rule_refs_transition_refs",
+      "owner_record": "capability_contract.state_model.operation_state_binding",
+      "source_value": true,
+      "raw_predicate": "allowed_states_guard_rule_refs_transition_refs_must_be_empty",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/state_transition_closure/operation_state_binding/CREATES_SUBJECT/allowed_states_guard_rule_refs_transition_refs_must_be_empty",
+      "requirement_kind": "EMPTY_REQUIRED",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/state_transition_closure/operation_state_binding/CREATES_SUBJECT"
+    },
+    {
+      "field_name": "allowed_states",
+      "owner_record": "capability_contract.state_model.operation_state_binding",
+      "source_value": true,
+      "raw_predicate": "allowed_states_must_be_empty",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/state_transition_closure/operation_state_binding/ANY_STATE/allowed_states_must_be_empty",
+      "requirement_kind": "EMPTY_REQUIRED",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/state_transition_closure/operation_state_binding/ANY_STATE"
+    },
+    {
+      "field_name": "business_reference_semantics_ref",
+      "owner_record": "capability_contract.permission_model.actor_class_entry",
+      "source_value": true,
+      "raw_predicate": "business_reference_semantics_ref_required",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/permission_actor_closure/actor_class_entry/BUSINESS_REFERENCE/business_reference_semantics_ref_required",
+      "requirement_kind": "CONDITIONAL_REQUIRED",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/permission_actor_closure/actor_class_entry/BUSINESS_REFERENCE"
+    },
+    {
+      "field_name": "authority_ref",
+      "owner_record": "capability_contract.permission_model.actor_class_entry",
+      "source_value": true,
+      "raw_predicate": "authority_ref_forbidden",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/permission_actor_closure/actor_class_entry/BUSINESS_REFERENCE/authority_ref_forbidden",
+      "requirement_kind": "FORBIDDEN",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/permission_actor_closure/actor_class_entry/BUSINESS_REFERENCE"
+    },
+    {
+      "field_name": "authority_ref",
+      "owner_record": "capability_contract.permission_model.actor_class_entry",
+      "source_value": true,
+      "raw_predicate": "authority_ref_required",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/permission_actor_closure/actor_class_entry/EXTERNAL_AUTHORITY/authority_ref_required",
+      "requirement_kind": "CONDITIONAL_REQUIRED",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/permission_actor_closure/actor_class_entry/EXTERNAL_AUTHORITY"
+    },
+    {
+      "field_name": "business_reference_semantics_ref",
+      "owner_record": "capability_contract.permission_model.actor_class_entry",
+      "source_value": true,
+      "raw_predicate": "business_reference_semantics_ref_forbidden",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/permission_actor_closure/actor_class_entry/EXTERNAL_AUTHORITY/business_reference_semantics_ref_forbidden",
+      "requirement_kind": "FORBIDDEN",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/permission_actor_closure/actor_class_entry/EXTERNAL_AUTHORITY"
+    },
+    {
+      "field_name": null,
+      "owner_record": "capability_contract.permission_model.operation_permission_binding",
+      "source_value": true,
+      "raw_predicate": "actor_class_refs_must_be_empty",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/permission_actor_closure/operation_permission_binding/UNRESTRICTED/actor_class_refs_must_be_empty",
+      "requirement_kind": "SEMANTIC_PREDICATE",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/permission_actor_closure/operation_permission_binding/UNRESTRICTED"
+    },
+    {
+      "field_name": "authorization_rule_refs",
+      "owner_record": "capability_contract.permission_model.operation_permission_binding",
+      "source_value": true,
+      "raw_predicate": "authorization_rule_refs_must_be_empty",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/permission_actor_closure/operation_permission_binding/UNRESTRICTED/authorization_rule_refs_must_be_empty",
+      "requirement_kind": "EMPTY_REQUIRED",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/permission_actor_closure/operation_permission_binding/UNRESTRICTED"
+    },
+    {
+      "field_name": null,
+      "owner_record": "capability_contract.permission_model.operation_permission_binding",
+      "source_value": true,
+      "raw_predicate": "denial_stable_error_code_may_be_null",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/permission_actor_closure/operation_permission_binding/UNRESTRICTED/denial_stable_error_code_may_be_null",
+      "requirement_kind": "SEMANTIC_PREDICATE",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/permission_actor_closure/operation_permission_binding/UNRESTRICTED"
+    },
+    {
+      "field_name": "actor_class_refs",
+      "owner_record": "capability_contract.permission_model.operation_permission_binding",
+      "source_value": true,
+      "raw_predicate": "actor_class_refs_nonempty",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/permission_actor_closure/operation_permission_binding/RESTRICTED/actor_class_refs_nonempty",
+      "requirement_kind": "NONEMPTY_REQUIRED",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/permission_actor_closure/operation_permission_binding/RESTRICTED"
+    },
+    {
+      "field_name": "authorization_rule_refs",
+      "owner_record": "capability_contract.permission_model.operation_permission_binding",
+      "source_value": true,
+      "raw_predicate": "authorization_rule_refs_nonempty",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/permission_actor_closure/operation_permission_binding/RESTRICTED/authorization_rule_refs_nonempty",
+      "requirement_kind": "NONEMPTY_REQUIRED",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/permission_actor_closure/operation_permission_binding/RESTRICTED"
+    },
+    {
+      "field_name": "target_operation_refs",
+      "owner_record": "capability_contract.rule_bindings.binding_entry",
+      "source_value": true,
+      "raw_predicate": "target_operation_refs_nonempty",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/rule_binding_closure/evaluation_realization/OPERATION_ENFORCED/target_operation_refs_nonempty",
+      "requirement_kind": "NONEMPTY_REQUIRED",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/rule_binding_closure/evaluation_realization/OPERATION_ENFORCED"
+    },
+    {
+      "field_name": "decision_operational_relation_ref",
+      "owner_record": "capability_contract.rule_bindings.binding_entry",
+      "source_value": true,
+      "raw_predicate": "decision_operational_relation_ref_must_be_null",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/rule_binding_closure/evaluation_realization/OPERATION_ENFORCED/decision_operational_relation_ref_must_be_null",
+      "requirement_kind": "NULL_REQUIRED",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/rule_binding_closure/evaluation_realization/OPERATION_ENFORCED"
+    },
+    {
+      "field_name": null,
+      "owner_record": "capability_contract.rule_bindings.binding_entry",
+      "source_value": true,
+      "raw_predicate": "blocking_phase_failure_stable_error_code_required",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/rule_binding_closure/evaluation_realization/OPERATION_ENFORCED/blocking_phase_failure_stable_error_code_required",
+      "requirement_kind": "SEMANTIC_PREDICATE",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/rule_binding_closure/evaluation_realization/OPERATION_ENFORCED"
+    },
+    {
+      "field_name": "decision_operational_relation_ref",
+      "owner_record": "capability_contract.rule_bindings.binding_entry",
+      "source_value": true,
+      "raw_predicate": "decision_operational_relation_ref_required",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/rule_binding_closure/evaluation_realization/DEPENDENCY_DECISION/decision_operational_relation_ref_required",
+      "requirement_kind": "CONDITIONAL_REQUIRED",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/rule_binding_closure/evaluation_realization/DEPENDENCY_DECISION"
+    },
+    {
+      "field_name": "decision_consumer_binding_key",
+      "owner_record": "capability_contract.rule_bindings.binding_entry",
+      "source_value": true,
+      "raw_predicate": "decision_consumer_binding_key_required",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/rule_binding_closure/evaluation_realization/DEPENDENCY_DECISION/decision_consumer_binding_key_required",
+      "requirement_kind": "CONDITIONAL_REQUIRED",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/rule_binding_closure/evaluation_realization/DEPENDENCY_DECISION"
+    },
+    {
+      "field_name": null,
+      "owner_record": "capability_contract.rule_bindings.binding_entry",
+      "source_value": true,
+      "raw_predicate": "blocking_phase_failure_stable_error_code_required",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/rule_binding_closure/evaluation_realization/DEPENDENCY_DECISION/blocking_phase_failure_stable_error_code_required",
+      "requirement_kind": "SEMANTIC_PREDICATE",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/rule_binding_closure/evaluation_realization/DEPENDENCY_DECISION"
+    },
+    {
+      "field_name": null,
+      "owner_record": "capability_contract.rule_bindings.binding_entry",
+      "source_value": true,
+      "raw_predicate": "human_decision_actor_class_refs_nonempty",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/rule_binding_closure/evaluation_realization/HUMAN_DECISION/human_decision_actor_class_refs_nonempty",
+      "requirement_kind": "SEMANTIC_PREDICATE",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/rule_binding_closure/evaluation_realization/HUMAN_DECISION"
+    },
+    {
+      "field_name": null,
+      "owner_record": "capability_contract.rule_bindings.binding_entry",
+      "source_value": true,
+      "raw_predicate": "human_decision_field_binding_required",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/rule_binding_closure/evaluation_realization/HUMAN_DECISION/human_decision_field_binding_required",
+      "requirement_kind": "SEMANTIC_PREDICATE",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/rule_binding_closure/evaluation_realization/HUMAN_DECISION"
+    },
+    {
+      "field_name": "decision_operational_relation_ref",
+      "owner_record": "capability_contract.rule_bindings.binding_entry",
+      "source_value": true,
+      "raw_predicate": "decision_operational_relation_ref_must_be_null",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/rule_binding_closure/evaluation_realization/HUMAN_DECISION/decision_operational_relation_ref_must_be_null",
+      "requirement_kind": "NULL_REQUIRED",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/rule_binding_closure/evaluation_realization/HUMAN_DECISION"
+    },
+    {
+      "field_name": null,
+      "owner_record": "capability_contract.rule_bindings.binding_entry",
+      "source_value": true,
+      "raw_predicate": "blocking_phase_failure_stable_error_code_required",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/rule_binding_closure/evaluation_realization/HUMAN_DECISION/blocking_phase_failure_stable_error_code_required",
+      "requirement_kind": "SEMANTIC_PREDICATE",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/rule_binding_closure/evaluation_realization/HUMAN_DECISION"
+    },
+    {
+      "field_name": null,
+      "owner_record": "capability_contract.rule_bindings.binding_entry",
+      "source_value": true,
+      "raw_predicate": "failure_stable_error_code_must_be_null",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/rule_binding_closure/evaluation_realization/INFORMATIONAL/failure_stable_error_code_must_be_null",
+      "requirement_kind": "SEMANTIC_PREDICATE",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/rule_binding_closure/evaluation_realization/INFORMATIONAL"
+    },
+    {
+      "field_name": "instance_variable_ref",
+      "owner_record": "capability_contract.interfaces.request_field.x_q_field_semantics",
+      "source_value": true,
+      "raw_predicate": "instance_variable_ref_forbidden",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/instance_variability_model/request_field_variability_annotation/GENERAL/instance_variable_ref_forbidden",
+      "requirement_kind": "FORBIDDEN",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/instance_variability_model/request_field_variability_annotation/GENERAL"
+    },
+    {
+      "field_name": "instance_variable_ref",
+      "owner_record": "capability_contract.interfaces.request_field.x_q_field_semantics",
+      "source_value": true,
+      "raw_predicate": "instance_variable_ref_required",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/instance_variability_model/request_field_variability_annotation/INSTANCE/instance_variable_ref_required",
+      "requirement_kind": "CONDITIONAL_REQUIRED",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/instance_variability_model/request_field_variability_annotation/INSTANCE"
+    },
+    {
+      "field_name": "external_provider_surface_ref",
+      "owner_record": "capability_contract.p2_handoff.capability_publication",
+      "source_value": true,
+      "raw_predicate": "external_provider_surface_ref_required",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/p1_to_p2_handoff_declaration_contract/section_contract/capability_publication/NONE/external_provider_surface_ref_required",
+      "requirement_kind": "CONDITIONAL_REQUIRED",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/p1_to_p2_handoff_declaration_contract/section_contract/capability_publication/NONE"
+    },
+    {
+      "field_name": null,
+      "owner_record": "capability_contract.p2_handoff.capability_publication",
+      "source_value": true,
+      "raw_predicate": "p2_publication_or_mount_claim_forbidden",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/p1_to_p2_handoff_declaration_contract/section_contract/capability_publication/NONE/p2_publication_or_mount_claim_forbidden",
+      "requirement_kind": "SEMANTIC_PREDICATE",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/p1_to_p2_handoff_declaration_contract/section_contract/capability_publication/NONE"
+    },
+    {
+      "field_name": null,
+      "owner_record": "capability_contract.p2_handoff.capability_publication",
+      "source_value": true,
+      "raw_predicate": "capability_contract_ref_and_external_content_hash_binding_required",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/p1_to_p2_handoff_declaration_contract/section_contract/capability_publication/PUBLICATION_ELIGIBLE/capability_contract_ref_and_external_content_hash_binding_required",
+      "requirement_kind": "SEMANTIC_PREDICATE",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/p1_to_p2_handoff_declaration_contract/section_contract/capability_publication/PUBLICATION_ELIGIBLE"
+    },
+    {
+      "field_name": null,
+      "owner_record": "capability_contract.p2_handoff.capability_publication",
+      "source_value": true,
+      "raw_predicate": "external_provider_surface_ref_and_resolved_surface_hash_binding_required",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/p1_to_p2_handoff_declaration_contract/section_contract/capability_publication/PUBLICATION_ELIGIBLE/external_provider_surface_ref_and_resolved_surface_hash_binding_required",
+      "requirement_kind": "SEMANTIC_PREDICATE",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/p1_to_p2_handoff_declaration_contract/section_contract/capability_publication/PUBLICATION_ELIGIBLE"
+    },
+    {
+      "field_name": null,
+      "owner_record": "capability_contract.p2_handoff.capability_publication",
+      "source_value": true,
+      "raw_predicate": "exact_current_p2_capability_handoff_ref_required",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/p1_to_p2_handoff_declaration_contract/section_contract/capability_publication/PUBLICATION_ELIGIBLE/exact_current_p2_capability_handoff_ref_required",
+      "requirement_kind": "SEMANTIC_PREDICATE",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/p1_to_p2_handoff_declaration_contract/section_contract/capability_publication/PUBLICATION_ELIGIBLE"
+    },
+    {
+      "field_name": null,
+      "owner_record": "capability_contract.p2_handoff.capability_publication",
+      "source_value": true,
+      "raw_predicate": "exact_current_p2_executable_implementation_material_ref_required",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/p1_to_p2_handoff_declaration_contract/section_contract/capability_publication/PUBLICATION_ELIGIBLE/exact_current_p2_executable_implementation_material_ref_required",
+      "requirement_kind": "SEMANTIC_PREDICATE",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/p1_to_p2_handoff_declaration_contract/section_contract/capability_publication/PUBLICATION_ELIGIBLE"
+    },
+    {
+      "field_name": null,
+      "owner_record": "capability_contract.p2_handoff.governed_data_exposure.bindings_item",
+      "source_value": true,
+      "raw_predicate": "exact_source_identity_or_revision_semantics_required",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/p1_to_p2_handoff_declaration_contract/section_contract/governed_data_exposure/DECLARED/STATIC/exact_source_identity_or_revision_semantics_required",
+      "requirement_kind": "SEMANTIC_PREDICATE",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/p1_to_p2_handoff_declaration_contract/section_contract/governed_data_exposure/DECLARED/STATIC"
+    },
+    {
+      "field_name": null,
+      "owner_record": "capability_contract.p2_handoff.governed_data_exposure.bindings_item",
+      "source_value": true,
+      "raw_predicate": "exact_source_interface_required",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/p1_to_p2_handoff_declaration_contract/section_contract/governed_data_exposure/DECLARED/STATIC/exact_source_interface_required",
+      "requirement_kind": "SEMANTIC_PREDICATE",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/p1_to_p2_handoff_declaration_contract/section_contract/governed_data_exposure/DECLARED/STATIC"
+    },
+    {
+      "field_name": "source_revision_semantics_ref",
+      "owner_record": "capability_contract.p2_handoff.governed_data_exposure.bindings_item",
+      "source_value": true,
+      "raw_predicate": "source_revision_semantics_ref_required",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/p1_to_p2_handoff_declaration_contract/section_contract/governed_data_exposure/DECLARED/DYNAMIC/source_revision_semantics_ref_required",
+      "requirement_kind": "CONDITIONAL_REQUIRED",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/p1_to_p2_handoff_declaration_contract/section_contract/governed_data_exposure/DECLARED/DYNAMIC"
+    },
+    {
+      "field_name": "selection_semantics_ref",
+      "owner_record": "capability_contract.p2_handoff.governed_data_exposure.bindings_item",
+      "source_value": true,
+      "raw_predicate": "selection_semantics_ref_required",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/p1_to_p2_handoff_declaration_contract/section_contract/governed_data_exposure/DECLARED/DYNAMIC/selection_semantics_ref_required",
+      "requirement_kind": "CONDITIONAL_REQUIRED",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/p1_to_p2_handoff_declaration_contract/section_contract/governed_data_exposure/DECLARED/DYNAMIC"
+    },
+    {
+      "field_name": null,
+      "owner_record": "capability_contract.p2_handoff.governed_data_exposure.bindings_item",
+      "source_value": true,
+      "raw_predicate": "exact_source_interface_required",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/p1_to_p2_handoff_declaration_contract/section_contract/governed_data_exposure/DECLARED/DYNAMIC/exact_source_interface_required",
+      "requirement_kind": "SEMANTIC_PREDICATE",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/p1_to_p2_handoff_declaration_contract/section_contract/governed_data_exposure/DECLARED/DYNAMIC"
+    },
+    {
+      "field_name": null,
+      "owner_record": "capability_contract.p2_handoff.governed_data_exposure.bindings_item",
+      "source_value": true,
+      "raw_predicate": "provider_reexecution_only_to_manufacture_runtime_data_forbidden",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/p1_to_p2_handoff_declaration_contract/section_contract/governed_data_exposure/DECLARED/RUNTIME/provider_reexecution_only_to_manufacture_runtime_data_forbidden",
+      "requirement_kind": "SEMANTIC_PREDICATE",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/p1_to_p2_handoff_declaration_contract/section_contract/governed_data_exposure/DECLARED/RUNTIME"
+    },
+    {
+      "field_name": null,
+      "owner_record": "capability_contract.p2_handoff.governed_data_exposure.bindings_item",
+      "source_value": true,
+      "raw_predicate": "exact_source_interface_required",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/p1_to_p2_handoff_declaration_contract/section_contract/governed_data_exposure/DECLARED/RUNTIME/exact_source_interface_required",
+      "requirement_kind": "SEMANTIC_PREDICATE",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/p1_to_p2_handoff_declaration_contract/section_contract/governed_data_exposure/DECLARED/RUNTIME"
+    },
+    {
+      "field_name": null,
+      "owner_record": "capability_contract.instance_variability.variable_entry",
+      "source_value": true,
+      "raw_predicate": "request_field_binding_optional",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/instance_variability_model/projection_contract/VALUE_PARAMETER/request_field_binding_optional",
+      "requirement_kind": "SEMANTIC_PREDICATE",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/instance_variability_model/projection_contract/VALUE_PARAMETER"
+    }
+  ],
+  "verification_level": "SOURCE_ONLY",
+  "source_field_candidates": [
+    {
+      "field_name": "identity",
+      "requirement": "REQUIRED",
+      "owner_record": "capability_contract",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/capability_contract_required_semantics/required_sections/0"
+    },
+    {
+      "field_name": "ownership",
+      "requirement": "REQUIRED",
+      "owner_record": "capability_contract",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/capability_contract_required_semantics/required_sections/1"
+    },
+    {
+      "field_name": "operations",
+      "requirement": "REQUIRED",
+      "owner_record": "capability_contract",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/capability_contract_required_semantics/required_sections/2"
+    },
+    {
+      "field_name": "interfaces",
+      "requirement": "REQUIRED",
+      "owner_record": "capability_contract",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/capability_contract_required_semantics/required_sections/3"
+    },
+    {
+      "field_name": "external_provider_surface",
+      "requirement": "REQUIRED",
+      "owner_record": "capability_contract",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/capability_contract_required_semantics/required_sections/4"
+    },
+    {
+      "field_name": "p2_handoff",
+      "requirement": "REQUIRED",
+      "owner_record": "capability_contract",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/capability_contract_required_semantics/required_sections/5"
+    },
+    {
+      "field_name": "interface_inventory",
+      "requirement": "REQUIRED",
+      "owner_record": "capability_contract",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/capability_contract_required_semantics/required_sections/6"
+    },
+    {
+      "field_name": "type_closure",
+      "requirement": "REQUIRED",
+      "owner_record": "capability_contract",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/capability_contract_required_semantics/required_sections/7"
+    },
+    {
+      "field_name": "stable_errors",
+      "requirement": "REQUIRED",
+      "owner_record": "capability_contract",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/capability_contract_required_semantics/required_sections/8"
+    },
+    {
+      "field_name": "dependencies",
+      "requirement": "REQUIRED",
+      "owner_record": "capability_contract",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/capability_contract_required_semantics/required_sections/9"
+    },
+    {
+      "field_name": "extraction",
+      "requirement": "REQUIRED",
+      "owner_record": "capability_contract",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/capability_contract_required_semantics/required_sections/10"
+    },
+    {
+      "field_name": "compatibility",
+      "requirement": "REQUIRED",
+      "owner_record": "capability_contract",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/capability_contract_required_semantics/required_sections/11"
+    },
+    {
+      "field_name": "source_integrity",
+      "requirement": "REQUIRED",
+      "owner_record": "capability_contract",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/capability_contract_required_semantics/required_sections/12"
+    },
+    {
+      "field_name": "persistence_requirements",
+      "requirement": "REQUIRED",
+      "owner_record": "capability_contract",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/capability_contract_required_semantics/required_sections/13"
+    },
+    {
+      "field_name": "capability_rules",
+      "requirement": "REQUIRED",
+      "owner_record": "capability_contract",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/capability_contract_required_semantics/required_sections/14"
+    },
+    {
+      "field_name": "operational_relations",
+      "requirement": "REQUIRED",
+      "owner_record": "capability_contract",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/capability_contract_required_semantics/required_sections/15"
+    },
+    {
+      "field_name": "state_model",
+      "requirement": "REQUIRED",
+      "owner_record": "capability_contract",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/capability_contract_required_semantics/required_sections/16"
+    },
+    {
+      "field_name": "permission_model",
+      "requirement": "REQUIRED",
+      "owner_record": "capability_contract",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/capability_contract_required_semantics/required_sections/17"
+    },
+    {
+      "field_name": "rule_bindings",
+      "requirement": "REQUIRED",
+      "owner_record": "capability_contract",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/capability_contract_required_semantics/required_sections/18"
+    },
+    {
+      "field_name": "instance_variability",
+      "requirement": "REQUIRED",
+      "owner_record": "capability_contract",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/capability_contract_required_semantics/required_sections/19"
+    },
+    {
+      "field_name": "capability_ref",
+      "requirement": "REQUIRED",
+      "owner_record": "capability_contract.identity",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/capability_contract_required_semantics/identity_required/0"
+    },
+    {
+      "field_name": "capability_id",
+      "requirement": "REQUIRED",
+      "owner_record": "capability_contract.identity",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/capability_contract_required_semantics/identity_required/1"
+    },
+    {
+      "field_name": "capability_version",
+      "requirement": "REQUIRED",
+      "owner_record": "capability_contract.identity",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/capability_contract_required_semantics/identity_required/2"
+    },
+    {
+      "field_name": "capability_contract_ref",
+      "requirement": "REQUIRED",
+      "owner_record": "capability_contract.identity",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/capability_contract_required_semantics/identity_required/3"
+    },
+    {
+      "field_name": "capability_contract_integrity_binding_ref",
+      "requirement": "REQUIRED",
+      "owner_record": "capability_contract.identity",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/capability_contract_required_semantics/identity_required/4"
+    },
+    {
+      "field_name": "stage_contract_ref",
+      "requirement": "REQUIRED",
+      "owner_record": "capability_contract.ownership",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/capability_contract_required_semantics/ownership_required/0"
+    },
+    {
+      "field_name": "runtime_contract_ref",
+      "requirement": "REQUIRED",
+      "owner_record": "capability_contract.ownership",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/capability_contract_required_semantics/ownership_required/1"
+    },
+    {
+      "field_name": "domain_ref",
+      "requirement": "OPTIONAL",
+      "owner_record": "capability_contract.ownership",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/capability_contract_required_semantics/ownership_optional_legacy_compatibility_fields/0"
+    },
+    {
+      "field_name": "domain_contract_ref",
+      "requirement": "OPTIONAL",
+      "owner_record": "capability_contract.ownership",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/capability_contract_required_semantics/ownership_optional_legacy_compatibility_fields/1"
+    },
+    {
+      "field_name": "mode",
+      "requirement": "REQUIRED",
+      "owner_record": "capability_contract.external_provider_surface",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/external_provider_surface_contract/required_fields/0"
+    },
+    {
+      "field_name": "provider_interface_refs",
+      "requirement": "REQUIRED",
+      "owner_record": "capability_contract.external_provider_surface",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/external_provider_surface_contract/required_fields/1"
+    },
+    {
+      "field_name": "capability_publication",
+      "requirement": "REQUIRED",
+      "owner_record": "capability_contract.p2_handoff",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/p1_to_p2_handoff_declaration_contract/section_contract/required_members/0"
+    },
+    {
+      "field_name": "governed_data_exposure",
+      "requirement": "REQUIRED",
+      "owner_record": "capability_contract.p2_handoff",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/p1_to_p2_handoff_declaration_contract/section_contract/required_members/1"
+    },
+    {
+      "field_name": "mode",
+      "requirement": "REQUIRED",
+      "owner_record": "capability_contract.p2_handoff.capability_publication",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/p1_to_p2_handoff_declaration_contract/section_contract/capability_publication/required_fields/0"
+    },
+    {
+      "field_name": "external_provider_surface_ref",
+      "requirement": "REQUIRED",
+      "owner_record": "capability_contract.p2_handoff.capability_publication",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/p1_to_p2_handoff_declaration_contract/section_contract/capability_publication/required_fields/1"
+    },
+    {
+      "field_name": "mode",
+      "requirement": "REQUIRED",
+      "owner_record": "capability_contract.p2_handoff.governed_data_exposure",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/p1_to_p2_handoff_declaration_contract/section_contract/governed_data_exposure/required_fields/0"
+    },
+    {
+      "field_name": "bindings",
+      "requirement": "REQUIRED",
+      "owner_record": "capability_contract.p2_handoff.governed_data_exposure",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/p1_to_p2_handoff_declaration_contract/section_contract/governed_data_exposure/required_fields/1"
+    },
+    {
+      "field_name": "binding_ref",
+      "requirement": "CONDITIONAL",
+      "owner_record": "capability_contract.p2_handoff.governed_data_exposure.bindings_item",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/p1_to_p2_handoff_declaration_contract/section_contract/governed_data_exposure/DECLARED/each_binding_required_fields/0",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/p1_to_p2_handoff_declaration_contract/section_contract/governed_data_exposure/DECLARED"
+    },
+    {
+      "field_name": "data_category",
+      "requirement": "CONDITIONAL",
+      "owner_record": "capability_contract.p2_handoff.governed_data_exposure.bindings_item",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/p1_to_p2_handoff_declaration_contract/section_contract/governed_data_exposure/DECLARED/each_binding_required_fields/1",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/p1_to_p2_handoff_declaration_contract/section_contract/governed_data_exposure/DECLARED"
+    },
+    {
+      "field_name": "source_operation_ref",
+      "requirement": "CONDITIONAL",
+      "owner_record": "capability_contract.p2_handoff.governed_data_exposure.bindings_item",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/p1_to_p2_handoff_declaration_contract/section_contract/governed_data_exposure/DECLARED/each_binding_required_fields/2",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/p1_to_p2_handoff_declaration_contract/section_contract/governed_data_exposure/DECLARED"
+    },
+    {
+      "field_name": "source_interface_ref",
+      "requirement": "CONDITIONAL",
+      "owner_record": "capability_contract.p2_handoff.governed_data_exposure.bindings_item",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/p1_to_p2_handoff_declaration_contract/section_contract/governed_data_exposure/DECLARED/each_binding_required_fields/3",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/p1_to_p2_handoff_declaration_contract/section_contract/governed_data_exposure/DECLARED"
+    },
+    {
+      "field_name": "source_access_kind",
+      "requirement": "CONDITIONAL",
+      "owner_record": "capability_contract.p2_handoff.governed_data_exposure.bindings_item",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/p1_to_p2_handoff_declaration_contract/section_contract/governed_data_exposure/DECLARED/each_binding_required_fields/4",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/p1_to_p2_handoff_declaration_contract/section_contract/governed_data_exposure/DECLARED"
+    },
+    {
+      "field_name": "source_access_ref",
+      "requirement": "CONDITIONAL",
+      "owner_record": "capability_contract.p2_handoff.governed_data_exposure.bindings_item",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/p1_to_p2_handoff_declaration_contract/section_contract/governed_data_exposure/DECLARED/each_binding_required_fields/5",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/p1_to_p2_handoff_declaration_contract/section_contract/governed_data_exposure/DECLARED"
+    },
+    {
+      "field_name": "members",
+      "requirement": "CONDITIONAL",
+      "owner_record": "capability_contract.p2_handoff.governed_data_exposure.bindings_item",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/p1_to_p2_handoff_declaration_contract/section_contract/governed_data_exposure/DECLARED/each_binding_required_fields/6",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/p1_to_p2_handoff_declaration_contract/section_contract/governed_data_exposure/DECLARED"
+    },
+    {
+      "field_name": "member_ref",
+      "requirement": "CONDITIONAL",
+      "owner_record": "capability_contract.p2_handoff.governed_data_exposure.members_item",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/p1_to_p2_handoff_declaration_contract/section_contract/governed_data_exposure/DECLARED/each_member_required_fields/0",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/p1_to_p2_handoff_declaration_contract/section_contract/governed_data_exposure/DECLARED"
+    },
+    {
+      "field_name": "source_fact_ref",
+      "requirement": "CONDITIONAL",
+      "owner_record": "capability_contract.p2_handoff.governed_data_exposure.members_item",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/p1_to_p2_handoff_declaration_contract/section_contract/governed_data_exposure/DECLARED/each_member_required_fields/1",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/p1_to_p2_handoff_declaration_contract/section_contract/governed_data_exposure/DECLARED"
+    },
+    {
+      "field_name": "source_fact_authority_ref",
+      "requirement": "CONDITIONAL",
+      "owner_record": "capability_contract.p2_handoff.governed_data_exposure.members_item",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/p1_to_p2_handoff_declaration_contract/section_contract/governed_data_exposure/DECLARED/each_member_required_fields/2",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/p1_to_p2_handoff_declaration_contract/section_contract/governed_data_exposure/DECLARED"
+    },
+    {
+      "field_name": "semantic_kind",
+      "requirement": "CONDITIONAL",
+      "owner_record": "capability_contract.interfaces.request_field.x_q_field_semantics",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/payload_field_semantic_closure/semantic_kinds/PLAIN_VALUE/required_fields/0",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/payload_field_semantic_closure/semantic_kinds/PLAIN_VALUE"
+    },
+    {
+      "field_name": "semantic_kind",
+      "requirement": "CONDITIONAL",
+      "owner_record": "capability_contract.interfaces.request_field.x_q_field_semantics",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/payload_field_semantic_closure/semantic_kinds/BUSINESS_REFERENCE/common_required_fields/0",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/payload_field_semantic_closure/semantic_kinds/BUSINESS_REFERENCE"
+    },
+    {
+      "field_name": "reference_owner_mode",
+      "requirement": "CONDITIONAL",
+      "owner_record": "capability_contract.interfaces.request_field.x_q_field_semantics",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/payload_field_semantic_closure/semantic_kinds/BUSINESS_REFERENCE/common_required_fields/1",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/payload_field_semantic_closure/semantic_kinds/BUSINESS_REFERENCE"
+    },
+    {
+      "field_name": "resolution_mode",
+      "requirement": "CONDITIONAL",
+      "owner_record": "capability_contract.interfaces.request_field.x_q_field_semantics",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/payload_field_semantic_closure/semantic_kinds/BUSINESS_REFERENCE/common_required_fields/2",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/payload_field_semantic_closure/semantic_kinds/BUSINESS_REFERENCE"
+    },
+    {
+      "field_name": "selection_cardinality",
+      "requirement": "CONDITIONAL",
+      "owner_record": "capability_contract.interfaces.request_field.x_q_field_semantics",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/payload_field_semantic_closure/semantic_kinds/BUSINESS_REFERENCE/common_required_fields/3",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/payload_field_semantic_closure/semantic_kinds/BUSINESS_REFERENCE"
+    },
+    {
+      "field_name": "manual_entry_allowed",
+      "requirement": "CONDITIONAL",
+      "owner_record": "capability_contract.interfaces.request_field.x_q_field_semantics",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/payload_field_semantic_closure/semantic_kinds/BUSINESS_REFERENCE/common_required_fields/4",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/payload_field_semantic_closure/semantic_kinds/BUSINESS_REFERENCE"
+    },
+    {
+      "field_name": "identity_field_path",
+      "requirement": "CONDITIONAL",
+      "owner_record": "capability_contract.interfaces.request_field.x_q_field_semantics",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/payload_field_semantic_closure/semantic_kinds/BUSINESS_REFERENCE/resolvable_reference_material/required_fields/0",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/payload_field_semantic_closure/semantic_kinds/BUSINESS_REFERENCE/resolvable_reference_material"
+    },
+    {
+      "field_name": "display_field_paths",
+      "requirement": "CONDITIONAL",
+      "owner_record": "capability_contract.interfaces.request_field.x_q_field_semantics",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/payload_field_semantic_closure/semantic_kinds/BUSINESS_REFERENCE/resolvable_reference_material/required_fields/1",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/payload_field_semantic_closure/semantic_kinds/BUSINESS_REFERENCE/resolvable_reference_material"
+    },
+    {
+      "field_name": "read_operation_ref",
+      "requirement": "CONDITIONAL",
+      "owner_record": "capability_contract.interfaces.request_field.x_q_field_semantics",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/payload_field_semantic_closure/semantic_kinds/BUSINESS_REFERENCE/resolvable_reference_material/required_fields/2",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/payload_field_semantic_closure/semantic_kinds/BUSINESS_REFERENCE/resolvable_reference_material"
+    },
+    {
+      "field_name": "read_interface_ref",
+      "requirement": "CONDITIONAL",
+      "owner_record": "capability_contract.interfaces.request_field.x_q_field_semantics",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/payload_field_semantic_closure/semantic_kinds/BUSINESS_REFERENCE/resolvable_reference_material/required_fields/3",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/payload_field_semantic_closure/semantic_kinds/BUSINESS_REFERENCE/resolvable_reference_material"
+    },
+    {
+      "field_name": "read_request_identity_field_path",
+      "requirement": "CONDITIONAL",
+      "owner_record": "capability_contract.interfaces.request_field.x_q_field_semantics",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/payload_field_semantic_closure/semantic_kinds/BUSINESS_REFERENCE/resolvable_reference_material/required_fields/4",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/payload_field_semantic_closure/semantic_kinds/BUSINESS_REFERENCE/resolvable_reference_material"
+    },
+    {
+      "field_name": "read_result_object_path",
+      "requirement": "CONDITIONAL",
+      "owner_record": "capability_contract.interfaces.request_field.x_q_field_semantics",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/payload_field_semantic_closure/semantic_kinds/BUSINESS_REFERENCE/resolvable_reference_material/required_fields/5",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/payload_field_semantic_closure/semantic_kinds/BUSINESS_REFERENCE/resolvable_reference_material"
+    },
+    {
+      "field_name": "lookup_operation_ref",
+      "requirement": "CONDITIONAL",
+      "owner_record": "capability_contract.interfaces.request_field.x_q_field_semantics",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/payload_field_semantic_closure/semantic_kinds/BUSINESS_REFERENCE/enumerable_lookup_material/required_fields/0",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/payload_field_semantic_closure/semantic_kinds/BUSINESS_REFERENCE/enumerable_lookup_material"
+    },
+    {
+      "field_name": "lookup_interface_ref",
+      "requirement": "CONDITIONAL",
+      "owner_record": "capability_contract.interfaces.request_field.x_q_field_semantics",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/payload_field_semantic_closure/semantic_kinds/BUSINESS_REFERENCE/enumerable_lookup_material/required_fields/1",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/payload_field_semantic_closure/semantic_kinds/BUSINESS_REFERENCE/enumerable_lookup_material"
+    },
+    {
+      "field_name": "lookup_request_input_template",
+      "requirement": "CONDITIONAL",
+      "owner_record": "capability_contract.interfaces.request_field.x_q_field_semantics",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/payload_field_semantic_closure/semantic_kinds/BUSINESS_REFERENCE/enumerable_lookup_material/required_fields/2",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/payload_field_semantic_closure/semantic_kinds/BUSINESS_REFERENCE/enumerable_lookup_material"
+    },
+    {
+      "field_name": "lookup_result_collection_path",
+      "requirement": "CONDITIONAL",
+      "owner_record": "capability_contract.interfaces.request_field.x_q_field_semantics",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/payload_field_semantic_closure/semantic_kinds/BUSINESS_REFERENCE/enumerable_lookup_material/required_fields/3",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/payload_field_semantic_closure/semantic_kinds/BUSINESS_REFERENCE/enumerable_lookup_material"
+    },
+    {
+      "field_name": "semantic_kind",
+      "requirement": "CONDITIONAL",
+      "owner_record": "capability_contract.interfaces.request_field.x_q_field_semantics",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/payload_field_semantic_closure/semantic_kinds/BUSINESS_REFERENCE/external_opaque_resolution/required_fields/0",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/payload_field_semantic_closure/semantic_kinds/BUSINESS_REFERENCE/external_opaque_resolution"
+    },
+    {
+      "field_name": "reference_owner_mode",
+      "requirement": "CONDITIONAL",
+      "owner_record": "capability_contract.interfaces.request_field.x_q_field_semantics",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/payload_field_semantic_closure/semantic_kinds/BUSINESS_REFERENCE/external_opaque_resolution/required_fields/1",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/payload_field_semantic_closure/semantic_kinds/BUSINESS_REFERENCE/external_opaque_resolution"
+    },
+    {
+      "field_name": "resolution_mode",
+      "requirement": "CONDITIONAL",
+      "owner_record": "capability_contract.interfaces.request_field.x_q_field_semantics",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/payload_field_semantic_closure/semantic_kinds/BUSINESS_REFERENCE/external_opaque_resolution/required_fields/2",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/payload_field_semantic_closure/semantic_kinds/BUSINESS_REFERENCE/external_opaque_resolution"
+    },
+    {
+      "field_name": "selection_cardinality",
+      "requirement": "CONDITIONAL",
+      "owner_record": "capability_contract.interfaces.request_field.x_q_field_semantics",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/payload_field_semantic_closure/semantic_kinds/BUSINESS_REFERENCE/external_opaque_resolution/required_fields/3",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/payload_field_semantic_closure/semantic_kinds/BUSINESS_REFERENCE/external_opaque_resolution"
+    },
+    {
+      "field_name": "manual_entry_allowed",
+      "requirement": "CONDITIONAL",
+      "owner_record": "capability_contract.interfaces.request_field.x_q_field_semantics",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/payload_field_semantic_closure/semantic_kinds/BUSINESS_REFERENCE/external_opaque_resolution/required_fields/4",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/payload_field_semantic_closure/semantic_kinds/BUSINESS_REFERENCE/external_opaque_resolution"
+    },
+    {
+      "field_name": "semantic_kind",
+      "requirement": "CONDITIONAL",
+      "owner_record": "capability_contract.interfaces.request_field.x_q_field_semantics",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/payload_field_semantic_closure/semantic_kinds/TEMPORAL/required_fields/0",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/payload_field_semantic_closure/semantic_kinds/TEMPORAL"
+    },
+    {
+      "field_name": "temporal_kind",
+      "requirement": "CONDITIONAL",
+      "owner_record": "capability_contract.interfaces.request_field.x_q_field_semantics",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/payload_field_semantic_closure/semantic_kinds/TEMPORAL/required_fields/1",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/payload_field_semantic_closure/semantic_kinds/TEMPORAL"
+    },
+    {
+      "field_name": "range_start_path",
+      "requirement": "CONDITIONAL",
+      "owner_record": "capability_contract.interfaces.request_field.x_q_field_semantics",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/payload_field_semantic_closure/semantic_kinds/TEMPORAL/range_temporal_contract/required_annotation_fields/0",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/payload_field_semantic_closure/semantic_kinds/TEMPORAL/range_temporal_contract"
+    },
+    {
+      "field_name": "range_end_path",
+      "requirement": "CONDITIONAL",
+      "owner_record": "capability_contract.interfaces.request_field.x_q_field_semantics",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/payload_field_semantic_closure/semantic_kinds/TEMPORAL/range_temporal_contract/required_annotation_fields/1",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/payload_field_semantic_closure/semantic_kinds/TEMPORAL/range_temporal_contract"
+    },
+    {
+      "field_name": "range_endpoint_kind",
+      "requirement": "CONDITIONAL",
+      "owner_record": "capability_contract.interfaces.request_field.x_q_field_semantics",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/payload_field_semantic_closure/semantic_kinds/TEMPORAL/range_temporal_contract/required_annotation_fields/2",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/payload_field_semantic_closure/semantic_kinds/TEMPORAL/range_temporal_contract"
+    },
+    {
+      "field_name": "relation_ref",
+      "requirement": "REQUIRED",
+      "owner_record": "capability_contract.operational_relations.relation_entry",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/operational_relation_closure/relation_entry/required_fields/0"
+    },
+    {
+      "field_name": "consumer_operation_ref",
+      "requirement": "REQUIRED",
+      "owner_record": "capability_contract.operational_relations.relation_entry",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/operational_relation_closure/relation_entry/required_fields/1"
+    },
+    {
+      "field_name": "local_dependency_ref",
+      "requirement": "REQUIRED",
+      "owner_record": "capability_contract.operational_relations.relation_entry",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/operational_relation_closure/relation_entry/required_fields/2"
+    },
+    {
+      "field_name": "provider_capability_contract_ref",
+      "requirement": "REQUIRED",
+      "owner_record": "capability_contract.operational_relations.relation_entry",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/operational_relation_closure/relation_entry/required_fields/3"
+    },
+    {
+      "field_name": "provider_operation_ref",
+      "requirement": "REQUIRED",
+      "owner_record": "capability_contract.operational_relations.relation_entry",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/operational_relation_closure/relation_entry/required_fields/4"
+    },
+    {
+      "field_name": "provider_interface_ref",
+      "requirement": "REQUIRED",
+      "owner_record": "capability_contract.operational_relations.relation_entry",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/operational_relation_closure/relation_entry/required_fields/5"
+    },
+    {
+      "field_name": "connection_mode",
+      "requirement": "REQUIRED",
+      "owner_record": "capability_contract.operational_relations.relation_entry",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/operational_relation_closure/relation_entry/required_fields/6"
+    },
+    {
+      "field_name": "invocation_mode",
+      "requirement": "REQUIRED",
+      "owner_record": "capability_contract.operational_relations.relation_entry",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/operational_relation_closure/relation_entry/required_fields/7"
+    },
+    {
+      "field_name": "response_aggregation_mode",
+      "requirement": "REQUIRED",
+      "owner_record": "capability_contract.operational_relations.relation_entry",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/operational_relation_closure/relation_entry/required_fields/8"
+    },
+    {
+      "field_name": "for_each_error_mode",
+      "requirement": "REQUIRED",
+      "owner_record": "capability_contract.operational_relations.relation_entry",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/operational_relation_closure/relation_entry/required_fields/9"
+    },
+    {
+      "field_name": "request_mapping",
+      "requirement": "REQUIRED",
+      "owner_record": "capability_contract.operational_relations.relation_entry",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/operational_relation_closure/relation_entry/required_fields/10"
+    },
+    {
+      "field_name": "response_mapping",
+      "requirement": "REQUIRED",
+      "owner_record": "capability_contract.operational_relations.relation_entry",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/operational_relation_closure/relation_entry/required_fields/11"
+    },
+    {
+      "field_name": "stable_error_mode",
+      "requirement": "REQUIRED",
+      "owner_record": "capability_contract.operational_relations.relation_entry",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/operational_relation_closure/relation_entry/required_fields/12"
+    },
+    {
+      "field_name": "provider_request_field_path",
+      "requirement": "REQUIRED",
+      "owner_record": "capability_contract.operational_relations.request_mapping_entry",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/operational_relation_closure/request_mapping/entry_required_fields/0"
+    },
+    {
+      "field_name": "source_kind",
+      "requirement": "REQUIRED",
+      "owner_record": "capability_contract.operational_relations.request_mapping_entry",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/operational_relation_closure/request_mapping/entry_required_fields/1"
+    },
+    {
+      "field_name": "provider_runtime_result_path",
+      "requirement": "REQUIRED",
+      "owner_record": "capability_contract.operational_relations.response_mapping_entry",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/operational_relation_closure/response_mapping/entry_required_fields/0"
+    },
+    {
+      "field_name": "consumer_binding_key",
+      "requirement": "REQUIRED",
+      "owner_record": "capability_contract.operational_relations.response_mapping_entry",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/operational_relation_closure/response_mapping/entry_required_fields/1"
+    },
+    {
+      "field_name": "consumer_binding_schema_ref",
+      "requirement": "REQUIRED",
+      "owner_record": "capability_contract.operational_relations.response_mapping_entry",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/operational_relation_closure/response_mapping/entry_required_fields/2"
+    },
+    {
+      "field_name": "required",
+      "requirement": "REQUIRED",
+      "owner_record": "capability_contract.operational_relations.response_mapping_entry",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/operational_relation_closure/response_mapping/entry_required_fields/3"
+    },
+    {
+      "field_name": "dependency_ref",
+      "requirement": "CONDITIONAL",
+      "owner_record": "capability_contract.dependencies.receiving_dependency",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/operational_relation_closure/p2_governed_data_receiving_dependency_closure/required_dependency_fields/0",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/operational_relation_closure/p2_governed_data_receiving_dependency_closure"
+    },
+    {
+      "field_name": "classification",
+      "requirement": "CONDITIONAL",
+      "owner_record": "capability_contract.dependencies.receiving_dependency",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/operational_relation_closure/p2_governed_data_receiving_dependency_closure/required_dependency_fields/1",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/operational_relation_closure/p2_governed_data_receiving_dependency_closure"
+    },
+    {
+      "field_name": "source_binding_kind",
+      "requirement": "CONDITIONAL",
+      "owner_record": "capability_contract.dependencies.receiving_dependency",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/operational_relation_closure/p2_governed_data_receiving_dependency_closure/required_dependency_fields/2",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/operational_relation_closure/p2_governed_data_receiving_dependency_closure"
+    },
+    {
+      "field_name": "consumer_capability_ref",
+      "requirement": "CONDITIONAL",
+      "owner_record": "capability_contract.dependencies.receiving_dependency",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/operational_relation_closure/p2_governed_data_receiving_dependency_closure/required_dependency_fields/3",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/operational_relation_closure/p2_governed_data_receiving_dependency_closure"
+    },
+    {
+      "field_name": "p2_dependency_realization_ref",
+      "requirement": "CONDITIONAL",
+      "owner_record": "capability_contract.dependencies.receiving_dependency",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/operational_relation_closure/p2_governed_data_receiving_dependency_closure/required_dependency_fields/4",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/operational_relation_closure/p2_governed_data_receiving_dependency_closure"
+    },
+    {
+      "field_name": "exact_owner_capability_ref",
+      "requirement": "CONDITIONAL",
+      "owner_record": "capability_contract.dependencies.receiving_dependency",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/operational_relation_closure/p2_governed_data_receiving_dependency_closure/required_dependency_fields/5",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/operational_relation_closure/p2_governed_data_receiving_dependency_closure"
+    },
+    {
+      "field_name": "exact_receiving_operation_ref",
+      "requirement": "CONDITIONAL",
+      "owner_record": "capability_contract.dependencies.receiving_dependency",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/operational_relation_closure/p2_governed_data_receiving_dependency_closure/required_dependency_fields/6",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/operational_relation_closure/p2_governed_data_receiving_dependency_closure"
+    },
+    {
+      "field_name": "exact_local_dependency_ref",
+      "requirement": "CONDITIONAL",
+      "owner_record": "capability_contract.dependencies.receiving_dependency",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/operational_relation_closure/p2_governed_data_receiving_dependency_closure/required_dependency_fields/7",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/operational_relation_closure/p2_governed_data_receiving_dependency_closure"
+    },
+    {
+      "field_name": "p1_dependency_interface_ref",
+      "requirement": "CONDITIONAL",
+      "owner_record": "capability_contract.dependencies.receiving_dependency",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/operational_relation_closure/p2_governed_data_receiving_dependency_closure/required_dependency_fields/8",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/operational_relation_closure/p2_governed_data_receiving_dependency_closure"
+    },
+    {
+      "field_name": "state_machine_ref",
+      "requirement": "CONDITIONAL",
+      "owner_record": "capability_contract.state_model.state_machine",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/state_transition_closure/STATEFUL/state_machine_required_fields/0",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/state_transition_closure/STATEFUL"
+    },
+    {
+      "field_name": "subject_schema_ref",
+      "requirement": "CONDITIONAL",
+      "owner_record": "capability_contract.state_model.state_machine",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/state_transition_closure/STATEFUL/state_machine_required_fields/1",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/state_transition_closure/STATEFUL"
+    },
+    {
+      "field_name": "subject_identity_field_path",
+      "requirement": "CONDITIONAL",
+      "owner_record": "capability_contract.state_model.state_machine",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/state_transition_closure/STATEFUL/state_machine_required_fields/2",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/state_transition_closure/STATEFUL"
+    },
+    {
+      "field_name": "state_field_path",
+      "requirement": "CONDITIONAL",
+      "owner_record": "capability_contract.state_model.state_machine",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/state_transition_closure/STATEFUL/state_machine_required_fields/3",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/state_transition_closure/STATEFUL"
+    },
+    {
+      "field_name": "allowed_business_states",
+      "requirement": "CONDITIONAL",
+      "owner_record": "capability_contract.state_model.state_machine",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/state_transition_closure/STATEFUL/state_machine_required_fields/4",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/state_transition_closure/STATEFUL"
+    },
+    {
+      "field_name": "initial_state",
+      "requirement": "CONDITIONAL",
+      "owner_record": "capability_contract.state_model.state_machine",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/state_transition_closure/STATEFUL/state_machine_required_fields/5",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/state_transition_closure/STATEFUL"
+    },
+    {
+      "field_name": "terminal_states",
+      "requirement": "CONDITIONAL",
+      "owner_record": "capability_contract.state_model.state_machine",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/state_transition_closure/STATEFUL/state_machine_required_fields/6",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/state_transition_closure/STATEFUL"
+    },
+    {
+      "field_name": "invalid_state_stable_error_code",
+      "requirement": "CONDITIONAL",
+      "owner_record": "capability_contract.state_model.state_machine",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/state_transition_closure/STATEFUL/state_machine_required_fields/7",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/state_transition_closure/STATEFUL"
+    },
+    {
+      "field_name": "operation_state_bindings",
+      "requirement": "CONDITIONAL",
+      "owner_record": "capability_contract.state_model.state_machine",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/state_transition_closure/STATEFUL/state_machine_required_fields/8",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/state_transition_closure/STATEFUL"
+    },
+    {
+      "field_name": "transitions",
+      "requirement": "CONDITIONAL",
+      "owner_record": "capability_contract.state_model.state_machine",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/state_transition_closure/STATEFUL/state_machine_required_fields/9",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/state_transition_closure/STATEFUL"
+    },
+    {
+      "field_name": "operation_ref",
+      "requirement": "REQUIRED",
+      "owner_record": "capability_contract.state_model.operation_state_binding",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/state_transition_closure/operation_state_binding/required_fields/0"
+    },
+    {
+      "field_name": "applicability_mode",
+      "requirement": "REQUIRED",
+      "owner_record": "capability_contract.state_model.operation_state_binding",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/state_transition_closure/operation_state_binding/required_fields/1"
+    },
+    {
+      "field_name": "subject_identity_cardinality",
+      "requirement": "REQUIRED",
+      "owner_record": "capability_contract.state_model.operation_state_binding",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/state_transition_closure/operation_state_binding/required_fields/2"
+    },
+    {
+      "field_name": "subject_identity_input_path",
+      "requirement": "REQUIRED",
+      "owner_record": "capability_contract.state_model.operation_state_binding",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/state_transition_closure/operation_state_binding/required_fields/3"
+    },
+    {
+      "field_name": "subject_identity_result_path",
+      "requirement": "REQUIRED",
+      "owner_record": "capability_contract.state_model.operation_state_binding",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/state_transition_closure/operation_state_binding/required_fields/4"
+    },
+    {
+      "field_name": "availability_mode",
+      "requirement": "REQUIRED",
+      "owner_record": "capability_contract.state_model.operation_state_binding",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/state_transition_closure/operation_state_binding/required_fields/5"
+    },
+    {
+      "field_name": "allowed_states",
+      "requirement": "REQUIRED",
+      "owner_record": "capability_contract.state_model.operation_state_binding",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/state_transition_closure/operation_state_binding/required_fields/6"
+    },
+    {
+      "field_name": "guard_rule_refs",
+      "requirement": "REQUIRED",
+      "owner_record": "capability_contract.state_model.operation_state_binding",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/state_transition_closure/operation_state_binding/required_fields/7"
+    },
+    {
+      "field_name": "transition_refs",
+      "requirement": "REQUIRED",
+      "owner_record": "capability_contract.state_model.operation_state_binding",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/state_transition_closure/operation_state_binding/required_fields/8"
+    },
+    {
+      "field_name": "transition_ref",
+      "requirement": "REQUIRED",
+      "owner_record": "capability_contract.state_model.transition_entry",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/state_transition_closure/transition_entry/required_fields/0"
+    },
+    {
+      "field_name": "operation_ref",
+      "requirement": "REQUIRED",
+      "owner_record": "capability_contract.state_model.transition_entry",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/state_transition_closure/transition_entry/required_fields/1"
+    },
+    {
+      "field_name": "from_states",
+      "requirement": "REQUIRED",
+      "owner_record": "capability_contract.state_model.transition_entry",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/state_transition_closure/transition_entry/required_fields/2"
+    },
+    {
+      "field_name": "to_state",
+      "requirement": "REQUIRED",
+      "owner_record": "capability_contract.state_model.transition_entry",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/state_transition_closure/transition_entry/required_fields/3"
+    },
+    {
+      "field_name": "guard_rule_refs",
+      "requirement": "REQUIRED",
+      "owner_record": "capability_contract.state_model.transition_entry",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/state_transition_closure/transition_entry/required_fields/4"
+    },
+    {
+      "field_name": "permission_refs",
+      "requirement": "REQUIRED",
+      "owner_record": "capability_contract.state_model.transition_entry",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/state_transition_closure/transition_entry/required_fields/5"
+    },
+    {
+      "field_name": "actor_class_ref",
+      "requirement": "REQUIRED",
+      "owner_record": "capability_contract.permission_model.actor_class_entry",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/permission_actor_closure/actor_class_entry/required_fields/0"
+    },
+    {
+      "field_name": "identity_source_kind",
+      "requirement": "REQUIRED",
+      "owner_record": "capability_contract.permission_model.actor_class_entry",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/permission_actor_closure/actor_class_entry/required_fields/1"
+    },
+    {
+      "field_name": "permission_ref",
+      "requirement": "REQUIRED",
+      "owner_record": "capability_contract.permission_model.operation_permission_binding",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/permission_actor_closure/operation_permission_binding/required_fields/0"
+    },
+    {
+      "field_name": "operation_ref",
+      "requirement": "REQUIRED",
+      "owner_record": "capability_contract.permission_model.operation_permission_binding",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/permission_actor_closure/operation_permission_binding/required_fields/1"
+    },
+    {
+      "field_name": "access_mode",
+      "requirement": "REQUIRED",
+      "owner_record": "capability_contract.permission_model.operation_permission_binding",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/permission_actor_closure/operation_permission_binding/required_fields/2"
+    },
+    {
+      "field_name": "actor_class_refs",
+      "requirement": "REQUIRED",
+      "owner_record": "capability_contract.permission_model.operation_permission_binding",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/permission_actor_closure/operation_permission_binding/required_fields/3"
+    },
+    {
+      "field_name": "authorization_rule_refs",
+      "requirement": "REQUIRED",
+      "owner_record": "capability_contract.permission_model.operation_permission_binding",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/permission_actor_closure/operation_permission_binding/required_fields/4"
+    },
+    {
+      "field_name": "denial_stable_error_code",
+      "requirement": "REQUIRED",
+      "owner_record": "capability_contract.permission_model.operation_permission_binding",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/permission_actor_closure/operation_permission_binding/required_fields/5"
+    },
+    {
+      "field_name": "rule_ref",
+      "requirement": "REQUIRED",
+      "owner_record": "capability_contract.rule_bindings.binding_entry",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/rule_binding_closure/binding_entry/required_fields/0"
+    },
+    {
+      "field_name": "enforcement_phase",
+      "requirement": "REQUIRED",
+      "owner_record": "capability_contract.rule_bindings.binding_entry",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/rule_binding_closure/binding_entry/required_fields/1"
+    },
+    {
+      "field_name": "evaluation_realization_mode",
+      "requirement": "REQUIRED",
+      "owner_record": "capability_contract.rule_bindings.binding_entry",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/rule_binding_closure/binding_entry/required_fields/2"
+    },
+    {
+      "field_name": "target_operation_refs",
+      "requirement": "REQUIRED",
+      "owner_record": "capability_contract.rule_bindings.binding_entry",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/rule_binding_closure/binding_entry/required_fields/3"
+    },
+    {
+      "field_name": "target_field_bindings",
+      "requirement": "REQUIRED",
+      "owner_record": "capability_contract.rule_bindings.binding_entry",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/rule_binding_closure/binding_entry/required_fields/4"
+    },
+    {
+      "field_name": "target_transition_refs",
+      "requirement": "REQUIRED",
+      "owner_record": "capability_contract.rule_bindings.binding_entry",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/rule_binding_closure/binding_entry/required_fields/5"
+    },
+    {
+      "field_name": "target_operational_relation_refs",
+      "requirement": "REQUIRED",
+      "owner_record": "capability_contract.rule_bindings.binding_entry",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/rule_binding_closure/binding_entry/required_fields/6"
+    },
+    {
+      "field_name": "target_permission_refs",
+      "requirement": "REQUIRED",
+      "owner_record": "capability_contract.rule_bindings.binding_entry",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/rule_binding_closure/binding_entry/required_fields/7"
+    },
+    {
+      "field_name": "decision_operational_relation_ref",
+      "requirement": "REQUIRED",
+      "owner_record": "capability_contract.rule_bindings.binding_entry",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/rule_binding_closure/binding_entry/required_fields/8"
+    },
+    {
+      "field_name": "decision_consumer_binding_key",
+      "requirement": "REQUIRED",
+      "owner_record": "capability_contract.rule_bindings.binding_entry",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/rule_binding_closure/binding_entry/required_fields/9"
+    },
+    {
+      "field_name": "human_decision_actor_class_refs",
+      "requirement": "REQUIRED",
+      "owner_record": "capability_contract.rule_bindings.binding_entry",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/rule_binding_closure/binding_entry/required_fields/10"
+    },
+    {
+      "field_name": "human_decision_field_binding",
+      "requirement": "REQUIRED",
+      "owner_record": "capability_contract.rule_bindings.binding_entry",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/rule_binding_closure/binding_entry/required_fields/11"
+    },
+    {
+      "field_name": "human_allow_values",
+      "requirement": "REQUIRED",
+      "owner_record": "capability_contract.rule_bindings.binding_entry",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/rule_binding_closure/binding_entry/required_fields/12"
+    },
+    {
+      "field_name": "human_deny_values",
+      "requirement": "REQUIRED",
+      "owner_record": "capability_contract.rule_bindings.binding_entry",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/rule_binding_closure/binding_entry/required_fields/13"
+    },
+    {
+      "field_name": "failure_stable_error_code",
+      "requirement": "REQUIRED",
+      "owner_record": "capability_contract.rule_bindings.binding_entry",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/rule_binding_closure/binding_entry/required_fields/14"
+    },
+    {
+      "field_name": "operation_ref",
+      "requirement": "REQUIRED",
+      "owner_record": "capability_contract.rule_bindings.target_field_binding_entry",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/rule_binding_closure/target_field_binding_entry/required_fields/0"
+    },
+    {
+      "field_name": "boundary",
+      "requirement": "REQUIRED",
+      "owner_record": "capability_contract.rule_bindings.target_field_binding_entry",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/rule_binding_closure/target_field_binding_entry/required_fields/1"
+    },
+    {
+      "field_name": "field_path",
+      "requirement": "REQUIRED",
+      "owner_record": "capability_contract.rule_bindings.target_field_binding_entry",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/rule_binding_closure/target_field_binding_entry/required_fields/2"
+    },
+    {
+      "field_name": "instance_variable_ref",
+      "requirement": "CONDITIONAL",
+      "owner_record": "capability_contract.instance_variability.variable_entry",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/instance_variability_model/variable_entry/required_fields/0",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/instance_variability_model/variable_entry"
+    },
+    {
+      "field_name": "instance_variable_id",
+      "requirement": "CONDITIONAL",
+      "owner_record": "capability_contract.instance_variability.variable_entry",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/instance_variability_model/variable_entry/required_fields/1",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/instance_variability_model/variable_entry"
+    },
+    {
+      "field_name": "variable_kind",
+      "requirement": "CONDITIONAL",
+      "owner_record": "capability_contract.instance_variability.variable_entry",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/instance_variability_model/variable_entry/required_fields/2",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/instance_variability_model/variable_entry"
+    },
+    {
+      "field_name": "required",
+      "requirement": "CONDITIONAL",
+      "owner_record": "capability_contract.instance_variability.variable_entry",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/instance_variability_model/variable_entry/required_fields/3",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/instance_variability_model/variable_entry"
+    },
+    {
+      "field_name": "description",
+      "requirement": "CONDITIONAL",
+      "owner_record": "capability_contract.instance_variability.variable_entry",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/instance_variability_model/variable_entry/required_fields/4",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/instance_variability_model/variable_entry"
+    },
+    {
+      "field_name": "projection_contract",
+      "requirement": "CONDITIONAL",
+      "owner_record": "capability_contract.instance_variability.variable_entry",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/instance_variability_model/variable_entry/required_fields/5",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/instance_variability_model/variable_entry"
+    },
+    {
+      "field_name": "phase_id",
+      "requirement": "REQUIRED",
+      "owner_record": "materialization.phase_execution_binding",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/execution_binding_and_receipt_closure/phase_execution_binding_contract/required_fields/0"
+    },
+    {
+      "field_name": "executor_ref",
+      "requirement": "REQUIRED",
+      "owner_record": "materialization.phase_execution_binding",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/execution_binding_and_receipt_closure/phase_execution_binding_contract/required_fields/1"
+    },
+    {
+      "field_name": "executor_contract_ref",
+      "requirement": "REQUIRED",
+      "owner_record": "materialization.phase_execution_binding",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/execution_binding_and_receipt_closure/phase_execution_binding_contract/required_fields/2"
+    },
+    {
+      "field_name": "executor_contract_content_hash",
+      "requirement": "REQUIRED",
+      "owner_record": "materialization.phase_execution_binding",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/execution_binding_and_receipt_closure/phase_execution_binding_contract/required_fields/3"
+    },
+    {
+      "field_name": "operation_ref",
+      "requirement": "REQUIRED",
+      "owner_record": "materialization.phase_execution_binding",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/execution_binding_and_receipt_closure/phase_execution_binding_contract/required_fields/4"
+    },
+    {
+      "field_name": "interface_ref",
+      "requirement": "REQUIRED",
+      "owner_record": "materialization.phase_execution_binding",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/execution_binding_and_receipt_closure/phase_execution_binding_contract/required_fields/5"
+    },
+    {
+      "field_name": "materialization_goal",
+      "requirement": "REQUIRED",
+      "owner_record": "materialization.closure_receipt",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/execution_binding_and_receipt_closure/materialization_closure_receipt_contract/required_fields/0"
+    },
+    {
+      "field_name": "capability_contract_ref",
+      "requirement": "REQUIRED",
+      "owner_record": "materialization.closure_receipt",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/execution_binding_and_receipt_closure/materialization_closure_receipt_contract/required_fields/1"
+    },
+    {
+      "field_name": "capability_contract_content_hash",
+      "requirement": "REQUIRED",
+      "owner_record": "materialization.closure_receipt",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/execution_binding_and_receipt_closure/materialization_closure_receipt_contract/required_fields/2"
+    },
+    {
+      "field_name": "frozen_authority_bindings",
+      "requirement": "REQUIRED",
+      "owner_record": "materialization.closure_receipt",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/execution_binding_and_receipt_closure/materialization_closure_receipt_contract/required_fields/3"
+    },
+    {
+      "field_name": "phase_execution_bindings",
+      "requirement": "REQUIRED",
+      "owner_record": "materialization.closure_receipt",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/execution_binding_and_receipt_closure/materialization_closure_receipt_contract/required_fields/4"
+    },
+    {
+      "field_name": "phase_receipt_refs",
+      "requirement": "REQUIRED",
+      "owner_record": "materialization.closure_receipt",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/execution_binding_and_receipt_closure/materialization_closure_receipt_contract/required_fields/5"
+    },
+    {
+      "field_name": "materialized_output_bindings",
+      "requirement": "REQUIRED",
+      "owner_record": "materialization.closure_receipt",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/execution_binding_and_receipt_closure/materialization_closure_receipt_contract/required_fields/6"
+    },
+    {
+      "field_name": "completion_state",
+      "requirement": "REQUIRED",
+      "owner_record": "materialization.closure_receipt",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/execution_binding_and_receipt_closure/materialization_closure_receipt_contract/required_fields/7"
+    },
+    {
+      "field_name": "prompt_artifact_ref",
+      "requirement": "REQUIRED",
+      "owner_record": "materialization.closure_receipt",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/execution_binding_and_receipt_closure/materialization_closure_receipt_contract/required_fields/8"
+    },
+    {
+      "field_name": "prompt_artifact_content_hash",
+      "requirement": "REQUIRED",
+      "owner_record": "materialization.closure_receipt",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/execution_binding_and_receipt_closure/materialization_closure_receipt_contract/required_fields/9"
+    },
+    {
+      "field_name": "implementation_obligation_snapshot_hash",
+      "requirement": "REQUIRED",
+      "owner_record": "materialization.closure_receipt",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/execution_binding_and_receipt_closure/materialization_closure_receipt_contract/required_fields/10"
+    },
+    {
+      "field_name": "implementation_coverage_evidence",
+      "requirement": "REQUIRED",
+      "owner_record": "materialization.closure_receipt",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/execution_binding_and_receipt_closure/materialization_closure_receipt_contract/required_fields/11"
+    },
+    {
+      "field_name": "binding_kind",
+      "requirement": "REQUIRED",
+      "owner_record": "materialization.closure_receipt.output_binding",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/execution_binding_and_receipt_closure/materialization_closure_receipt_contract/materialized_output_binding_required_fields/0"
+    },
+    {
+      "field_name": "exact_ref",
+      "requirement": "REQUIRED",
+      "owner_record": "materialization.closure_receipt.output_binding",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/execution_binding_and_receipt_closure/materialization_closure_receipt_contract/materialized_output_binding_required_fields/1"
+    },
+    {
+      "field_name": "binding_ref",
+      "requirement": "REQUIRED",
+      "owner_record": "materialization.pre_instance_exposure_binding",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/p1_to_p2_handoff_declaration_contract/pre_instance_exposure_interface_closure/required_source_facts/0"
+    },
+    {
+      "field_name": "data_category",
+      "requirement": "REQUIRED",
+      "owner_record": "materialization.pre_instance_exposure_binding",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/p1_to_p2_handoff_declaration_contract/pre_instance_exposure_interface_closure/required_source_facts/1"
+    },
+    {
+      "field_name": "source_operation_ref",
+      "requirement": "REQUIRED",
+      "owner_record": "materialization.pre_instance_exposure_binding",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/p1_to_p2_handoff_declaration_contract/pre_instance_exposure_interface_closure/required_source_facts/2"
+    },
+    {
+      "field_name": "source_interface_ref",
+      "requirement": "REQUIRED",
+      "owner_record": "materialization.pre_instance_exposure_binding",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/p1_to_p2_handoff_declaration_contract/pre_instance_exposure_interface_closure/required_source_facts/3"
+    },
+    {
+      "field_name": "source_access_kind",
+      "requirement": "REQUIRED",
+      "owner_record": "materialization.pre_instance_exposure_binding",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/p1_to_p2_handoff_declaration_contract/pre_instance_exposure_interface_closure/required_source_facts/4"
+    },
+    {
+      "field_name": "source_access_ref",
+      "requirement": "REQUIRED",
+      "owner_record": "materialization.pre_instance_exposure_binding",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/p1_to_p2_handoff_declaration_contract/pre_instance_exposure_interface_closure/required_source_facts/5"
+    },
+    {
+      "field_name": "members",
+      "requirement": "REQUIRED",
+      "owner_record": "materialization.pre_instance_exposure_binding",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/p1_to_p2_handoff_declaration_contract/pre_instance_exposure_interface_closure/required_source_facts/6"
+    },
+    {
+      "field_name": "exact_frozen_current_p2_contract_ref_and_hash",
+      "requirement": "REQUIRED",
+      "owner_record": "materialization.pre_instance_target_binding",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/p1_to_p2_handoff_declaration_contract/pre_instance_exposure_interface_closure/target_binding_identity/required_parts/0"
+    },
+    {
+      "field_name": "target_p2_operation_id",
+      "requirement": "REQUIRED",
+      "owner_record": "materialization.pre_instance_target_binding",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/p1_to_p2_handoff_declaration_contract/pre_instance_exposure_interface_closure/target_binding_identity/required_parts/1"
+    },
+    {
+      "field_name": "target_operation_catalog_ref",
+      "requirement": "REQUIRED",
+      "owner_record": "materialization.pre_instance_target_binding",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/p1_to_p2_handoff_declaration_contract/pre_instance_exposure_interface_closure/target_binding_identity/required_parts/2"
+    },
+    {
+      "field_name": "target_primary_interface_profile_ref",
+      "requirement": "REQUIRED",
+      "owner_record": "materialization.pre_instance_target_binding",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/p1_to_p2_handoff_declaration_contract/pre_instance_exposure_interface_closure/target_binding_identity/required_parts/3"
+    },
+    {
+      "field_name": "target_q_interface_carrier_binding_ref",
+      "requirement": "REQUIRED",
+      "owner_record": "materialization.pre_instance_target_binding",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/p1_to_p2_handoff_declaration_contract/pre_instance_exposure_interface_closure/target_binding_identity/required_parts/4"
+    },
+    {
+      "field_name": "exact_capability_contract_ref_and_hash",
+      "requirement": "REQUIRED",
+      "owner_record": "materialization.governed_data_projection",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/governed_data_exposure_binding_projection_contract/projection_contract/required_root_facts/0"
+    },
+    {
+      "field_name": "exact_frozen_current_p2_ref_and_hash",
+      "requirement": "REQUIRED",
+      "owner_record": "materialization.governed_data_projection",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/governed_data_exposure_binding_projection_contract/projection_contract/required_root_facts/1"
+    },
+    {
+      "field_name": "p2_handoff_obligation_snapshot_hash",
+      "requirement": "REQUIRED",
+      "owner_record": "materialization.governed_data_projection",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/governed_data_exposure_binding_projection_contract/projection_contract/required_root_facts/2"
+    },
+    {
+      "field_name": "bindings",
+      "requirement": "REQUIRED",
+      "owner_record": "materialization.governed_data_projection",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/governed_data_exposure_binding_projection_contract/projection_contract/required_root_facts/3"
+    },
+    {
+      "field_name": "binding_ref",
+      "requirement": "REQUIRED",
+      "owner_record": "materialization.governed_data_projection.binding_entry",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/governed_data_exposure_binding_projection_contract/projection_contract/binding_required_facts/0"
+    },
+    {
+      "field_name": "data_category",
+      "requirement": "REQUIRED",
+      "owner_record": "materialization.governed_data_projection.binding_entry",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/governed_data_exposure_binding_projection_contract/projection_contract/binding_required_facts/1"
+    },
+    {
+      "field_name": "source_operation_ref",
+      "requirement": "REQUIRED",
+      "owner_record": "materialization.governed_data_projection.binding_entry",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/governed_data_exposure_binding_projection_contract/projection_contract/binding_required_facts/2"
+    },
+    {
+      "field_name": "source_interface_ref",
+      "requirement": "REQUIRED",
+      "owner_record": "materialization.governed_data_projection.binding_entry",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/governed_data_exposure_binding_projection_contract/projection_contract/binding_required_facts/3"
+    },
+    {
+      "field_name": "source_access_kind",
+      "requirement": "REQUIRED",
+      "owner_record": "materialization.governed_data_projection.binding_entry",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/governed_data_exposure_binding_projection_contract/projection_contract/binding_required_facts/4"
+    },
+    {
+      "field_name": "source_access_ref",
+      "requirement": "REQUIRED",
+      "owner_record": "materialization.governed_data_projection.binding_entry",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/governed_data_exposure_binding_projection_contract/projection_contract/binding_required_facts/5"
+    },
+    {
+      "field_name": "members",
+      "requirement": "REQUIRED",
+      "owner_record": "materialization.governed_data_projection.binding_entry",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/governed_data_exposure_binding_projection_contract/projection_contract/binding_required_facts/6"
+    },
+    {
+      "field_name": "target_p2_operation_id",
+      "requirement": "REQUIRED",
+      "owner_record": "materialization.governed_data_projection.binding_entry",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/governed_data_exposure_binding_projection_contract/projection_contract/binding_required_facts/7"
+    },
+    {
+      "field_name": "target_p2_operation_catalog_ref",
+      "requirement": "REQUIRED",
+      "owner_record": "materialization.governed_data_projection.binding_entry",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/governed_data_exposure_binding_projection_contract/projection_contract/binding_required_facts/8"
+    },
+    {
+      "field_name": "target_p2_primary_interface_profile_ref",
+      "requirement": "REQUIRED",
+      "owner_record": "materialization.governed_data_projection.binding_entry",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/governed_data_exposure_binding_projection_contract/projection_contract/binding_required_facts/9"
+    },
+    {
+      "field_name": "target_p2_carrier_binding_ref",
+      "requirement": "REQUIRED",
+      "owner_record": "materialization.governed_data_projection.binding_entry",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/governed_data_exposure_binding_projection_contract/projection_contract/binding_required_facts/10"
+    },
+    {
+      "field_name": "declared_instance_variable_refs",
+      "requirement": "REQUIRED",
+      "owner_record": "materialization.governed_data_projection.binding_entry",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/governed_data_exposure_binding_projection_contract/projection_contract/binding_required_facts/11"
+    },
+    {
+      "field_name": "member_ref",
+      "requirement": "REQUIRED",
+      "owner_record": "materialization.governed_data_projection.member_entry",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/governed_data_exposure_binding_projection_contract/projection_contract/member_required_facts/0"
+    },
+    {
+      "field_name": "source_fact_ref",
+      "requirement": "REQUIRED",
+      "owner_record": "materialization.governed_data_projection.member_entry",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/governed_data_exposure_binding_projection_contract/projection_contract/member_required_facts/1"
+    },
+    {
+      "field_name": "source_fact_authority_ref",
+      "requirement": "REQUIRED",
+      "owner_record": "materialization.governed_data_projection.member_entry",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/governed_data_exposure_binding_projection_contract/projection_contract/member_required_facts/2"
+    },
+    {
+      "field_name": "exact_capability_contract_ref",
+      "requirement": "REQUIRED",
+      "owner_record": "materialization.interface_anchor_binding",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/interface_anchor_binding_contract/binding_required_fields/0"
+    },
+    {
+      "field_name": "exact_capability_contract_content_hash",
+      "requirement": "REQUIRED",
+      "owner_record": "materialization.interface_anchor_binding",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/interface_anchor_binding_contract/binding_required_fields/1"
+    },
+    {
+      "field_name": "exact_operation_ref",
+      "requirement": "REQUIRED",
+      "owner_record": "materialization.interface_anchor_binding",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/interface_anchor_binding_contract/binding_required_fields/2"
+    },
+    {
+      "field_name": "exact_interface_ref",
+      "requirement": "REQUIRED",
+      "owner_record": "materialization.interface_anchor_binding",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/interface_anchor_binding_contract/binding_required_fields/3"
+    },
+    {
+      "field_name": "surface",
+      "requirement": "REQUIRED",
+      "owner_record": "materialization.interface_anchor_binding",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/interface_anchor_binding_contract/binding_required_fields/4"
+    },
+    {
+      "field_name": "kind",
+      "requirement": "REQUIRED",
+      "owner_record": "materialization.interface_anchor_binding",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/interface_anchor_binding_contract/binding_required_fields/5"
+    },
+    {
+      "field_name": "exact_source_method_ref",
+      "requirement": "REQUIRED",
+      "owner_record": "materialization.interface_anchor_binding",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/interface_anchor_binding_contract/binding_required_fields/6"
+    },
+    {
+      "field_name": "exact_target_p1_framework_interface_ref",
+      "requirement": "REQUIRED",
+      "owner_record": "materialization.interface_anchor_binding",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/interface_anchor_binding_contract/binding_required_fields/7"
+    },
+    {
+      "field_name": "exact_target_p1_framework_entry_method_ref",
+      "requirement": "REQUIRED",
+      "owner_record": "materialization.interface_anchor_binding",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/interface_anchor_binding_contract/binding_required_fields/8"
+    },
+    {
+      "field_name": "specification_interface_refs",
+      "requirement": "REQUIRED",
+      "source_form": "COLLECTION_VALUE",
+      "owner_record": "capability_contract.interface_inventory",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/interface_inventory_contract/required_collections/SPECIFICATION"
+    },
+    {
+      "field_name": "payload_contract_refs",
+      "requirement": "REQUIRED",
+      "source_form": "COLLECTION_VALUE",
+      "owner_record": "capability_contract.interface_inventory",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/interface_inventory_contract/required_collections/PAYLOAD"
+    },
+    {
+      "field_name": "internal_interface_refs",
+      "requirement": "REQUIRED",
+      "source_form": "COLLECTION_VALUE",
+      "owner_record": "capability_contract.interface_inventory",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/interface_inventory_contract/required_collections/INTERNAL"
+    },
+    {
+      "field_name": "x_q_field_semantics",
+      "requirement": "REQUIRED",
+      "source_form": "COLLECTION_VALUE",
+      "owner_record": "capability_contract.interfaces.request_field",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/payload_field_semantic_closure/annotation_container_key"
+    },
+    {
+      "field_name": "semantic_kind",
+      "requirement": "REQUIRED",
+      "source_form": "PREDICATE_KEY",
+      "owner_record": "capability_contract.interfaces.request_field.x_q_field_semantics",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/payload_field_semantic_closure/coverage_contract/classification_required_for_every_request_field_occurrence"
+    },
+    {
+      "field_name": "variability_class",
+      "requirement": "REQUIRED",
+      "source_form": "PREDICATE_KEY",
+      "owner_record": "capability_contract.interfaces.request_field.x_q_field_semantics",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/payload_field_semantic_closure/coverage_contract/variability_class_required_for_every_request_field_occurrence"
+    },
+    {
+      "field_name": "mode",
+      "requirement": "REQUIRED",
+      "source_form": "SCALAR_KEY",
+      "owner_record": "capability_contract.operational_relations",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/operational_relation_closure/mode_values"
+    },
+    {
+      "field_name": "mode",
+      "requirement": "REQUIRED",
+      "source_form": "SCALAR_KEY",
+      "owner_record": "capability_contract.state_model",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/state_transition_closure/mode_values"
+    },
+    {
+      "field_name": "mode",
+      "requirement": "REQUIRED",
+      "source_form": "SCALAR_KEY",
+      "owner_record": "capability_contract.permission_model",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/permission_actor_closure/mode_values"
+    },
+    {
+      "field_name": "mode",
+      "requirement": "REQUIRED",
+      "source_form": "SCALAR_KEY",
+      "owner_record": "capability_contract.rule_bindings",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/rule_binding_closure/mode_values"
+    },
+    {
+      "field_name": "mode",
+      "requirement": "REQUIRED",
+      "source_form": "SCALAR_KEY",
+      "owner_record": "capability_contract.instance_variability",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/instance_variability_model/mode_values"
+    },
+    {
+      "field_name": "state_machines",
+      "requirement": "CONDITIONAL",
+      "source_form": "PREDICATE_KEY",
+      "owner_record": "capability_contract.state_model",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/state_transition_closure/STATEFUL/state_machines_nonempty",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/state_transition_closure/STATEFUL"
+    },
+    {
+      "field_name": "state_machines",
+      "requirement": "CONDITIONAL",
+      "source_form": "PREDICATE_KEY",
+      "owner_record": "capability_contract.state_model",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/state_transition_closure/STATELESS/state_machines_must_be_empty",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/state_transition_closure/STATELESS"
+    },
+    {
+      "field_name": "instance_variables",
+      "requirement": "CONDITIONAL",
+      "source_form": "PREDICATE_KEY",
+      "owner_record": "capability_contract.instance_variability",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/instance_variability_model/DECLARED/instance_variable_catalog_nonempty",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/instance_variability_model/DECLARED"
+    },
+    {
+      "field_name": "instance_variables",
+      "requirement": "CONDITIONAL",
+      "source_form": "PREDICATE_KEY",
+      "owner_record": "capability_contract.instance_variability",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/instance_variability_model/NONE/instance_variables_must_be_empty",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/instance_variability_model/NONE"
+    },
+    {
+      "field_name": "reference_owner_ref",
+      "requirement": "CONDITIONAL",
+      "source_form": "PREDICATE_KEY",
+      "owner_record": "capability_contract.interfaces.request_field.x_q_field_semantics",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/payload_field_semantic_closure/semantic_kinds/BUSINESS_REFERENCE/self_owner_contract/reference_owner_ref_required",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/payload_field_semantic_closure/semantic_kinds/BUSINESS_REFERENCE/self_owner_contract"
+    },
+    {
+      "field_name": "reference_owner_ref",
+      "requirement": "CONDITIONAL",
+      "source_form": "PREDICATE_KEY",
+      "owner_record": "capability_contract.interfaces.request_field.x_q_field_semantics",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/payload_field_semantic_closure/semantic_kinds/BUSINESS_REFERENCE/declared_dependency_owner_contract/reference_owner_ref_required",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/payload_field_semantic_closure/semantic_kinds/BUSINESS_REFERENCE/declared_dependency_owner_contract"
+    },
+    {
+      "field_name": "local_dependency_ref",
+      "requirement": "CONDITIONAL",
+      "source_form": "PREDICATE_KEY",
+      "owner_record": "capability_contract.interfaces.request_field.x_q_field_semantics",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/payload_field_semantic_closure/semantic_kinds/BUSINESS_REFERENCE/declared_dependency_owner_contract/local_dependency_ref_required",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/payload_field_semantic_closure/semantic_kinds/BUSINESS_REFERENCE/declared_dependency_owner_contract"
+    },
+    {
+      "field_name": "reference_owner_ref",
+      "requirement": "OPTIONAL",
+      "source_form": "PREDICATE_KEY",
+      "owner_record": "capability_contract.interfaces.request_field.x_q_field_semantics",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/payload_field_semantic_closure/semantic_kinds/BUSINESS_REFERENCE/external_opaque_resolution/reference_owner_ref_optional",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/payload_field_semantic_closure/semantic_kinds/BUSINESS_REFERENCE/external_opaque_resolution"
+    },
+    {
+      "field_name": "iteration_source_path",
+      "requirement": "CONDITIONAL",
+      "source_form": "PREDICATE_KEY",
+      "owner_record": "capability_contract.operational_relations.relation_entry",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/operational_relation_closure/invocation_modes/FOR_EACH/iteration_source_path_required",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/operational_relation_closure/invocation_modes/FOR_EACH"
+    },
+    {
+      "field_name": "consumer_source_path",
+      "requirement": "CONDITIONAL",
+      "source_form": "PREDICATE_KEY",
+      "owner_record": "capability_contract.operational_relations.request_mapping_entry",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/operational_relation_closure/request_mapping/CONSUMER_INPUT/consumer_source_path_required",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/operational_relation_closure/request_mapping/CONSUMER_INPUT"
+    },
+    {
+      "field_name": "consumer_source_path",
+      "requirement": "CONDITIONAL",
+      "source_form": "PREDICATE_KEY",
+      "owner_record": "capability_contract.operational_relations.request_mapping_entry",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/operational_relation_closure/request_mapping/RUNTIME_CONTEXT/consumer_source_path_required",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/operational_relation_closure/request_mapping/RUNTIME_CONTEXT"
+    },
+    {
+      "field_name": "literal_value",
+      "requirement": "CONDITIONAL",
+      "source_form": "PREDICATE_KEY",
+      "owner_record": "capability_contract.operational_relations.request_mapping_entry",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/operational_relation_closure/request_mapping/STATIC_LITERAL/literal_value_required",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/operational_relation_closure/request_mapping/STATIC_LITERAL"
+    },
+    {
+      "field_name": "consumer_source_path",
+      "requirement": "CONDITIONAL",
+      "source_form": "PREDICATE_KEY",
+      "owner_record": "capability_contract.operational_relations.request_mapping_entry",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/operational_relation_closure/request_mapping/ITERATION_ITEM/consumer_source_path_required",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/operational_relation_closure/request_mapping/ITERATION_ITEM"
+    },
+    {
+      "field_name": "subject_identity_cardinality",
+      "requirement": "CONDITIONAL",
+      "source_form": "PREDICATE_KEY",
+      "owner_record": "capability_contract.state_model.operation_state_binding",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/state_transition_closure/operation_state_binding/EXISTING_SUBJECT/subject_identity_cardinality_required",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/state_transition_closure/operation_state_binding/EXISTING_SUBJECT"
+    },
+    {
+      "field_name": "subject_identity_input_path",
+      "requirement": "CONDITIONAL",
+      "source_form": "PREDICATE_KEY",
+      "owner_record": "capability_contract.state_model.operation_state_binding",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/state_transition_closure/operation_state_binding/EXISTING_SUBJECT/subject_identity_input_path_required",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/state_transition_closure/operation_state_binding/EXISTING_SUBJECT"
+    },
+    {
+      "field_name": "subject_identity_cardinality",
+      "requirement": "CONDITIONAL",
+      "source_form": "PREDICATE_KEY",
+      "owner_record": "capability_contract.state_model.operation_state_binding",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/state_transition_closure/operation_state_binding/CREATES_SUBJECT/subject_identity_cardinality_required",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/state_transition_closure/operation_state_binding/CREATES_SUBJECT"
+    },
+    {
+      "field_name": "subject_identity_result_path",
+      "requirement": "CONDITIONAL",
+      "source_form": "PREDICATE_KEY",
+      "owner_record": "capability_contract.state_model.operation_state_binding",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/state_transition_closure/operation_state_binding/CREATES_SUBJECT/subject_identity_result_path_required",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/state_transition_closure/operation_state_binding/CREATES_SUBJECT"
+    },
+    {
+      "field_name": "business_reference_semantics_ref",
+      "requirement": "CONDITIONAL",
+      "source_form": "PREDICATE_KEY",
+      "owner_record": "capability_contract.permission_model.actor_class_entry",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/permission_actor_closure/actor_class_entry/BUSINESS_REFERENCE/business_reference_semantics_ref_required",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/permission_actor_closure/actor_class_entry/BUSINESS_REFERENCE"
+    },
+    {
+      "field_name": "authority_ref",
+      "requirement": "CONDITIONAL",
+      "source_form": "PREDICATE_KEY",
+      "owner_record": "capability_contract.permission_model.actor_class_entry",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/permission_actor_closure/actor_class_entry/EXTERNAL_AUTHORITY/authority_ref_required",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/permission_actor_closure/actor_class_entry/EXTERNAL_AUTHORITY"
+    },
+    {
+      "field_name": "decision_operational_relation_ref",
+      "requirement": "CONDITIONAL",
+      "source_form": "PREDICATE_KEY",
+      "owner_record": "capability_contract.rule_bindings.binding_entry",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/rule_binding_closure/evaluation_realization/DEPENDENCY_DECISION/decision_operational_relation_ref_required",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/rule_binding_closure/evaluation_realization/DEPENDENCY_DECISION"
+    },
+    {
+      "field_name": "decision_consumer_binding_key",
+      "requirement": "CONDITIONAL",
+      "source_form": "PREDICATE_KEY",
+      "owner_record": "capability_contract.rule_bindings.binding_entry",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/rule_binding_closure/evaluation_realization/DEPENDENCY_DECISION/decision_consumer_binding_key_required",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/rule_binding_closure/evaluation_realization/DEPENDENCY_DECISION"
+    },
+    {
+      "field_name": "instance_variable_ref",
+      "requirement": "CONDITIONAL",
+      "source_form": "PREDICATE_KEY",
+      "owner_record": "capability_contract.interfaces.request_field.x_q_field_semantics",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/instance_variability_model/request_field_variability_annotation/INSTANCE/instance_variable_ref_required",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/instance_variability_model/request_field_variability_annotation/INSTANCE"
+    },
+    {
+      "field_name": "external_provider_surface_ref",
+      "requirement": "CONDITIONAL",
+      "source_form": "PREDICATE_KEY",
+      "owner_record": "capability_contract.p2_handoff.capability_publication",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/p1_to_p2_handoff_declaration_contract/section_contract/capability_publication/NONE/external_provider_surface_ref_required",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/p1_to_p2_handoff_declaration_contract/section_contract/capability_publication/NONE"
+    },
+    {
+      "field_name": "source_revision_semantics_ref",
+      "requirement": "CONDITIONAL",
+      "source_form": "PREDICATE_KEY",
+      "owner_record": "capability_contract.p2_handoff.governed_data_exposure.bindings_item",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/p1_to_p2_handoff_declaration_contract/section_contract/governed_data_exposure/DECLARED/DYNAMIC/source_revision_semantics_ref_required",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/p1_to_p2_handoff_declaration_contract/section_contract/governed_data_exposure/DECLARED/DYNAMIC"
+    },
+    {
+      "field_name": "selection_semantics_ref",
+      "requirement": "CONDITIONAL",
+      "source_form": "PREDICATE_KEY",
+      "owner_record": "capability_contract.p2_handoff.governed_data_exposure.bindings_item",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/p1_to_p2_handoff_declaration_contract/section_contract/governed_data_exposure/DECLARED/DYNAMIC/selection_semantics_ref_required",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/p1_to_p2_handoff_declaration_contract/section_contract/governed_data_exposure/DECLARED/DYNAMIC"
+    },
+    {
+      "field_name": "exact_source_identity_or_revision_semantics",
+      "requirement": "CONDITIONAL",
+      "source_form": "OBLIGATION_PREDICATE_NOT_CONFIRMED_SCHEMA_FIELD",
+      "owner_record": "capability_contract.p2_handoff.governed_data_exposure.bindings_item",
+      "source_rule_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/p1_to_p2_handoff_declaration_contract/section_contract/governed_data_exposure/DECLARED/STATIC/exact_source_identity_or_revision_semantics_required",
+      "applicability_branch_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117#/p1_to_p2_handoff_declaration_contract/section_contract/governed_data_exposure/DECLARED/STATIC",
+      "name_is_schema_key_verified": false
+    }
+  ]
+}
