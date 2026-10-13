@@ -4,9 +4,8 @@ import { createResolveMemberHandler } from '../../../../src/p1/member/resolve_me
 import { createCreateMemberHandler } from '../../../../src/p1/member/create_member/handler';
 import { createUpdateMemberStatusHandler } from '../../../../src/p1/member/update_member_status/handler';
 import {
-  InMemoryMemberRepository,
-  staticMembershipPlanProvider,
-} from '../../../../src/p1/export/member/entry';
+  InMemoryMemberRepository } from '../../../../src/p1/export/member/entry';
+import { staticMembershipPlanProvider } from '../../../../src/p1/export/member/client';
 import type {
   CallContext,
   MemberRuntimeDeps,

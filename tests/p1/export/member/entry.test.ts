@@ -1,13 +1,16 @@
 import { describe, expect, it } from 'vitest';
 import {
-  InMemoryMemberRepository,
   MEMBER_CAPABILITY_METADATA,
-  MemberCapabilityClient,
+  getMemberGeneralExportCandidate,
   STABLE_ERROR_CODE_SETS,
-  staticMembershipPlanProvider,
   trustedEntryAuthorizer,
   stableError,
 } from '../../../../src/p1/export/member/entry';
+import {
+  InMemoryMemberRepository,
+  MemberCapabilityClient,
+  staticMembershipPlanProvider,
+} from '../../../../src/p1/export/member/client';
 
 describe('member capability entry 公共出口', () => {
   it('导出装配所需的全部公共构件', () => {
@@ -36,13 +39,20 @@ describe('member capability entry 公共出口', () => {
     expect(MEMBER_CAPABILITY_METADATA.activation_implied).toBe(false);
   });
 
-  it('候选状态机仅含声明过的迁移', () => {
-    expect(MEMBER_CAPABILITY_METADATA.state_machines.member.transitions).toEqual([
-      { from: 'active', to: 'terminated', via: 'update_member_status' },
-    ]);
-    expect(MEMBER_CAPABILITY_METADATA.state_machines.membership.transitions).toEqual([
-      { from: 'active', to: 'replaced', via: 'update_membership_plan' },
-    ]);
+  it('V0117 不发布第二份状态/依赖简写权威', () => {
+    expect(MEMBER_CAPABILITY_METADATA).not.toHaveProperty('state_machines');
+    expect(MEMBER_CAPABILITY_METADATA).not.toHaveProperty('dependencies');
+    for (const item of MEMBER_CAPABILITY_METADATA.operations) {
+      expect(item.operation_ref).toBe(
+        `${MEMBER_CAPABILITY_METADATA.capability_contract_ref}#/operations/${item.operation_id}`,
+      );
+      expect(item.interface_ref).toMatch(/#\/interfaces\//);
+    }
+    const candidate = getMemberGeneralExportCandidate('create_member');
+    expect(Object.keys(candidate)).toHaveLength(13);
+    expect(candidate.capability_contract_content_hash).toBeNull();
+    expect(candidate.stage_contract_ref).toBeNull();
+    expect(candidate.runtime_contract_ref).toBeNull();
   });
 
   it('各 Operation 稳定错误码集合封闭且包含契约声明的代码', () => {

@@ -1,83 +1,87 @@
 /**
- * 统一会员能力 V0103 — 物化元数据
- * 投影自：Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103
- * 状态：candidate；未通过 Gate、未获生产激活授权。
+ * Candidate, read-only projection of the exact Member owner Contract V0103.
+ * P1CM V0117 supplies structure; this module neither creates business
+ * semantics nor certifies an accepted scoped field whitelist or runtime path.
+ *
+ * Full state/rule/permission/relation/schema facts live only in the
+ * source-bound spec/p1/member projections. Do not hand-copy short aliases.
  */
+import { ALL_OPERATION_IDS, INTERNAL_OPERATION_IDS, PUBLIC_OPERATION_IDS, STABLE_ERROR_CODE_SETS } from './contracts';
+import type { OperationId } from './types';
 
-import {
-  ALL_OPERATION_IDS,
-  INTERNAL_OPERATION_IDS,
-  PUBLIC_OPERATION_IDS,
-  STABLE_ERROR_CODE_SETS,
-} from './contracts';
+const MEMBER_CONTRACT_REF = 'Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103' as const;
+const MEMBER_CAPABILITY_REF = 'Q.MEMBERSHIP.CAPABILITY.MEMBER@V0103' as const;
 
-export const MEMBER_CAPABILITY_METADATA = {
+export const MEMBER_OPERATION_INTERFACE_IDS = Object.freeze({
+  "create_member": "member_creation_invoke",
+  "resolve_member": "member_resolution_invoke",
+  "update_member_profile": "member_profile_update_invoke",
+  "update_member_status": "member_status_update_invoke",
+  "create_membership": "membership_creation_invoke",
+  "update_membership_plan": "membership_plan_update_invoke",
+  "lookup_membership": "membership_lookup_invoke",
+  "evaluate_membership_eligibility": "membership_eligibility_evaluation_invoke",
+  "resolve_membership": "membership_exact_resolution_invoke",
+} as const satisfies Record<OperationId, string>);
+
+const declaredOperations = ALL_OPERATION_IDS.map((operationId) => Object.freeze({
+  operation_id: operationId,
+  operation_ref: `${MEMBER_CONTRACT_REF}#/operations/${operationId}`,
+  interface_ref: `${MEMBER_CONTRACT_REF}#/interfaces/${MEMBER_OPERATION_INTERFACE_IDS[operationId]}`,
+  surface: 'CALL' as const,
+  kind: 'CALL_INVOKE' as const,
+  method_ref: operationId,
+  public: (PUBLIC_OPERATION_IDS as readonly string[]).includes(operationId),
+  internal: (INTERNAL_OPERATION_IDS as readonly string[]).includes(operationId),
+  stable_error_codes: STABLE_ERROR_CODE_SETS[operationId],
+}));
+
+export const MEMBER_CAPABILITY_METADATA = Object.freeze({
   q_id: 'Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER',
   q_version: 'V0103',
   q_role: 'capability_contract',
-  capability_ref: 'Q.MEMBERSHIP.CAPABILITY.MEMBER@V0103',
+  q_status: 'candidate' as const,
+  capability_ref: MEMBER_CAPABILITY_REF,
   capability_id: 'member',
+  capability_version: 'V0103',
+  capability_contract_ref: MEMBER_CONTRACT_REF,
+  capability_contract_integrity_binding_ref: `${MEMBER_CONTRACT_REF}#/capability_contract_integrity_binding`,
   stable_code: 'MEMBER',
   canonical_name: 'member',
   repository_owner_namespace: 'Q.MEMBERSHIP',
-  q_status: 'candidate',
+  operation_count: ALL_OPERATION_IDS.length,
+  public_operation_count: PUBLIC_OPERATION_IDS.length,
+  internal_operation_count: INTERNAL_OPERATION_IDS.length,
+  operations: Object.freeze(declaredOperations),
   gate_pass_implied: false,
   activation_implied: false,
   publication_executed: false,
-  operation_count: 9,
-  public_operation_count: 8,
-  internal_operation_count: 1,
-  surface: 'CALL',
-  kind_code: 'M1',
-  kind: 'CALL_INVOKE',
-  operations: ALL_OPERATION_IDS.map((operationId) => ({
-    operation_id: operationId,
-    public: (PUBLIC_OPERATION_IDS as readonly string[]).includes(operationId),
-    internal: (INTERNAL_OPERATION_IDS as readonly string[]).includes(
-      operationId,
-    ),
-    stable_error_codes: STABLE_ERROR_CODE_SETS[operationId],
-  })),
-  state_machines: {
-    member: {
-      state_field_path: 'member_status',
-      initial_state: 'active',
-      allowed_business_states: ['active', 'terminated'],
-      terminal_states: ['terminated'],
-      transitions: [{ from: 'active', to: 'terminated', via: 'update_member_status' }],
-    },
-    membership: {
-      state_field_path: 'membership_status',
-      initial_state: 'active',
-      allowed_business_states: ['active', 'replaced'],
-      terminal_states: ['replaced'],
-      transitions: [
-        { from: 'active', to: 'replaced', via: 'update_membership_plan' },
-      ],
-    },
-  },
-  permission_model: {
-    mode: 'DECLARED',
-    default_decision: 'DENY',
-    effective_until_approved_actor_mapping: 'DENY_ALL',
-  },
-  dependencies: {
-    membership_plan: {
-      local_dependency_ref: 'q.membership.member.dependency.membership_plan',
-      provider_capability_contract_ref:
-        'Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBERSHIP_PLAN@V0105',
-      provider_operation: 'resolve_membership_plan',
-      connection_mode: 'INTRA_DOMAIN',
-      required_resolved_state: 'active',
-      stable_error_mode: 'PRESERVE_EXACT',
-    },
-  },
-  check_purposes: ['membership_validity'],
-  eligibility_reason_codes: [
-    'MEMBERSHIP_VALID',
-    'MEMBER_TERMINATED',
-    'NO_EFFECTIVE_MEMBERSHIP',
-  ],
-} as const;
+});
+
+/**
+ * The 13 GENERAL facts must not be materialized without a frozen external
+ * owner hash and exact stage/runtime bindings. These three fields are
+ * deliberately null: no arbitrary caller string may authorize them.
+ * Diagnostic only; NEVER pass a candidate as an execution binding.
+ */
+export function getMemberGeneralExportCandidate(operationId: OperationId) {
+  const operation = declaredOperations.find(x => x.operation_id === operationId);
+  if (!operation) throw new TypeError('Undeclared Member Operation');
+  return Object.freeze({
+    capability_ref: MEMBER_CAPABILITY_REF,
+    capability_id: 'member' as const,
+    capability_version: 'V0103' as const,
+    capability_contract_ref: MEMBER_CONTRACT_REF,
+    capability_contract_content_hash: null,
+    stage_contract_ref: null,
+    runtime_contract_ref: null,
+    operation_id: operation.operation_id,
+    operation_ref: operation.operation_ref,
+    interface_ref: operation.interface_ref,
+    surface: operation.surface,
+    kind: operation.kind,
+    method_ref: operation.method_ref,
+  });
+}
 
 export type MemberCapabilityMetadata = typeof MEMBER_CAPABILITY_METADATA;
