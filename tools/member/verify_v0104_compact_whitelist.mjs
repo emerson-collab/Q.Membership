@@ -74,7 +74,10 @@ function schema(scope){
  const [rootKey,second,third]=scope.split('/');
  let p=root(rootKey);
  if(!p)return null;
- if(rootKey==='type_closure')p=child(p,'schemas');
+ if(rootKey==='type_closure') {
+   // type_closure/schemas/<schema_name> is a three-segment scope.
+   return child(child(p,'schemas'),third);
+ }
  p=child(p,second);
  if(third==='schema')p=child(p,'schema');
  return p;
