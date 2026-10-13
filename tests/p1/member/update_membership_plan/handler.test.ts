@@ -4,7 +4,7 @@ import { createUpdateMembershipPlanHandler } from '../../../../src/p1/member/upd
 import { createCreateMemberHandler } from '../../../../src/p1/member/create_member/handler';
 import { createCreateMembershipHandler } from '../../../../src/p1/member/create_membership/handler';
 import {
-  InMemoryMemberRepository } from '../../../../src/p1/export/member/entry';
+  InMemoryMemberRepository } from '../../../../src/p1/export/member/client';
 import { staticMembershipPlanProvider } from '../../../../src/p1/export/member/client';
 import type {
   CallContext,

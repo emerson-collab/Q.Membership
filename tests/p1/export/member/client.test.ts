@@ -1,7 +1,7 @@
 import { testAuthorizer } from '../../member/test_authorizer';
 import { describe, expect, it } from 'vitest';
 import {
-  InMemoryMemberRepository } from '../../../../src/p1/export/member/entry';
+  InMemoryMemberRepository } from '../../../../src/p1/export/member/client';
 import { MemberCapabilityClient, staticMembershipPlanProvider } from '../../../../src/p1/export/member/client';
 import type {
   CallContext,

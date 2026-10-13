@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import * as MemberPublicExports from '../../../../src/p1/export/member/entry';
 import {
   MEMBER_CAPABILITY_METADATA,
   getMemberGeneralExportCandidate,
@@ -13,7 +14,10 @@ import {
 } from '../../../../src/p1/export/member/client';
 
 describe('member capability entry 公共出口', () => {
-  it('导出装配所需的全部公共构件', () => {
+  it('候选入口不导出本地直调客户端、内存仓库和静态方案提供方', () => {
+    expect('MemberCapabilityClient' in MemberPublicExports).toBe(false);
+    expect('InMemoryMemberRepository' in MemberPublicExports).toBe(false);
+    expect('staticMembershipPlanProvider' in MemberPublicExports).toBe(false);
     expect(typeof MemberCapabilityClient).toBe('function');
     expect(typeof InMemoryMemberRepository).toBe('function');
     expect(typeof staticMembershipPlanProvider).toBe('function');
