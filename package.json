@@ -15,6 +15,8 @@
     "smoke:p0": "node --experimental-transform-types --test --test-name-pattern=\"P0 smoke\" tests/p0/p0_runtime_core.test.ts"
   },
   "imports": {
+    "#q/p0/runtime_contract": "./src/p0/runtime_contract.ts",
+    "#q/p0/stage_handler": "./src/p0/stage_handler.ts",
     "#q/*": "./src/*"
   },
   "devDependencies": {

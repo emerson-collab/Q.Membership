@@ -167,3 +167,21 @@ test("mounted provider binding refuses Interface-only execution when exact opera
     (error: unknown) => error instanceof MountedProviderRuntimeBindingError && error.code === "MOUNTED_PROVIDER_BINDING_INVALID",
   );
 });
+
+
+test("V0134 rejects any alternative P0 RuntimeProvider injection at the P2 receiving boundary", () => {
+  const deps = {
+    material_read_port: {
+      async readExact() { throw new Error("must-not-read"); },
+    },
+    prepared_operation_port: {
+      async resolveExactPreparedOperation() { throw new Error("must-not-prepare"); },
+    },
+    p0_runtime_provider: undefined,
+  } as unknown as Parameters<typeof createMountedProviderLocalP0Invoker>[0];
+  assert.throws(
+    () => createMountedProviderLocalP0Invoker(deps),
+    (error: unknown) => error instanceof MountedProviderRuntimeBindingError
+      && error.code === "MOUNTED_PROVIDER_SECOND_RUNTIME_FORBIDDEN",
+  );
+});

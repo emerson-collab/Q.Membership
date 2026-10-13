@@ -1,6 +1,7 @@
 import { createHash } from "node:crypto";
 
-import { StableRuntimeError, deep_freeze } from "../src/p0/runtime_contract.ts";
+import { StableRuntimeError, deep_freeze, exact_ref } from "#q/p0/runtime_contract";
+import { resolve_p1_framework_anchor } from "../src/p1/business_runtime/stage_extension_contract.ts";
 import {
   handler as exposeStaticData,
   type JsonObject as StaticJsonObject,
@@ -13,9 +14,11 @@ export const REPOSITORY_SKELETON_REF =
 export const REPOSITORY_SKELETON_HASH =
   "sha256:0d8b2a5fb33b657db9eff3d379969b8c26e541f9ff5827d443bd8d2aa8fe60c9" as const;
 export const P1_CAPABILITY_MATERIALIZATION_REF =
-  "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0116" as const;
+  "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117" as const;
 export const P1_CAPABILITY_MATERIALIZATION_HASH =
-  "sha256:59dce7f2b10d04fe6053a28d9f2af09d961746befd10795e874b3226aefaf036" as const;
+  // Exact SHA-256 of the frozen P1 Materialization Source bytes.
+  // This is an integrity binding, not a second semantic authority.
+  "sha256:cc1d1933d88125b400b8a6f3fd0042b521f22276ff74b2dda19798ddce76757f" as const;
 export const P1_BUSINESS_RUNTIME_REF =
   "Q.SS.STD.P1.CONTRACT.BUSINESS_RUNTIME@V0186" as const;
 export const P2_CONTRACT_REF =
@@ -58,6 +61,8 @@ export interface GovernedDataHandoffMember {
 export interface GovernedDataHandoffBinding {
   readonly binding_ref: string;
   readonly data_category: GovernedDataCategory;
+  readonly source_operation_ref: string;
+  readonly source_interface_ref: string;
   readonly source_access_kind: SourceAccessKind;
   readonly source_access_ref: string;
   readonly members: readonly GovernedDataHandoffMember[];
@@ -70,6 +75,54 @@ export interface GovernedDataBindingExecution {
   readonly trace_id: string;
   readonly request_id: string;
   readonly p1_interface_anchor_binding_ref?: string;
+}
+
+/**
+ * Exact pre-instance Source Interface facts are resolved by the owning frozen
+ * Capability Contract, not invented by P2, transport, test data or filenames.
+ * This is a verification-only repository dependency, NOT a new Framework
+ * Interface, invocation entry point, Source authority or Runtime.
+ */
+export interface P1SourceInterfaceResolution {
+  readonly capability_contract_ref: string;
+  readonly capability_contract_content_hash: string;
+  readonly operation_ref: string;
+  readonly interface_ref: string;
+  readonly authorized_source_access_ref: string;
+  readonly verified_members: readonly GovernedDataHandoffMember[];
+  readonly surface: string;
+  readonly kind_code: string;
+  readonly kind: string;
+  readonly method_ref: string;
+  readonly path: readonly string[];
+  readonly static_mount: readonly string[];
+  readonly dynamic_mount: readonly string[];
+  readonly framework_anchor_binding_ref: string;
+}
+
+export interface GovernedTriadFrozenAuthorities {
+  /** Read a verified, immutable Q.Prompt obligation, not a caller's hash echo. */
+  readonly frozen_prompt_projection_hash: (input: Readonly<{
+    p1_capability_materialization_ref: typeof P1_CAPABILITY_MATERIALIZATION_REF;
+    p1_capability_materialization_hash: typeof P1_CAPABILITY_MATERIALIZATION_HASH;
+    capability_contract_ref: string;
+    capability_contract_content_hash: string;
+    p2_contract_ref: string;
+    p2_contract_content_hash: string;
+    p2_handoff_obligation_snapshot_hash: string;
+  }>) => Promise<string>;
+  /** Resolve P1's exact owner Capability Contract/interface closure. */
+  readonly resolve_source_interface: (input: Readonly<{
+    capability_contract_ref: string;
+    capability_contract_content_hash: string;
+    binding_ref: string;
+    data_category: GovernedDataCategory;
+    source_operation_ref: string;
+    source_interface_ref: string;
+    source_access_kind: SourceAccessKind;
+    source_access_ref: string;
+    members: readonly GovernedDataHandoffMember[];
+  }>) => Promise<Readonly<P1SourceInterfaceResolution>>;
 }
 
 export interface P2GovernedDataExposureMaterializer {
@@ -113,6 +166,9 @@ export interface GovernedDataTriadDurableStore {
 export interface GovernedDataTriadRealizationInput {
   readonly p2_handoff_obligation: Readonly<Record<string, unknown>>;
   readonly governed_data_json_triad_obligation: Readonly<Record<string, unknown>>;
+  /** Exact frozen V0117 projection and its independent canonical hash. */
+  readonly governed_data_exposure_binding_projection: Readonly<Record<string, unknown>>;
+  readonly governed_data_exposure_binding_projection_hash: string;
   readonly binding_executions: readonly GovernedDataBindingExecution[];
 }
 
@@ -158,6 +214,18 @@ const CATEGORY_ACCESS = {
   ],
   RUNTIME: ["ALREADY_PRODUCED_RUNTIME_FACT"],
 } as const satisfies Readonly<Record<GovernedDataCategory, readonly SourceAccessKind[]>>;
+
+/** Exact V0186 Concrete Interface Kind codes, for verifying already-owned facts. */
+const P1_V0186_KIND_CODES = Object.freeze({
+  CALL_INVOKE: "M1",
+  HOOK_BIND: "M2",
+  HOOK_EVALUATE: "M3",
+  EVENT_PUBLISH: "M4",
+  EVENT_CONSUME: "M5",
+  REGISTRY_REGISTER: "M6",
+  REGISTRY_RESOLVE: "M7",
+  REGISTRY_LOOKUP: "M8",
+} as const);
 
 const TRIAD_FILES = Object.freeze({
   STATIC: Object.freeze({
@@ -231,28 +299,63 @@ function exactCategory(value: unknown): GovernedDataCategory {
   return value;
 }
 
-function canonicalClone(value: unknown): unknown {
-  if (Array.isArray(value)) return value.map(canonicalClone);
-  if (value !== null && typeof value === "object") {
-    const source = value as Record<string, unknown>;
-    const out: Record<string, unknown> = {};
-    for (const key of Object.keys(source).sort()) {
-      const nested = source[key];
-      if (nested === undefined) {
-        throw new GovernedDataProviderRealizationError(
-          "RDS_GOVERNED_DATA_CANONICALIZATION_FAILED",
-          `undefined JSON member is forbidden: ${key}`,
-        );
-      }
-      out[key] = canonicalClone(nested);
+function canonicalClone(value: unknown, active = new WeakSet<object>()): unknown {
+  if (typeof value === "number" && !Number.isFinite(value)) {
+    throw new GovernedDataProviderRealizationError(
+      "RDS_GOVERNED_DATA_CANONICALIZATION_FAILED",
+      "non-finite numbers are not JSON facts and cannot enter a canonical projection",
+    );
+  }
+  if (Array.isArray(value)) {
+    if (active.has(value)) {
+      throw new GovernedDataProviderRealizationError(
+        "RDS_GOVERNED_DATA_CANONICALIZATION_FAILED",
+        "cyclic JSON arrays are forbidden in an immutable projection",
+      );
     }
-    return out;
+    active.add(value);
+    try {
+      return value.map(member => canonicalClone(member, active));
+    } finally {
+      active.delete(value);
+    }
+  }
+  if (value !== null && typeof value === "object") {
+    const prototype = Object.getPrototypeOf(value);
+    if (prototype !== Object.prototype && prototype !== null) {
+      throw new GovernedDataProviderRealizationError(
+        "RDS_GOVERNED_DATA_CANONICALIZATION_FAILED",
+        "a frozen projection must contain JSON objects, not class or host instances",
+      );
+    }
+    if (active.has(value)) {
+      throw new GovernedDataProviderRealizationError(
+        "RDS_GOVERNED_DATA_CANONICALIZATION_FAILED",
+        "cyclic JSON objects are forbidden in an immutable projection",
+      );
+    }
+    active.add(value);
+    try {
+      const source = value as Record<string, unknown>;
+      const out: Record<string, unknown> = Object.create(null) as Record<string, unknown>;
+      for (const key of Object.keys(source).sort()) {
+        const nested = source[key];
+        if (nested === undefined) {
+          throw new GovernedDataProviderRealizationError(
+            "RDS_GOVERNED_DATA_CANONICALIZATION_FAILED",
+            `undefined JSON member is forbidden: ${key}`,
+          );
+        }
+        out[key] = canonicalClone(nested, active);
+      }
+      return out;
+    } finally {
+      active.delete(value);
+    }
   }
   if (
-    value === undefined
-    || typeof value === "bigint"
-    || typeof value === "function"
-    || typeof value === "symbol"
+    value === undefined || typeof value === "bigint"
+    || typeof value === "function" || typeof value === "symbol"
   ) {
     throw new GovernedDataProviderRealizationError(
       "RDS_GOVERNED_DATA_CANONICALIZATION_FAILED",
@@ -300,6 +403,8 @@ function validateHandoffBinding(value: unknown): GovernedDataHandoffBinding {
   const binding = objectValue(value, "p2_handoff_obligation.governed_data_exposure.bindings[]");
   const bindingRef = requiredString(binding.binding_ref, "binding_ref");
   const category = exactCategory(binding.data_category);
+  const sourceOperationRef = requiredString(binding.source_operation_ref, `${bindingRef}.source_operation_ref`);
+  const sourceInterfaceRef = requiredString(binding.source_interface_ref, `${bindingRef}.source_interface_ref`);
   const sourceAccessKind = requiredString(
     binding.source_access_kind,
     `${bindingRef}.source_access_kind`,
@@ -344,7 +449,7 @@ function validateHandoffBinding(value: unknown): GovernedDataHandoffBinding {
       ),
     });
   });
-  const canonicalMemberRefs = [...memberRefs].sort((left, right) => left.localeCompare(right));
+  const canonicalMemberRefs = [...memberRefs].sort((left, right) => left < right ? -1 : left > right ? 1 : 0);
   if (members.some((member, index) => member.member_ref !== canonicalMemberRefs[index])) {
     throw new GovernedDataProviderRealizationError(
       "RDS_GOVERNED_DATA_BINDING_ORDER_INVALID",
@@ -355,6 +460,8 @@ function validateHandoffBinding(value: unknown): GovernedDataHandoffBinding {
   return Object.freeze({
     binding_ref: bindingRef,
     data_category: category,
+    source_operation_ref: sourceOperationRef,
+    source_interface_ref: sourceInterfaceRef,
     source_access_kind: sourceAccessKind,
     source_access_ref: sourceAccessRef,
     members: Object.freeze(members),
@@ -372,7 +479,7 @@ function validateP2HandoffObligation(
   if (value.source_boundary_ref !== P1_TO_P2_HANDOFF_SOURCE_BOUNDARY_REF) {
     throw new GovernedDataProviderRealizationError(
       "RDS_GOVERNED_DATA_HANDOFF_OBLIGATION_INVALID",
-      "p2_handoff_obligation source_boundary_ref is not P1CM V0116 p1_to_p2_handoff_declaration_contract",
+      `p2_handoff_obligation source_boundary_ref must bind ${P1_TO_P2_HANDOFF_SOURCE_BOUNDARY_REF}`,
     );
   }
   if (value.canonical_binding_order !== "binding_ref_ASCENDING_THEN_member_ref_ASCENDING") {
@@ -390,10 +497,33 @@ function validateP2HandoffObligation(
     value.source_capability_contract_hash,
     "p2_handoff_obligation.source_capability_contract_hash",
   );
+  if (!exact_ref(capabilityContractRef) || capabilityContractRef.includes("#/")) {
+    throw new GovernedDataProviderRealizationError(
+      "RDS_GOVERNED_DATA_SOURCE_IDENTITY_INVALID",
+      "V0117 requires an exact versioned owner Capability Contract identity",
+    );
+  }
+  // V0117 p2_handoff has two independent required declarations.
+  // This Provider path does not execute capability publication, but it must
+  // not silently accept an incomplete or retargeted Handoff declaration.
+  const publication = objectValue(
+    value.capability_publication,
+    "p2_handoff_obligation.capability_publication",
+  );
+  if (
+    (publication.mode !== "NONE" && publication.mode !== "PUBLICATION_ELIGIBLE")
+    || publication.external_provider_surface_ref !==
+      `${capabilityContractRef}#/external_provider_surface`
+  ) {
+    throw new GovernedDataProviderRealizationError(
+      "RDS_GOVERNED_DATA_HANDOFF_OBLIGATION_INVALID",
+      "V0117 requires an exact capability_publication mode and owning external_provider_surface_ref",
+    );
+  }
   if (value.exact_current_p2_ref !== P2_CONTRACT_REF) {
     throw new GovernedDataProviderRealizationError(
       "RDS_GOVERNED_DATA_AUTHORITY_MISMATCH",
-      "p2_handoff_obligation exact_current_p2_ref is not CURRENT P2 V0128",
+      `p2_handoff_obligation exact_current_p2_ref must equal ${P2_CONTRACT_REF}`,
     );
   }
   if (value.exact_current_p2_hash !== P2_CONTRACT_HASH) {
@@ -439,8 +569,30 @@ function validateP2HandoffObligation(
   }
 
   const refs = new Set<string>();
+  const sourceInterfaceCategories = new Map<string, GovernedDataCategory>();
   const bindings = bindingValues.map(validateHandoffBinding);
   for (const binding of bindings) {
+    for (const [key, ref] of [
+      ["source_operation_ref", binding.source_operation_ref],
+      ["source_interface_ref", binding.source_interface_ref],
+    ] as const) {
+      const collection = key === "source_operation_ref" ? "operations" : "interfaces";
+      const prefix = `${capabilityContractRef}#/${collection}/`;
+      if (!exact_ref(ref) || !ref.startsWith(prefix) || ref.length <= prefix.length) {
+        throw new GovernedDataProviderRealizationError(
+          "RDS_GOVERNED_DATA_SOURCE_IDENTITY_INVALID",
+          `${binding.binding_ref} must bind an exact ${collection} member of the owner Capability Contract`,
+        );
+      }
+    }
+    const category = sourceInterfaceCategories.get(binding.source_interface_ref);
+    if (category !== undefined && category !== binding.data_category) {
+      throw new GovernedDataProviderRealizationError(
+        "RDS_GOVERNED_DATA_SOURCE_INTERFACE_CATEGORY_CONFLICT",
+        "V0117 forbids one concrete source Interface in multiple governed-data categories",
+      );
+    }
+    sourceInterfaceCategories.set(binding.source_interface_ref, binding.data_category);
     if (refs.has(binding.binding_ref)) {
       throw new GovernedDataProviderRealizationError(
         "RDS_GOVERNED_DATA_BINDING_INVALID",
@@ -453,7 +605,7 @@ function validateP2HandoffObligation(
   const canonicalBindingRefs = bindings
     .map((binding) => binding.binding_ref)
     .slice()
-    .sort((left, right) => left.localeCompare(right));
+    .sort((left, right) => left < right ? -1 : left > right ? 1 : 0);
   if (bindings.some((binding, index) => binding.binding_ref !== canonicalBindingRefs[index])) {
     throw new GovernedDataProviderRealizationError(
       "RDS_GOVERNED_DATA_BINDING_ORDER_INVALID",
@@ -479,7 +631,7 @@ function validateTriadObligation(
   if (value.source_boundary_ref !== GOVERNED_DATA_TRIAD_SOURCE_BOUNDARY_REF) {
     throw new GovernedDataProviderRealizationError(
       "RDS_GOVERNED_DATA_TRIAD_OBLIGATION_INVALID",
-      "triad source_boundary_ref is not P1CM V0116 governed_data_exposure_binding_projection_contract",
+      `triad source_boundary_ref must bind ${GOVERNED_DATA_TRIAD_SOURCE_BOUNDARY_REF}`,
     );
   }
   if (value.applicability !== "DECLARED") {
@@ -514,7 +666,7 @@ function validateTriadObligation(
   ) {
     throw new GovernedDataProviderRealizationError(
       "RDS_GOVERNED_DATA_TRIAD_OBLIGATION_INVALID",
-      "triad schema/category/integrity/execution refs must equal exact P1CM V0116 and P2 V0128 boundaries",
+      "triad schema/category/integrity/execution refs must equal the declared frozen P1/P2 boundaries",
     );
   }
 
@@ -539,6 +691,250 @@ function validateTriadObligation(
       throw new GovernedDataProviderRealizationError(
         "RDS_GOVERNED_DATA_TRIAD_OBLIGATION_INVALID",
         `canonical_file_set.${category} identity mismatch`,
+      );
+    }
+  }
+}
+
+/**
+ * V0117 immutable pre-instance binding projection is independent of the P2
+ * physical JSON triad. It must be verified before any Provider execution or
+ * durable write; neither code nor category names may reconstruct it.
+ */
+function verifyFrozenV0117Projection(
+  projectionValue: Readonly<Record<string, unknown>>,
+  suppliedHash: string,
+  handoff: Readonly<{
+    capability_contract_ref: string;
+    capability_contract_hash: string;
+    p2_handoff_obligation_snapshot_hash: string;
+    bindings: readonly GovernedDataHandoffBinding[];
+  }>,
+): void {
+  const projection = objectValue(projectionValue, "governed_data_exposure_binding_projection");
+  const hash = exactHash(suppliedHash, "governed_data_exposure_binding_projection_hash");
+  if (sha256Json(projection) !== hash) {
+    throw new GovernedDataProviderRealizationError(
+      "RDS_GOVERNED_DATA_PROJECTION_HASH_MISMATCH",
+      "V0117 frozen binding projection SHA256 does not match exact canonical bytes",
+    );
+  }
+  // V0117 names the two exact ref+hash root facts but does not prescribe
+  // inner keys such as {ref,hash}. Check their exact scalar facts without
+  // promoting a test-fixture object shape into a new Contract schema.
+  const exactPair = (value: unknown, field: string, expectedRef: string, expectedHash: string): boolean => {
+    const pair = objectValue(value, field);
+    const values = Object.values(pair);
+    return values.length === 2 && values.includes(expectedRef) && values.includes(expectedHash);
+  };
+  if (
+    !exactPair(
+      projection.exact_capability_contract_ref_and_hash,
+      "exact_capability_contract_ref_and_hash",
+      handoff.capability_contract_ref,
+      handoff.capability_contract_hash,
+    )
+    || !exactPair(
+      projection.exact_frozen_current_p2_ref_and_hash,
+      "exact_frozen_current_p2_ref_and_hash",
+      P2_CONTRACT_REF,
+      P2_CONTRACT_HASH,
+    )
+    || projection.p2_handoff_obligation_snapshot_hash !== handoff.p2_handoff_obligation_snapshot_hash
+  ) {
+    throw new GovernedDataProviderRealizationError(
+      "RDS_GOVERNED_DATA_PROJECTION_IDENTITY_MISMATCH",
+      "V0117 projection must bind exact source Capability, P2 and Handoff snapshot identities",
+    );
+  }
+  const bindings = arrayValue(projection.bindings, "governed_data_exposure_binding_projection.bindings");
+  if (bindings.length !== handoff.bindings.length) {
+    throw new GovernedDataProviderRealizationError(
+      "RDS_GOVERNED_DATA_PROJECTION_BINDING_MISMATCH",
+      "frozen V0117 projection must contain every exact Handoff binding once",
+    );
+  }
+  const seen = new Set<string>();
+  for (let index = 0; index < bindings.length; index++) {
+    const b = objectValue(bindings[index], "projection.bindings[]");
+    const source = handoff.bindings[index];
+    if (!source) throw new Error("unreachable projection index");
+    const id = requiredString(b.binding_ref, "projection.binding_ref");
+    if (seen.has(id) || id !== source.binding_ref) {
+      throw new GovernedDataProviderRealizationError(
+        "RDS_GOVERNED_DATA_PROJECTION_BINDING_MISMATCH",
+        "V0117 frozen projection binding identity/order differs from Handoff",
+      );
+    }
+    seen.add(id);
+    for (const field of [
+      "data_category", "source_operation_ref", "source_interface_ref",
+      "source_access_kind", "source_access_ref",
+    ] as const) {
+      if (b[field] !== source[field]) {
+        throw new GovernedDataProviderRealizationError(
+          "RDS_GOVERNED_DATA_PROJECTION_BINDING_MISMATCH",
+          `V0117 projection ${id}.${field} differs from frozen Handoff`,
+        );
+      }
+    }
+    const expectedOperation = TRIAD_FILES[source.data_category].p2_operation_id;
+    if (
+      b.target_p2_operation_id !== expectedOperation
+      || b.target_p2_operation_catalog_ref !== `${P2_CONTRACT_REF}#/operation_catalog/provider/governed_data_exposure`
+      || b.target_p2_primary_interface_profile_ref !== `${P2_CONTRACT_REF}#/interface_semantics/new_governed_data_operations_primary_interface`
+      || b.target_p2_carrier_binding_ref !== `${P2_CONTRACT_REF}#/governed_data_material_contract/q_interface_carrier_binding`
+    ) {
+      throw new GovernedDataProviderRealizationError(
+        "RDS_GOVERNED_DATA_PROJECTION_TARGET_MISMATCH",
+        "V0117 target Operation, profile and carrier must match the frozen P2 authority",
+      );
+    }
+    const instanceRefs = arrayValue(b.declared_instance_variable_refs, `${id}.declared_instance_variable_refs`);
+    if (
+      instanceRefs.some(ref => typeof ref !== "string" || !exact_ref(ref))
+      || new Set(instanceRefs).size !== instanceRefs.length
+    ) {
+      throw new GovernedDataProviderRealizationError(
+        "RDS_GOVERNED_DATA_PROJECTION_BINDING_MISMATCH",
+        "instance variable refs must be unique exact declared identities, not instance values",
+      );
+    }
+    const members = arrayValue(b.members, `${id}.members`);
+    if (sha256Json(members) !== sha256Json(source.members)) {
+      throw new GovernedDataProviderRealizationError(
+        "RDS_GOVERNED_DATA_PROJECTION_BINDING_MISMATCH",
+        "V0117 projection members differ from frozen source binding",
+      );
+    }
+  }
+}
+
+/**
+ * Read, don't invent, both upstream proofs. The verifier's two adapters are
+ * supplied by the governed outer boundary: Q.Prompt's immutable snapshot and
+ * the exact owner Capability Contract. Nothing here acts as a P2 source resolver,
+ * generates a Framework anchor, or expands the provider's semantic authority.
+ */
+async function verifyFrozenPreInstanceClosure(
+  handoff: Readonly<{
+    capability_contract_ref: string;
+    capability_contract_hash: string;
+    p2_handoff_obligation_snapshot_hash: string;
+    bindings: readonly GovernedDataHandoffBinding[];
+  }>,
+  projection_hash: string,
+  executions: ReadonlyMap<string, GovernedDataBindingExecution>,
+  authorities: GovernedTriadFrozenAuthorities,
+): Promise<void> {
+  if (
+    !authorities
+    || typeof authorities.frozen_prompt_projection_hash !== "function"
+    || typeof authorities.resolve_source_interface !== "function"
+  ) {
+    throw new GovernedDataProviderRealizationError(
+      "RDS_GOVERNED_DATA_AUTHORITY_UNAVAILABLE",
+      "V0117 requires frozen Q.Prompt and exact source Capability Contract verification before P2 exposure",
+    );
+  }
+
+  const exactPromptHash = exactHash(
+    await authorities.frozen_prompt_projection_hash(Object.freeze({
+      p1_capability_materialization_ref: P1_CAPABILITY_MATERIALIZATION_REF,
+      p1_capability_materialization_hash: P1_CAPABILITY_MATERIALIZATION_HASH,
+      capability_contract_ref: handoff.capability_contract_ref,
+      capability_contract_content_hash: handoff.capability_contract_hash,
+      p2_contract_ref: P2_CONTRACT_REF,
+      p2_contract_content_hash: P2_CONTRACT_HASH,
+      p2_handoff_obligation_snapshot_hash: handoff.p2_handoff_obligation_snapshot_hash,
+    })),
+    "frozen_prompt_projection_hash",
+  );
+  if (exactPromptHash !== projection_hash) {
+    throw new GovernedDataProviderRealizationError(
+      "RDS_GOVERNED_DATA_PROMPT_PROJECTION_MISMATCH",
+      "V0117 projection hash must equal the independently verified immutable Q.Prompt obligation hash",
+    );
+  }
+
+  for (const binding of handoff.bindings) {
+    const execution = executions.get(binding.binding_ref);
+    if (!execution) {
+      throw new GovernedDataProviderRealizationError(
+        "RDS_GOVERNED_DATA_EXECUTION_BINDING_INVALID",
+        "every declared V0117 binding must have one execution before exposure",
+      );
+    }
+    const source: Readonly<P1SourceInterfaceResolution> =
+      await authorities.resolve_source_interface(Object.freeze({
+        capability_contract_ref: handoff.capability_contract_ref,
+        capability_contract_content_hash: handoff.capability_contract_hash,
+        binding_ref: binding.binding_ref,
+        data_category: binding.data_category,
+        source_operation_ref: binding.source_operation_ref,
+        source_interface_ref: binding.source_interface_ref,
+        source_access_kind: binding.source_access_kind,
+        source_access_ref: binding.source_access_ref,
+        members: binding.members,
+      }));
+    if (
+      source === null || typeof source !== "object"
+      || source.capability_contract_ref !== handoff.capability_contract_ref
+      || source.capability_contract_content_hash !== handoff.capability_contract_hash
+      || source.operation_ref !== binding.source_operation_ref
+      || source.interface_ref !== binding.source_interface_ref
+      || source.authorized_source_access_ref !== binding.source_access_ref
+      || sha256Json(source.verified_members) !== sha256Json(binding.members)
+    ) {
+      throw new GovernedDataProviderRealizationError(
+        "RDS_GOVERNED_DATA_SOURCE_INTERFACE_MISMATCH",
+        "exact owner Operation, Interface, source-access authorization and member lineage must match frozen V0117 binding",
+      );
+    }
+    let anchor: ReturnType<typeof resolve_p1_framework_anchor>;
+    try {
+      anchor = resolve_p1_framework_anchor({
+        surface: source.surface,
+        kind: source.kind,
+        method_ref: source.method_ref,
+      });
+    } catch {
+      throw new GovernedDataProviderRealizationError(
+        "RDS_GOVERNED_DATA_SOURCE_ANCHOR_INVALID",
+        "source Interface Surface/Kind/Method must resolve exactly one pre-existing V0186 Framework anchor",
+      );
+    }
+    const expectedAnchorRef =
+      `${P1_BUSINESS_RUNTIME_REF}#/concrete_interface_framework_anchor_crosswalk/anchors/${anchor.kind}`;
+    const code = P1_V0186_KIND_CODES[anchor.kind as keyof typeof P1_V0186_KIND_CODES];
+    if (
+      !code || source.kind_code !== code
+      || source.framework_anchor_binding_ref !== expectedAnchorRef
+      || execution.p1_interface_anchor_binding_ref !== expectedAnchorRef
+    ) {
+      throw new GovernedDataProviderRealizationError(
+        "RDS_GOVERNED_DATA_SOURCE_ANCHOR_INVALID",
+        "source Interface execution requires p1_interface_anchor_binding_ref from its pre-instance V0186 Framework anchor",
+      );
+    }
+    const layerFields: string[] = [];
+    for (const layer of ["path", "static_mount", "dynamic_mount"] as const) {
+      const facts = source[layer];
+      if (
+        !Array.isArray(facts)
+        || facts.some((field: unknown) => typeof field !== "string" || field.length === 0)
+      ) {
+        throw new GovernedDataProviderRealizationError(
+          "RDS_GOVERNED_DATA_SOURCE_INTERFACE_MISMATCH",
+          "source Interface must carry complete declared PATH/STATIC_MOUNT/DYNAMIC_MOUNT field sets",
+        );
+      }
+      layerFields.push(...facts);
+    }
+    if (new Set(layerFields).size !== layerFields.length) {
+      throw new GovernedDataProviderRealizationError(
+        "RDS_GOVERNED_DATA_SOURCE_INTERFACE_MISMATCH",
+        "source Interface Layer field identities must be unique and disjoint",
       );
     }
   }
@@ -650,6 +1046,9 @@ async function executeBinding(
 function projectBinding(binding: GovernedDataHandoffBinding): StaticJsonObject {
   return Object.freeze({
     binding_ref: binding.binding_ref,
+    data_category: binding.data_category,
+    source_operation_ref: binding.source_operation_ref,
+    source_interface_ref: binding.source_interface_ref,
     source_access_kind: binding.source_access_kind,
     source_access_ref: binding.source_access_ref,
     members: Object.freeze(
@@ -666,6 +1065,7 @@ export async function realizeGovernedDataTriad(
   input: Readonly<GovernedDataTriadRealizationInput>,
   materialization: P2GovernedDataExposureMaterializer,
   store: GovernedDataTriadDurableStore,
+  authorities: GovernedTriadFrozenAuthorities,
 ): Promise<GovernedDataTriadRealizationResult> {
   const storeAuthorityRef = requiredString(
     store.authority_ref,
@@ -674,7 +1074,18 @@ export async function realizeGovernedDataTriad(
 
   const handoff = validateP2HandoffObligation(input.p2_handoff_obligation);
   validateTriadObligation(input.governed_data_json_triad_obligation, handoff);
+  verifyFrozenV0117Projection(
+    input.governed_data_exposure_binding_projection,
+    input.governed_data_exposure_binding_projection_hash,
+    handoff,
+  );
   const executions = executionMap(input.binding_executions, handoff.bindings);
+  await verifyFrozenPreInstanceClosure(
+    handoff,
+    input.governed_data_exposure_binding_projection_hash,
+    executions,
+    authorities,
+  );
 
   const projectedFiles = new Map<
     GovernedDataCategory,

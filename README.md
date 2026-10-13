@@ -10,9 +10,9 @@ Authoritative Contract bytes are resolved from Q Cloud Storage. Repository-side 
 
 - Repository Skeleton: `Q.SS.STD.META.CONTRACT.REPOSITORY_DIRECTORY_SKELETON@V0152`
 - Repository Skeleton SHA-256: `sha256:0d8b2a5fb33b657db9eff3d379969b8c26e541f9ff5827d443bd8d2aa8fe60c9`
-- P1 Capability Materialization: `Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0116`
-- P1 Capability Materialization SHA-256: `sha256:59dce7f2b10d04fe6053a28d9f2af09d961746befd10795e874b3226aefaf036`
-- P1 Capability Materialization rule map: 57 mappings, snapshot `sha256:32ddcd72bb722e4c3e4f6fd4dd2abf8ac783e8eea7ea27fa49f9d6d3728619e6`
+- P1 Capability Materialization: `Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117`
+- P1 Capability Materialization SHA-256: `sha256:cc1d1933d88125b400b8a6f3fd0042b521f22276ff74b2dda19798ddce76757f`
+- P1 Capability Materialization rule map: 57 mappings, snapshot `sha256:d9ababd6f3909c8d7f8d1125a7a9cdc70bdcf98e65a2682f63186ef8dcdc83d0`
 - Capability Package: `Q.SS.STD.META.CONTRACT.CAPABILITY_PACKAGE@V0115`
 - P0 Runtime Core: `Q.SS.STD.P0.CONTRACT.RUNTIME_CORE@V0134`
 - P1 Business Runtime: `Q.SS.STD.P1.CONTRACT.BUSINESS_RUNTIME@V0186`
@@ -45,7 +45,7 @@ The canonical Skeleton therefore contains no P1 runtime dynamic-variable resolve
 
 ## Governed-data JSON triad execution
 
-Repository Skeleton V0152 closes the existing non-Stage repository-support execution boundary around the exact P1 Capability Materialization V0116 `governed_data_json_triad_obligation`.
+Repository Skeleton V0152 implements the non-Stage repository-support execution boundary for the P1 Capability Materialization V0117 frozen governed-data exposure Binding Projection and the explicitly P2-governed `governed_data_json_triad_obligation`. P1 does not create or require the physical JSON triad; actual exposure and physical triad materialization remain P2-owned.
 
 For a DECLARED obligation, the canonical physical projection is exactly:
 
