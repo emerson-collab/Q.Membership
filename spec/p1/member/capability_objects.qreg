@@ -1,10 +1,9 @@
-# SOURCE-BOUND candidate projection; NOT a new business authority, whitelist, Gate or activation receipt.
-# exact_member_owner: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103
-# governed_semantic_standard: Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117
-# source_status: candidate; exact external hash / actor authority still unresolved.
+# Exact owner Member V0104 source-bound candidate projection; not a separate business authority.
+# Owner Source: spec/p1/member/source_snapshot/Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER.V0104.yaml
+# Whitelist and runtime/permission Gate closure remain UNRESOLVED.
 q_header: '1'
 q_id: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER
-q_version: V0103
+q_version: V0104
 q_stage: P1
 q_role: capability_objects_registry_projection
 q_status: candidate
@@ -227,7 +226,7 @@ type_closure:
   undeclared_type_inference_forbidden: true
 contracts:
   create_member_request_contract:
-    contract_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/contracts/create_member_request_contract
+    contract_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/contracts/create_member_request_contract
     schema_language: JSON_SCHEMA_DRAFT_2020_12
     payload_boundary: input
     schema:
@@ -301,7 +300,7 @@ contracts:
       - member_identity
       - registration_profile
   create_member_response_contract:
-    contract_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/contracts/create_member_response_contract
+    contract_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/contracts/create_member_response_contract
     schema_language: JSON_SCHEMA_DRAFT_2020_12
     payload_boundary: runtime_result
     schema:
@@ -314,14 +313,14 @@ contracts:
           x_q_field_semantics:
             semantic_kind: BUSINESS_REFERENCE
             reference_owner_mode: SELF
-            reference_owner_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103
+            reference_owner_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104
             resolution_mode: EXACT_READ
             selection_cardinality: ONE
             manual_entry_allowed: false
             identity_field_path: member_ref
             display_field_paths: []
-            read_operation_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/resolve_member
-            read_interface_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/interfaces/member_resolution_invoke
+            read_operation_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/operations/resolve_member
+            read_interface_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/interfaces/member_resolution_invoke
             read_request_identity_field_path: member_ref
             read_result_object_path: member
             variability_class: GENERAL
@@ -343,7 +342,7 @@ contracts:
       - member_ref
       - member_status
   resolve_member_request_contract:
-    contract_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/contracts/resolve_member_request_contract
+    contract_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/contracts/resolve_member_request_contract
     schema_language: JSON_SCHEMA_DRAFT_2020_12
     payload_boundary: input
     schema:
@@ -356,21 +355,21 @@ contracts:
           x_q_field_semantics:
             semantic_kind: BUSINESS_REFERENCE
             reference_owner_mode: SELF
-            reference_owner_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103
+            reference_owner_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104
             resolution_mode: EXACT_READ
             selection_cardinality: ONE
             manual_entry_allowed: false
             identity_field_path: member_ref
             display_field_paths: []
-            read_operation_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/resolve_member
-            read_interface_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/interfaces/member_resolution_invoke
+            read_operation_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/operations/resolve_member
+            read_interface_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/interfaces/member_resolution_invoke
             read_request_identity_field_path: member_ref
             read_result_object_path: member
             variability_class: GENERAL
       required:
       - member_ref
   resolve_member_response_contract:
-    contract_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/contracts/resolve_member_response_contract
+    contract_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/contracts/resolve_member_response_contract
     schema_language: JSON_SCHEMA_DRAFT_2020_12
     payload_boundary: runtime_result
     schema:
@@ -378,12 +377,12 @@ contracts:
       additionalProperties: false
       properties:
         member:
-          $ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/type_closure/schemas/member
+          $ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/type_closure/schemas/member
       required:
       - member
       x_default_contact_email_disclosure: false
   update_member_profile_request_contract:
-    contract_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/contracts/update_member_profile_request_contract
+    contract_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/contracts/update_member_profile_request_contract
     schema_language: JSON_SCHEMA_DRAFT_2020_12
     payload_boundary: input
     schema:
@@ -396,14 +395,14 @@ contracts:
           x_q_field_semantics:
             semantic_kind: BUSINESS_REFERENCE
             reference_owner_mode: SELF
-            reference_owner_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103
+            reference_owner_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104
             resolution_mode: EXACT_READ
             selection_cardinality: ONE
             manual_entry_allowed: false
             identity_field_path: member_ref
             display_field_paths: []
-            read_operation_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/resolve_member
-            read_interface_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/interfaces/member_resolution_invoke
+            read_operation_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/operations/resolve_member
+            read_interface_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/interfaces/member_resolution_invoke
             read_request_identity_field_path: member_ref
             read_result_object_path: member
             variability_class: GENERAL
@@ -449,7 +448,7 @@ contracts:
       - member_ref
       - profile_changes
   update_member_profile_response_contract:
-    contract_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/contracts/update_member_profile_response_contract
+    contract_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/contracts/update_member_profile_response_contract
     schema_language: JSON_SCHEMA_DRAFT_2020_12
     payload_boundary: runtime_result
     schema:
@@ -462,14 +461,14 @@ contracts:
           x_q_field_semantics:
             semantic_kind: BUSINESS_REFERENCE
             reference_owner_mode: SELF
-            reference_owner_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103
+            reference_owner_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104
             resolution_mode: EXACT_READ
             selection_cardinality: ONE
             manual_entry_allowed: false
             identity_field_path: member_ref
             display_field_paths: []
-            read_operation_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/resolve_member
-            read_interface_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/interfaces/member_resolution_invoke
+            read_operation_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/operations/resolve_member
+            read_interface_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/interfaces/member_resolution_invoke
             read_request_identity_field_path: member_ref
             read_result_object_path: member
             variability_class: GENERAL
@@ -501,7 +500,7 @@ contracts:
       - update_result
       - member_profile
   update_member_status_request_contract:
-    contract_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/contracts/update_member_status_request_contract
+    contract_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/contracts/update_member_status_request_contract
     schema_language: JSON_SCHEMA_DRAFT_2020_12
     payload_boundary: input
     schema:
@@ -514,14 +513,14 @@ contracts:
           x_q_field_semantics:
             semantic_kind: BUSINESS_REFERENCE
             reference_owner_mode: SELF
-            reference_owner_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103
+            reference_owner_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104
             resolution_mode: EXACT_READ
             selection_cardinality: ONE
             manual_entry_allowed: false
             identity_field_path: member_ref
             display_field_paths: []
-            read_operation_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/resolve_member
-            read_interface_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/interfaces/member_resolution_invoke
+            read_operation_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/operations/resolve_member
+            read_interface_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/interfaces/member_resolution_invoke
             read_request_identity_field_path: member_ref
             read_result_object_path: member
             variability_class: GENERAL
@@ -545,7 +544,7 @@ contracts:
       - member_ref
       - target_status
   update_member_status_response_contract:
-    contract_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/contracts/update_member_status_response_contract
+    contract_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/contracts/update_member_status_response_contract
     schema_language: JSON_SCHEMA_DRAFT_2020_12
     payload_boundary: runtime_result
     schema:
@@ -558,14 +557,14 @@ contracts:
           x_q_field_semantics:
             semantic_kind: BUSINESS_REFERENCE
             reference_owner_mode: SELF
-            reference_owner_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103
+            reference_owner_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104
             resolution_mode: EXACT_READ
             selection_cardinality: ONE
             manual_entry_allowed: false
             identity_field_path: member_ref
             display_field_paths: []
-            read_operation_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/resolve_member
-            read_interface_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/interfaces/member_resolution_invoke
+            read_operation_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/operations/resolve_member
+            read_interface_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/interfaces/member_resolution_invoke
             read_request_identity_field_path: member_ref
             read_result_object_path: member
             variability_class: GENERAL
@@ -587,7 +586,7 @@ contracts:
       - member_ref
       - member_status
   create_membership_request_contract:
-    contract_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/contracts/create_membership_request_contract
+    contract_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/contracts/create_membership_request_contract
     schema_language: JSON_SCHEMA_DRAFT_2020_12
     payload_boundary: input
     schema:
@@ -600,14 +599,14 @@ contracts:
           x_q_field_semantics:
             semantic_kind: BUSINESS_REFERENCE
             reference_owner_mode: SELF
-            reference_owner_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103
+            reference_owner_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104
             resolution_mode: EXACT_READ
             selection_cardinality: ONE
             manual_entry_allowed: false
             identity_field_path: member_ref
             display_field_paths: []
-            read_operation_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/resolve_member
-            read_interface_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/interfaces/member_resolution_invoke
+            read_operation_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/operations/resolve_member
+            read_interface_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/interfaces/member_resolution_invoke
             read_request_identity_field_path: member_ref
             read_result_object_path: member
             variability_class: GENERAL
@@ -649,7 +648,7 @@ contracts:
       - member_ref
       - plan_ref
   create_membership_response_contract:
-    contract_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/contracts/create_membership_response_contract
+    contract_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/contracts/create_membership_response_contract
     schema_language: JSON_SCHEMA_DRAFT_2020_12
     payload_boundary: runtime_result
     schema:
@@ -664,14 +663,14 @@ contracts:
             semantic_kind: BUSINESS_REFERENCE
             variability_class: GENERAL
             reference_owner_mode: SELF
-            reference_owner_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103
+            reference_owner_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104
             resolution_mode: EXACT_READ
             selection_cardinality: ONE
             manual_entry_allowed: false
             identity_field_path: membership_ref
             display_field_paths: []
-            read_operation_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/resolve_membership
-            read_interface_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/interfaces/membership_exact_resolution_invoke
+            read_operation_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/operations/resolve_membership
+            read_interface_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/interfaces/membership_exact_resolution_invoke
             read_request_identity_field_path: membership_ref
             read_result_object_path: membership
         membership_status:
@@ -701,7 +700,7 @@ contracts:
       - membership_status
       - effective_time
   update_membership_plan_request_contract:
-    contract_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/contracts/update_membership_plan_request_contract
+    contract_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/contracts/update_membership_plan_request_contract
     schema_language: JSON_SCHEMA_DRAFT_2020_12
     payload_boundary: input
     schema:
@@ -714,14 +713,14 @@ contracts:
           x_q_field_semantics:
             semantic_kind: BUSINESS_REFERENCE
             reference_owner_mode: SELF
-            reference_owner_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103
+            reference_owner_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104
             resolution_mode: EXACT_READ
             selection_cardinality: ONE
             manual_entry_allowed: false
             identity_field_path: member_ref
             display_field_paths: []
-            read_operation_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/resolve_member
-            read_interface_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/interfaces/member_resolution_invoke
+            read_operation_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/operations/resolve_member
+            read_interface_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/interfaces/member_resolution_invoke
             read_request_identity_field_path: member_ref
             read_result_object_path: member
             variability_class: GENERAL
@@ -732,14 +731,14 @@ contracts:
             semantic_kind: BUSINESS_REFERENCE
             variability_class: GENERAL
             reference_owner_mode: SELF
-            reference_owner_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103
+            reference_owner_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104
             resolution_mode: EXACT_READ
             selection_cardinality: ONE
             manual_entry_allowed: false
             identity_field_path: membership_ref
             display_field_paths: []
-            read_operation_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/resolve_membership
-            read_interface_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/interfaces/membership_exact_resolution_invoke
+            read_operation_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/operations/resolve_membership
+            read_interface_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/interfaces/membership_exact_resolution_invoke
             read_request_identity_field_path: membership_ref
             read_result_object_path: membership
         target_plan_ref:
@@ -781,7 +780,7 @@ contracts:
       - current_membership_ref
       - target_plan_ref
   update_membership_plan_response_contract:
-    contract_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/contracts/update_membership_plan_response_contract
+    contract_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/contracts/update_membership_plan_response_contract
     schema_language: JSON_SCHEMA_DRAFT_2020_12
     payload_boundary: runtime_result
     schema:
@@ -796,14 +795,14 @@ contracts:
             semantic_kind: BUSINESS_REFERENCE
             variability_class: GENERAL
             reference_owner_mode: SELF
-            reference_owner_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103
+            reference_owner_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104
             resolution_mode: EXACT_READ
             selection_cardinality: ONE
             manual_entry_allowed: false
             identity_field_path: membership_ref
             display_field_paths: []
-            read_operation_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/resolve_membership
-            read_interface_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/interfaces/membership_exact_resolution_invoke
+            read_operation_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/operations/resolve_membership
+            read_interface_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/interfaces/membership_exact_resolution_invoke
             read_request_identity_field_path: membership_ref
             read_result_object_path: membership
         previous_membership_ref:
@@ -814,14 +813,14 @@ contracts:
             semantic_kind: BUSINESS_REFERENCE
             variability_class: GENERAL
             reference_owner_mode: SELF
-            reference_owner_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103
+            reference_owner_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104
             resolution_mode: EXACT_READ
             selection_cardinality: ONE
             manual_entry_allowed: false
             identity_field_path: membership_ref
             display_field_paths: []
-            read_operation_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/resolve_membership
-            read_interface_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/interfaces/membership_exact_resolution_invoke
+            read_operation_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/operations/resolve_membership
+            read_interface_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/interfaces/membership_exact_resolution_invoke
             read_request_identity_field_path: membership_ref
             read_result_object_path: membership
         membership_status:
@@ -853,7 +852,7 @@ contracts:
       - previous_membership_ref
       x_success_result_requires_predecessor_and_successor_ids: true
   lookup_membership_request_contract:
-    contract_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/contracts/lookup_membership_request_contract
+    contract_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/contracts/lookup_membership_request_contract
     schema_language: JSON_SCHEMA_DRAFT_2020_12
     payload_boundary: input
     schema:
@@ -866,14 +865,14 @@ contracts:
           x_q_field_semantics:
             semantic_kind: BUSINESS_REFERENCE
             reference_owner_mode: SELF
-            reference_owner_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103
+            reference_owner_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104
             resolution_mode: EXACT_READ
             selection_cardinality: ONE
             manual_entry_allowed: false
             identity_field_path: member_ref
             display_field_paths: []
-            read_operation_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/resolve_member
-            read_interface_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/interfaces/member_resolution_invoke
+            read_operation_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/operations/resolve_member
+            read_interface_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/interfaces/member_resolution_invoke
             read_request_identity_field_path: member_ref
             read_result_object_path: member
             variability_class: GENERAL
@@ -889,7 +888,7 @@ contracts:
       required:
       - member_ref
   lookup_membership_response_contract:
-    contract_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/contracts/lookup_membership_response_contract
+    contract_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/contracts/lookup_membership_response_contract
     schema_language: JSON_SCHEMA_DRAFT_2020_12
     payload_boundary: runtime_result
     schema:
@@ -899,13 +898,13 @@ contracts:
         memberships:
           type: array
           items:
-            $ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/type_closure/schemas/membership
+            $ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/type_closure/schemas/membership
           maxItems: 1
       required:
       - memberships
       x_successful_empty_means_authoritative_no_active_relation: true
   evaluate_membership_eligibility_request_contract:
-    contract_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/contracts/evaluate_membership_eligibility_request_contract
+    contract_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/contracts/evaluate_membership_eligibility_request_contract
     schema_language: JSON_SCHEMA_DRAFT_2020_12
     payload_boundary: input
     schema:
@@ -918,14 +917,14 @@ contracts:
           x_q_field_semantics:
             semantic_kind: BUSINESS_REFERENCE
             reference_owner_mode: SELF
-            reference_owner_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103
+            reference_owner_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104
             resolution_mode: EXACT_READ
             selection_cardinality: ONE
             manual_entry_allowed: false
             identity_field_path: member_ref
             display_field_paths: []
-            read_operation_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/resolve_member
-            read_interface_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/interfaces/member_resolution_invoke
+            read_operation_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/operations/resolve_member
+            read_interface_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/interfaces/member_resolution_invoke
             read_request_identity_field_path: member_ref
             read_result_object_path: member
             variability_class: GENERAL
@@ -953,14 +952,14 @@ contracts:
       - check_purpose
       - decision_time
   evaluate_membership_eligibility_response_contract:
-    contract_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/contracts/evaluate_membership_eligibility_response_contract
+    contract_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/contracts/evaluate_membership_eligibility_response_contract
     schema_language: JSON_SCHEMA_DRAFT_2020_12
     payload_boundary: runtime_result
     schema:
-      $ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/type_closure/schemas/eligibility_decision
+      $ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/type_closure/schemas/eligibility_decision
       x_source_owned_semantics: BSE_V0102_OPERATION_08
   resolve_membership_request_contract:
-    contract_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/contracts/resolve_membership_request_contract
+    contract_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/contracts/resolve_membership_request_contract
     schema_language: JSON_SCHEMA_DRAFT_2020_12
     payload_boundary: input
     schema:
@@ -974,20 +973,20 @@ contracts:
             semantic_kind: BUSINESS_REFERENCE
             variability_class: GENERAL
             reference_owner_mode: SELF
-            reference_owner_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103
+            reference_owner_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104
             resolution_mode: EXACT_READ
             selection_cardinality: ONE
             manual_entry_allowed: false
             identity_field_path: membership_ref
             display_field_paths: []
-            read_operation_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/operations/resolve_membership
-            read_interface_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/interfaces/membership_exact_resolution_invoke
+            read_operation_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/operations/resolve_membership
+            read_interface_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/interfaces/membership_exact_resolution_invoke
             read_request_identity_field_path: membership_ref
             read_result_object_path: membership
       required:
       - membership_ref
   resolve_membership_response_contract:
-    contract_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/contracts/resolve_membership_response_contract
+    contract_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/contracts/resolve_membership_response_contract
     schema_language: JSON_SCHEMA_DRAFT_2020_12
     payload_boundary: runtime_result
     schema:
@@ -995,12 +994,12 @@ contracts:
       additionalProperties: false
       properties:
         membership:
-          $ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/type_closure/schemas/membership
+          $ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/type_closure/schemas/membership
       required:
       - membership
 stable_errors:
   create_member:
-    contract_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/stable_errors/create_member
+    contract_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/stable_errors/create_member
     carrier_field: stable_error
     error_code_set:
     - MEMBER_IDENTITY_MISSING
@@ -1038,7 +1037,7 @@ stable_errors:
       - message
     unknown_error_code_forbidden: true
   resolve_member:
-    contract_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/stable_errors/resolve_member
+    contract_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/stable_errors/resolve_member
     carrier_field: stable_error
     error_code_set:
     - MEMBER_IDENTITY_MISSING
@@ -1070,7 +1069,7 @@ stable_errors:
       - message
     unknown_error_code_forbidden: true
   update_member_profile:
-    contract_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/stable_errors/update_member_profile
+    contract_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/stable_errors/update_member_profile
     carrier_field: stable_error
     error_code_set:
     - MEMBER_IDENTITY_MISSING
@@ -1111,7 +1110,7 @@ stable_errors:
       - message
     unknown_error_code_forbidden: true
   update_member_status:
-    contract_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/stable_errors/update_member_status
+    contract_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/stable_errors/update_member_status
     carrier_field: stable_error
     error_code_set:
     - MEMBER_IDENTITY_MISSING
@@ -1149,7 +1148,7 @@ stable_errors:
       - message
     unknown_error_code_forbidden: true
   create_membership:
-    contract_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/stable_errors/create_membership
+    contract_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/stable_errors/create_membership
     carrier_field: stable_error
     error_code_set:
     - MEMBER_IDENTITY_MISSING
@@ -1200,7 +1199,7 @@ stable_errors:
     unknown_error_code_forbidden: true
     x_error_addition_basis: 业务说明书该操作的显式失败分支（不是新增经营政策）。
   update_membership_plan:
-    contract_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/stable_errors/update_membership_plan
+    contract_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/stable_errors/update_membership_plan
     carrier_field: stable_error
     error_code_set:
     - MEMBER_IDENTITY_MISSING
@@ -1254,7 +1253,7 @@ stable_errors:
     unknown_error_code_forbidden: true
     x_error_addition_basis: 业务说明书该操作的显式失败分支（不是新增经营政策）。
   lookup_membership:
-    contract_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/stable_errors/lookup_membership
+    contract_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/stable_errors/lookup_membership
     carrier_field: stable_error
     error_code_set:
     - MEMBER_IDENTITY_MISSING
@@ -1293,7 +1292,7 @@ stable_errors:
     unknown_error_code_forbidden: true
     x_error_addition_basis: 业务说明书该操作的显式失败分支（不是新增经营政策）。
   evaluate_membership_eligibility:
-    contract_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/stable_errors/evaluate_membership_eligibility
+    contract_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/stable_errors/evaluate_membership_eligibility
     carrier_field: stable_error
     error_code_set:
     - MEMBER_IDENTITY_MISSING
@@ -1332,7 +1331,7 @@ stable_errors:
     unknown_error_code_forbidden: true
     x_negative_eligibility_is_normal_result_not_stable_error: true
   resolve_membership:
-    contract_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/stable_errors/resolve_membership
+    contract_ref: Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/stable_errors/resolve_membership
     carrier_field: stable_error
     error_code_set:
     - MEMBERSHIP_REF_REQUIRED

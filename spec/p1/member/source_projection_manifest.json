@@ -1,9 +1,19 @@
 {
   "projection_only": true,
-  "source_ref": "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103",
+  "record_kind": "BUSINESS_MATERIALIZATION",
+  "source_ref": "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104",
   "owner_source_status": "candidate",
+  "source_snapshot_path": "spec/p1/member/source_snapshot/Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER.V0104.yaml",
+  "source_hash_expected": "sha256:dc6eb7db79763ca6bf977a39a563ae10a66caf120b41e1bfd618e852a958055b",
   "governing_source_ref": "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117",
-  "source_hash_authority": "EXTERNAL_EXACT_BYTES_BINDING_NOT_RESOLVED",
+  "compact_whitelist_path": "tests/p1/member/fixtures/member_v0104_compact_whitelist.unresolved.json",
+  "whitelist_source_status": "UNRESOLVED",
+  "whitelist_default_effect": "NO_AUTHORIZATION",
+  "standard_lock": {
+    "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117": "sha256:cc1d1933d88125b400b8a6f3fd0042b521f22276ff74b2dda19798ddce76757f",
+    "Q.SS.STD.META.CONTRACT.FIELD_PROJECTION@V0103": "sha256:fd649c59b9c9e12cbe32a57199953c504e21a78b52c08f604d5a19abe52f4082",
+    "Q.SS.STD.META.CONTRACT.FIELD_DICTIONARY@V0106": "sha256:3233000ed9fc77859240bc1c9d8a06b657245cdad167cfe92de5aea51e28ab98"
+  },
   "declared_source_sections": {
     "spec/p1/member/capability_profile.qcon.yaml": [
       "identity",
@@ -40,15 +50,23 @@
       "external_provider_surface"
     ]
   },
-  "verification_claim": "EXACT_OWNER_SOURCE_SECTION_TEXT_PROJECTION_ONLY",
+  "user_compact_scope_counts": {
+    "scopes": 42,
+    "field_occurrences": 286,
+    "qwide_occurrences": 200,
+    "owner_local_occurrences": 86
+  },
+  "verification_claim": "EXACT_MEMBER_V0104_SOURCE_PROJECTION_STRUCTURAL_VALIDATION_ONLY",
   "scoped_whitelist_status": "UNRESOLVED",
   "authority_lock_status": "UNRESOLVED",
   "executable_materialization_complete": false,
   "gate_pass_claimed": false,
-  "unresolved_source_obligations": [
-    "Exact owner Capability Contract registered bytes/hash and frozen authority bindings",
-    "Approved exact RESTRICTED actor-class identity and authorization-rule binding",
-    "Production scoped field whitelist including owner_schema_ref, exact placement and conditional FORBIDDEN checks",
-    "Exact interface anchor and runtime/general/phase bindings with independently verified receipts"
-  ]
+  "blockers": {
+    "materialization_readiness/ready_for_implementation_generation": "false",
+    "permission_model/actor_classes": "EMPTY; RESTRICTED; DENY",
+    "external_provider_surface/x_publication_blocked_until_business_and_security_owner_acceptance": "true",
+    "source_integrity/exact_current_ref_resolution_completed": "false",
+    "source_integrity/applicable_standard_source_locks/field_projection/exact_ref": "FROZEN_V0101_NOT_VERIFIED_COMPATIBLE_WITH_V0103",
+    "type_closure/schemas/member/properties/member_status/x_design_status": "OWNER_APPROVAL_PENDING"
+  }
 }
