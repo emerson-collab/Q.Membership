@@ -1,0 +1,357 @@
+{
+  "q_header": "1",
+  "q_id": "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER",
+  "q_version": "V0104",
+  "q_stage": "P1",
+  "q_role": "capability_interfaces_projection",
+  "q_status": "candidate",
+  "projection_only": true,
+  "source_of_truth": "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/interfaces",
+  "outcome_contract_ref": "Q.SS.STD.P1.CONTRACT.BUSINESS_RUNTIME@${CURRENT}#/outcome_contracts/call_outcome",
+  "path": [
+    "capability_id",
+    "operation_id",
+    "request_id",
+    "trace_id"
+  ],
+  "static_mount_common": [
+    "operation_contract"
+  ],
+  "dynamic_mount_common": [
+    "input",
+    "runtime_result",
+    "outcome_type",
+    "stable_error"
+  ],
+  "interfaces": [
+    {
+      "interface_id": "member_creation_invoke",
+      "interface_ref": "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/interfaces/member_creation_invoke",
+      "operation_ref": "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/operations/create_member",
+      "surface": "CALL",
+      "kind_code": "M1",
+      "kind": "CALL_INVOKE",
+      "method_ref": "create_member",
+      "request_contract_ref": "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/contracts/create_member_request_contract",
+      "response_contract_ref": "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/contracts/create_member_response_contract",
+      "stable_error_contract_ref": "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/stable_errors/create_member",
+      "outcome_contract_ref": "Q.SS.STD.P1.CONTRACT.BUSINESS_RUNTIME@${CURRENT}#/outcome_contracts/call_outcome",
+      "path": [
+        "capability_id",
+        "operation_id",
+        "request_id",
+        "trace_id"
+      ],
+      "static_mount": [
+        "operation_contract"
+      ],
+      "dynamic_mount": [
+        "input",
+        "runtime_result",
+        "outcome_type",
+        "stable_error"
+      ],
+      "operation_id": "create_member",
+      "publicity": "public"
+    },
+    {
+      "interface_id": "member_resolution_invoke",
+      "interface_ref": "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/interfaces/member_resolution_invoke",
+      "operation_ref": "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/operations/resolve_member",
+      "surface": "CALL",
+      "kind_code": "M1",
+      "kind": "CALL_INVOKE",
+      "method_ref": "resolve_member",
+      "request_contract_ref": "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/contracts/resolve_member_request_contract",
+      "response_contract_ref": "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/contracts/resolve_member_response_contract",
+      "stable_error_contract_ref": "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/stable_errors/resolve_member",
+      "outcome_contract_ref": "Q.SS.STD.P1.CONTRACT.BUSINESS_RUNTIME@${CURRENT}#/outcome_contracts/call_outcome",
+      "path": [
+        "capability_id",
+        "operation_id",
+        "request_id",
+        "trace_id"
+      ],
+      "static_mount": [
+        "operation_contract"
+      ],
+      "dynamic_mount": [
+        "input",
+        "runtime_result",
+        "outcome_type",
+        "stable_error"
+      ],
+      "operation_id": "resolve_member",
+      "publicity": "public"
+    },
+    {
+      "interface_id": "member_profile_update_invoke",
+      "interface_ref": "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/interfaces/member_profile_update_invoke",
+      "operation_ref": "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/operations/update_member_profile",
+      "surface": "CALL",
+      "kind_code": "M1",
+      "kind": "CALL_INVOKE",
+      "method_ref": "update_member_profile",
+      "request_contract_ref": "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/contracts/update_member_profile_request_contract",
+      "response_contract_ref": "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/contracts/update_member_profile_response_contract",
+      "stable_error_contract_ref": "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/stable_errors/update_member_profile",
+      "outcome_contract_ref": "Q.SS.STD.P1.CONTRACT.BUSINESS_RUNTIME@${CURRENT}#/outcome_contracts/call_outcome",
+      "path": [
+        "capability_id",
+        "operation_id",
+        "request_id",
+        "trace_id"
+      ],
+      "static_mount": [
+        "operation_contract"
+      ],
+      "dynamic_mount": [
+        "input",
+        "runtime_result",
+        "outcome_type",
+        "stable_error"
+      ],
+      "operation_id": "update_member_profile",
+      "publicity": "public"
+    },
+    {
+      "interface_id": "member_status_update_invoke",
+      "interface_ref": "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/interfaces/member_status_update_invoke",
+      "operation_ref": "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/operations/update_member_status",
+      "surface": "CALL",
+      "kind_code": "M1",
+      "kind": "CALL_INVOKE",
+      "method_ref": "update_member_status",
+      "request_contract_ref": "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/contracts/update_member_status_request_contract",
+      "response_contract_ref": "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/contracts/update_member_status_response_contract",
+      "stable_error_contract_ref": "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/stable_errors/update_member_status",
+      "outcome_contract_ref": "Q.SS.STD.P1.CONTRACT.BUSINESS_RUNTIME@${CURRENT}#/outcome_contracts/call_outcome",
+      "path": [
+        "capability_id",
+        "operation_id",
+        "request_id",
+        "trace_id"
+      ],
+      "static_mount": [
+        "operation_contract"
+      ],
+      "dynamic_mount": [
+        "input",
+        "runtime_result",
+        "outcome_type",
+        "stable_error"
+      ],
+      "operation_id": "update_member_status",
+      "publicity": "public"
+    },
+    {
+      "interface_id": "membership_creation_invoke",
+      "interface_ref": "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/interfaces/membership_creation_invoke",
+      "operation_ref": "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/operations/create_membership",
+      "surface": "CALL",
+      "kind_code": "M1",
+      "kind": "CALL_INVOKE",
+      "method_ref": "create_membership",
+      "request_contract_ref": "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/contracts/create_membership_request_contract",
+      "response_contract_ref": "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/contracts/create_membership_response_contract",
+      "stable_error_contract_ref": "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/stable_errors/create_membership",
+      "outcome_contract_ref": "Q.SS.STD.P1.CONTRACT.BUSINESS_RUNTIME@${CURRENT}#/outcome_contracts/call_outcome",
+      "path": [
+        "capability_id",
+        "operation_id",
+        "request_id",
+        "trace_id"
+      ],
+      "static_mount": [
+        "operation_contract"
+      ],
+      "dynamic_mount": [
+        "input",
+        "runtime_result",
+        "outcome_type",
+        "stable_error"
+      ],
+      "operation_id": "create_membership",
+      "publicity": "public"
+    },
+    {
+      "interface_id": "membership_plan_update_invoke",
+      "interface_ref": "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/interfaces/membership_plan_update_invoke",
+      "operation_ref": "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/operations/update_membership_plan",
+      "surface": "CALL",
+      "kind_code": "M1",
+      "kind": "CALL_INVOKE",
+      "method_ref": "update_membership_plan",
+      "request_contract_ref": "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/contracts/update_membership_plan_request_contract",
+      "response_contract_ref": "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/contracts/update_membership_plan_response_contract",
+      "stable_error_contract_ref": "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/stable_errors/update_membership_plan",
+      "outcome_contract_ref": "Q.SS.STD.P1.CONTRACT.BUSINESS_RUNTIME@${CURRENT}#/outcome_contracts/call_outcome",
+      "path": [
+        "capability_id",
+        "operation_id",
+        "request_id",
+        "trace_id"
+      ],
+      "static_mount": [
+        "operation_contract"
+      ],
+      "dynamic_mount": [
+        "input",
+        "runtime_result",
+        "outcome_type",
+        "stable_error"
+      ],
+      "operation_id": "update_membership_plan",
+      "publicity": "public"
+    },
+    {
+      "interface_id": "membership_lookup_invoke",
+      "interface_ref": "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/interfaces/membership_lookup_invoke",
+      "operation_ref": "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/operations/lookup_membership",
+      "surface": "CALL",
+      "kind_code": "M1",
+      "kind": "CALL_INVOKE",
+      "method_ref": "lookup_membership",
+      "request_contract_ref": "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/contracts/lookup_membership_request_contract",
+      "response_contract_ref": "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/contracts/lookup_membership_response_contract",
+      "stable_error_contract_ref": "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/stable_errors/lookup_membership",
+      "outcome_contract_ref": "Q.SS.STD.P1.CONTRACT.BUSINESS_RUNTIME@${CURRENT}#/outcome_contracts/call_outcome",
+      "path": [
+        "capability_id",
+        "operation_id",
+        "request_id",
+        "trace_id"
+      ],
+      "static_mount": [
+        "operation_contract"
+      ],
+      "dynamic_mount": [
+        "input",
+        "runtime_result",
+        "outcome_type",
+        "stable_error"
+      ],
+      "operation_id": "lookup_membership",
+      "publicity": "public"
+    },
+    {
+      "interface_id": "membership_eligibility_evaluation_invoke",
+      "interface_ref": "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/interfaces/membership_eligibility_evaluation_invoke",
+      "operation_ref": "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/operations/evaluate_membership_eligibility",
+      "surface": "CALL",
+      "kind_code": "M1",
+      "kind": "CALL_INVOKE",
+      "method_ref": "evaluate_membership_eligibility",
+      "request_contract_ref": "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/contracts/evaluate_membership_eligibility_request_contract",
+      "response_contract_ref": "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/contracts/evaluate_membership_eligibility_response_contract",
+      "stable_error_contract_ref": "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/stable_errors/evaluate_membership_eligibility",
+      "outcome_contract_ref": "Q.SS.STD.P1.CONTRACT.BUSINESS_RUNTIME@${CURRENT}#/outcome_contracts/call_outcome",
+      "path": [
+        "capability_id",
+        "operation_id",
+        "request_id",
+        "trace_id"
+      ],
+      "static_mount": [
+        "operation_contract",
+        "policy_refs"
+      ],
+      "dynamic_mount": [
+        "input",
+        "runtime_result",
+        "outcome_type",
+        "stable_error",
+        "rule_evidence"
+      ],
+      "operation_id": "evaluate_membership_eligibility",
+      "publicity": "public"
+    },
+    {
+      "interface_id": "membership_exact_resolution_invoke",
+      "interface_ref": "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/interfaces/membership_exact_resolution_invoke",
+      "operation_ref": "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/operations/resolve_membership",
+      "surface": "CALL",
+      "kind_code": "M1",
+      "kind": "CALL_INVOKE",
+      "method_ref": "resolve_membership",
+      "request_contract_ref": "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/contracts/resolve_membership_request_contract",
+      "response_contract_ref": "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/contracts/resolve_membership_response_contract",
+      "stable_error_contract_ref": "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/stable_errors/resolve_membership",
+      "outcome_contract_ref": "Q.SS.STD.P1.CONTRACT.BUSINESS_RUNTIME@${CURRENT}#/outcome_contracts/call_outcome",
+      "path": [
+        "capability_id",
+        "operation_id",
+        "request_id",
+        "trace_id"
+      ],
+      "static_mount": [
+        "operation_contract"
+      ],
+      "dynamic_mount": [
+        "input",
+        "runtime_result",
+        "outcome_type",
+        "stable_error"
+      ],
+      "operation_id": "resolve_membership",
+      "publicity": "internal"
+    }
+  ],
+  "interface_inventory": {
+    "specification_interface_refs": [
+      "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/interfaces/member_creation_invoke",
+      "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/interfaces/member_resolution_invoke",
+      "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/interfaces/member_profile_update_invoke",
+      "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/interfaces/member_status_update_invoke",
+      "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/interfaces/membership_creation_invoke",
+      "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/interfaces/membership_plan_update_invoke",
+      "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/interfaces/membership_lookup_invoke",
+      "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/interfaces/membership_eligibility_evaluation_invoke"
+    ],
+    "payload_contract_refs": [
+      "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/contracts/create_member_request_contract",
+      "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/contracts/create_member_response_contract",
+      "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/stable_errors/create_member",
+      "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/contracts/resolve_member_request_contract",
+      "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/contracts/resolve_member_response_contract",
+      "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/stable_errors/resolve_member",
+      "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/contracts/update_member_profile_request_contract",
+      "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/contracts/update_member_profile_response_contract",
+      "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/stable_errors/update_member_profile",
+      "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/contracts/update_member_status_request_contract",
+      "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/contracts/update_member_status_response_contract",
+      "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/stable_errors/update_member_status",
+      "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/contracts/create_membership_request_contract",
+      "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/contracts/create_membership_response_contract",
+      "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/stable_errors/create_membership",
+      "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/contracts/update_membership_plan_request_contract",
+      "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/contracts/update_membership_plan_response_contract",
+      "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/stable_errors/update_membership_plan",
+      "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/contracts/lookup_membership_request_contract",
+      "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/contracts/lookup_membership_response_contract",
+      "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/stable_errors/lookup_membership",
+      "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/contracts/evaluate_membership_eligibility_request_contract",
+      "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/contracts/evaluate_membership_eligibility_response_contract",
+      "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/stable_errors/evaluate_membership_eligibility",
+      "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/contracts/resolve_membership_request_contract",
+      "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/contracts/resolve_membership_response_contract",
+      "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/stable_errors/resolve_membership"
+    ],
+    "internal_interface_refs": [
+      "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/interfaces/membership_exact_resolution_invoke"
+    ]
+  },
+  "external_provider_surface": {
+    "mode": "PUBLICATION_ELIGIBLE",
+    "provider_interface_refs": [
+      "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/interfaces/member_creation_invoke",
+      "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/interfaces/member_resolution_invoke",
+      "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/interfaces/member_profile_update_invoke",
+      "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/interfaces/member_status_update_invoke",
+      "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/interfaces/membership_creation_invoke",
+      "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/interfaces/membership_plan_update_invoke",
+      "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/interfaces/membership_lookup_invoke",
+      "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104#/interfaces/membership_eligibility_evaluation_invoke"
+    ]
+  }
+}

@@ -1,0 +1,573 @@
+{
+  "artifact_ref": "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104",
+  "record_kind": "BUSINESS_MATERIALIZATION",
+  "closure_status": "UNRESOLVED",
+  "source_hash": "sha256:dc6eb7db79763ca6bf977a39a563ae10a66caf120b41e1bfd618e852a958055b",
+  "standard_lock": {
+    "Q.SS.STD.META.CONTRACT.P1_CAPABILITY_MATERIALIZATION@V0117": "sha256:cc1d1933d88125b400b8a6f3fd0042b521f22276ff74b2dda19798ddce76757f",
+    "Q.SS.STD.META.CONTRACT.FIELD_PROJECTION@V0103": "sha256:fd649c59b9c9e12cbe32a57199953c504e21a78b52c08f604d5a19abe52f4082",
+    "Q.SS.STD.META.CONTRACT.FIELD_DICTIONARY@V0106": "sha256:3233000ed9fc77859240bc1c9d8a06b657245cdad167cfe92de5aea51e28ab98"
+  },
+  "source_paths": "scope IDs below are relative to artifact_ref#/. JSON Pointer payload paths are relative to each owner Schema. Source contract retains all type/enum/condition semantics.",
+  "default_effect": "NO_AUTHORIZATION",
+  "interface_template": {
+    "path": [
+      "capability_id",
+      "operation_id",
+      "request_id",
+      "trace_id"
+    ],
+    "static_mount": [
+      "operation_contract"
+    ],
+    "dynamic_mount": [
+      "input",
+      "runtime_result",
+      "outcome_type",
+      "stable_error"
+    ],
+    "definition": [
+      "interface_ref",
+      "operation_ref",
+      "surface",
+      "kind_code",
+      "kind",
+      "method_ref",
+      "request_contract_ref",
+      "response_contract_ref",
+      "stable_error_contract_ref",
+      "outcome_contract_ref",
+      "path",
+      "static_mount",
+      "dynamic_mount"
+    ]
+  },
+  "interfaces": {
+    "EXTERNAL_INTERFACE": [
+      "member_creation_invoke",
+      "member_resolution_invoke",
+      "member_profile_update_invoke",
+      "member_status_update_invoke",
+      "membership_creation_invoke",
+      "membership_plan_update_invoke",
+      "membership_lookup_invoke",
+      "membership_eligibility_evaluation_invoke"
+    ],
+    "INTRA_CAPABILITY_OPERATION": [
+      "membership_exact_resolution_invoke"
+    ],
+    "overrides": {
+      "membership_eligibility_evaluation_invoke": {
+        "static_mount_add": [
+          "policy_refs"
+        ],
+        "dynamic_mount_add": [
+          "rule_evidence"
+        ]
+      }
+    }
+  },
+  "owner_schemas": {
+    "contracts/create_member_request_contract/schema": {
+      "required": [
+        "/member_identity",
+        "/member_identity/identity_namespace",
+        "/member_identity/identity_value",
+        "/registration_profile",
+        "/registration_profile/display_name"
+      ],
+      "optional": [
+        "/registration_profile/contact_email"
+      ],
+      "closed_objects": [
+        "",
+        "/member_identity",
+        "/registration_profile"
+      ]
+    },
+    "contracts/create_member_response_contract/schema": {
+      "required": [
+        "/member_ref",
+        "/member_status"
+      ],
+      "closed_objects": [
+        ""
+      ]
+    },
+    "contracts/resolve_member_request_contract/schema": {
+      "required": [
+        "/member_ref"
+      ],
+      "closed_objects": [
+        ""
+      ]
+    },
+    "contracts/resolve_member_response_contract/schema": {
+      "required": [
+        "/member"
+      ],
+      "closed_objects": [
+        ""
+      ],
+      "references": [
+        [
+          "/member",
+          "type_closure/schemas/member"
+        ]
+      ]
+    },
+    "contracts/update_member_profile_request_contract/schema": {
+      "required": [
+        "/member_ref",
+        "/profile_changes"
+      ],
+      "optional": [
+        "/profile_changes/display_name",
+        "/profile_changes/contact_email"
+      ],
+      "closed_objects": [
+        "",
+        "/profile_changes"
+      ],
+      "negative_rules": [
+        [
+          "/profile_changes",
+          "not"
+        ]
+      ],
+      "forbidden": [
+        "/profile_changes/member_ref",
+        "/profile_changes/member_status"
+      ]
+    },
+    "contracts/update_member_profile_response_contract/schema": {
+      "required": [
+        "/member_ref",
+        "/update_result",
+        "/member_profile",
+        "/member_profile/display_name"
+      ],
+      "closed_objects": [
+        "",
+        "/member_profile"
+      ]
+    },
+    "contracts/update_member_status_request_contract/schema": {
+      "required": [
+        "/member_ref",
+        "/target_status"
+      ],
+      "optional": [
+        "/reason"
+      ],
+      "closed_objects": [
+        ""
+      ]
+    },
+    "contracts/update_member_status_response_contract/schema": {
+      "required": [
+        "/member_ref",
+        "/member_status"
+      ],
+      "closed_objects": [
+        ""
+      ]
+    },
+    "contracts/create_membership_request_contract/schema": {
+      "required": [
+        "/member_ref",
+        "/plan_ref"
+      ],
+      "optional": [
+        "/requested_effective_time"
+      ],
+      "closed_objects": [
+        ""
+      ]
+    },
+    "contracts/create_membership_response_contract/schema": {
+      "required": [
+        "/membership_ref",
+        "/membership_status",
+        "/effective_time"
+      ],
+      "closed_objects": [
+        ""
+      ]
+    },
+    "contracts/update_membership_plan_request_contract/schema": {
+      "required": [
+        "/member_ref",
+        "/current_membership_ref",
+        "/target_plan_ref"
+      ],
+      "optional": [
+        "/requested_effective_time"
+      ],
+      "closed_objects": [
+        ""
+      ]
+    },
+    "contracts/update_membership_plan_response_contract/schema": {
+      "required": [
+        "/membership_ref",
+        "/previous_membership_ref",
+        "/membership_status",
+        "/effective_time"
+      ],
+      "closed_objects": [
+        ""
+      ]
+    },
+    "contracts/lookup_membership_request_contract/schema": {
+      "required": [
+        "/member_ref"
+      ],
+      "optional": [
+        "/as_of_time"
+      ],
+      "closed_objects": [
+        ""
+      ]
+    },
+    "contracts/lookup_membership_response_contract/schema": {
+      "required": [
+        "/memberships"
+      ],
+      "closed_objects": [
+        ""
+      ]
+    },
+    "contracts/evaluate_membership_eligibility_request_contract/schema": {
+      "required": [
+        "/member_ref",
+        "/check_purpose",
+        "/decision_time"
+      ],
+      "closed_objects": [
+        ""
+      ]
+    },
+    "contracts/evaluate_membership_eligibility_response_contract/schema": {
+      "references": [
+        [
+          "",
+          "type_closure/schemas/eligibility_decision"
+        ]
+      ]
+    },
+    "contracts/resolve_membership_request_contract/schema": {
+      "required": [
+        "/membership_ref"
+      ],
+      "closed_objects": [
+        ""
+      ]
+    },
+    "contracts/resolve_membership_response_contract/schema": {
+      "required": [
+        "/membership"
+      ],
+      "closed_objects": [
+        ""
+      ],
+      "references": [
+        [
+          "/membership",
+          "type_closure/schemas/membership"
+        ]
+      ]
+    },
+    "type_closure/schemas/member": {
+      "required": [
+        "/member_ref",
+        "/member_status",
+        "/member_profile",
+        "/member_profile/display_name"
+      ],
+      "closed_objects": [
+        "",
+        "/member_profile"
+      ]
+    },
+    "type_closure/schemas/membership": {
+      "required": [
+        "/membership_ref",
+        "/member_ref",
+        "/plan_ref",
+        "/membership_status",
+        "/effective_time"
+      ],
+      "optional": [
+        "/termination_time"
+      ],
+      "closed_objects": [
+        ""
+      ],
+      "branch_refs": [
+        "allOf/0",
+        "allOf/1"
+      ],
+      "conditional": [
+        [
+          "/termination_time",
+          "allOf/0/if",
+          "allOf/0/then/required"
+        ]
+      ]
+    },
+    "type_closure/schemas/eligibility_decision": {
+      "required": [
+        "/eligible",
+        "/basis",
+        "/basis/reason_code",
+        "/basis/check_purpose",
+        "/basis/decision_time",
+        "/basis/member_status_at_decision",
+        "/basis/membership_refs_considered"
+      ],
+      "closed_objects": [
+        "",
+        "/basis"
+      ],
+      "branch_refs": [
+        "oneOf/0",
+        "oneOf/1",
+        "oneOf/2"
+      ]
+    },
+    "type_closure/schemas/membership_plan_resolution_binding": {
+      "required": [
+        "/membership_plan_ref",
+        "/name",
+        "/benefit_refs",
+        "/commercial_terms_ref",
+        "/state"
+      ],
+      "closed_objects": [
+        ""
+      ]
+    },
+    "stable_errors/create_member/schema": {
+      "required": [
+        "/code",
+        "/message"
+      ],
+      "closed_objects": [
+        ""
+      ]
+    },
+    "stable_errors/resolve_member/schema": {
+      "required": [
+        "/code",
+        "/message"
+      ],
+      "closed_objects": [
+        ""
+      ]
+    },
+    "stable_errors/update_member_profile/schema": {
+      "required": [
+        "/code",
+        "/message"
+      ],
+      "closed_objects": [
+        ""
+      ]
+    },
+    "stable_errors/update_member_status/schema": {
+      "required": [
+        "/code",
+        "/message"
+      ],
+      "closed_objects": [
+        ""
+      ]
+    },
+    "stable_errors/create_membership/schema": {
+      "required": [
+        "/code",
+        "/message"
+      ],
+      "closed_objects": [
+        ""
+      ]
+    },
+    "stable_errors/update_membership_plan/schema": {
+      "required": [
+        "/code",
+        "/message"
+      ],
+      "closed_objects": [
+        ""
+      ]
+    },
+    "stable_errors/lookup_membership/schema": {
+      "required": [
+        "/code",
+        "/message"
+      ],
+      "closed_objects": [
+        ""
+      ]
+    },
+    "stable_errors/evaluate_membership_eligibility/schema": {
+      "required": [
+        "/code",
+        "/message"
+      ],
+      "closed_objects": [
+        ""
+      ]
+    },
+    "stable_errors/resolve_membership/schema": {
+      "required": [
+        "/code",
+        "/message"
+      ],
+      "closed_objects": [
+        ""
+      ]
+    }
+  },
+  "inter_capability_relations": {
+    "create_verify_membership_plan": {
+      "operation": "create_membership",
+      "provider_contract": "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBERSHIP_PLAN@V0105",
+      "request": [
+        [
+          "plan_ref",
+          "membership_plan_ref"
+        ]
+      ],
+      "response": [
+        [
+          "membership_plan",
+          "membership_plan_resolution",
+          "type_closure/schemas/membership_plan_resolution_binding"
+        ]
+      ]
+    },
+    "update_verify_target_plan": {
+      "operation": "update_membership_plan",
+      "provider_contract": "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBERSHIP_PLAN@V0105",
+      "request": [
+        [
+          "target_plan_ref",
+          "membership_plan_ref"
+        ]
+      ],
+      "response": [
+        [
+          "membership_plan",
+          "membership_plan_resolution",
+          "type_closure/schemas/membership_plan_resolution_binding"
+        ]
+      ]
+    }
+  },
+  "rule_field_targets": {
+    "RB-02": [
+      [
+        "create_member",
+        "REQUEST",
+        "member_identity"
+      ]
+    ],
+    "RB-03": [
+      [
+        "update_member_profile",
+        "REQUEST",
+        "member_ref"
+      ]
+    ],
+    "RB-06": [
+      [
+        "evaluate_membership_eligibility",
+        "REQUEST",
+        "member_ref"
+      ],
+      [
+        "evaluate_membership_eligibility",
+        "REQUEST",
+        "check_purpose"
+      ],
+      [
+        "evaluate_membership_eligibility",
+        "REQUEST",
+        "decision_time"
+      ]
+    ],
+    "RB-09": [
+      [
+        "create_membership",
+        "REQUEST",
+        "plan_ref"
+      ],
+      [
+        "update_membership_plan",
+        "REQUEST",
+        "target_plan_ref"
+      ]
+    ],
+    "RB-10": [
+      [
+        "update_member_status",
+        "REQUEST",
+        "target_status"
+      ]
+    ],
+    "RB-12": [
+      [
+        "create_membership",
+        "REQUEST",
+        "member_ref"
+      ]
+    ],
+    "RB-13": [
+      [
+        "create_membership",
+        "REQUEST",
+        "requested_effective_time"
+      ],
+      [
+        "update_membership_plan",
+        "REQUEST",
+        "requested_effective_time"
+      ]
+    ],
+    "RB-15": [
+      [
+        "update_membership_plan",
+        "REQUEST",
+        "current_membership_ref"
+      ],
+      [
+        "update_membership_plan",
+        "REQUEST",
+        "target_plan_ref"
+      ]
+    ],
+    "RB-20": [
+      [
+        "resolve_membership",
+        "REQUEST",
+        "membership_ref"
+      ]
+    ]
+  },
+  "blockers": {
+    "materialization_readiness/ready_for_implementation_generation": "false",
+    "permission_model/actor_classes": "EMPTY; RESTRICTED; DENY",
+    "external_provider_surface/x_publication_blocked_until_business_and_security_owner_acceptance": "true",
+    "source_integrity/exact_current_ref_resolution_completed": "false",
+    "source_integrity/applicable_standard_source_locks/field_projection/exact_ref": "FROZEN_V0101_NOT_VERIFIED_COMPATIBLE_WITH_V0103",
+    "type_closure/schemas/member/properties/member_status/x_design_status": "OWNER_APPROVAL_PENDING"
+  },
+  "counts": {
+    "scopes": 42,
+    "field_occurrences": 286,
+    "qwide_occurrences": 200,
+    "owner_local_occurrences": 86
+  }
+}

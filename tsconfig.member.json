@@ -1,0 +1,15 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "noEmit": true
+  },
+  "include": [
+    "src/p1/member/**/*.ts",
+    "src/p1/export/member/**/*.ts"
+  ],
+  "exclude": [
+    "tests/**/*"
+  ]
+}
