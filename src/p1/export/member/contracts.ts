@@ -166,10 +166,16 @@ export class StableError extends Error {
 }
 
 /** 断言错误码属于该 Operation 的封闭集合（provider PRESERVE_EXACT 透传除外） */
-export function stableError(
-  operationId: OperationId,
-  code: (typeof STABLE_ERROR_CODE_SETS)[typeof operationId][number],
+export function stableError<TOperation extends OperationId>(
+  operationId: TOperation,
+  code: (typeof STABLE_ERROR_CODE_SETS)[TOperation][number],
 ): StableError {
+  // V0117: the selected Operation's closed stable-error set is authoritative.
+  if (!(STABLE_ERROR_CODE_SETS[operationId] as readonly string[]).includes(code)) {
+    throw new TypeError(
+      `Undeclared stable error for exact Operation ${operationId}: ${code}`,
+    );
+  }
   return new StableError(code);
 }
 
@@ -206,21 +212,11 @@ export function fail<T = never>(
 // ---------------------------------------------------------------------------
 
 export const trustedEntryAuthorizer: OperationAuthorizer = {
-  authorize({ context, operation_id }) {
-    const evidence = context.authorization;
-    if (!evidence) return false;
-    if (
-      typeof evidence.actor_ref !== 'string' ||
-      evidence.actor_ref.trim().length === 0 ||
-      typeof evidence.issued_by !== 'string' ||
-      evidence.issued_by.trim().length === 0
-    ) {
-      return false;
-    }
-    return (
-      evidence.allowed_operations.includes('*') ||
-      evidence.allowed_operations.includes(operation_id)
-    );
+  // V0117: caller-attested actor/issuer/operations are not an exact
+  // actor-class, authorization-rule and permission authority binding.
+  // Without an owner-authorized verifier the only valid outcome is DENY.
+  authorize() {
+    return false;
   },
 };
 

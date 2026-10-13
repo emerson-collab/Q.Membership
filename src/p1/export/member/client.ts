@@ -1,7 +1,9 @@
 /**
  * 统一会员能力 V0103 — 能力客户端与本地开发适配器
  *
- * MemberCapabilityClient：按 9 个 Operation 装配的对外调用入口。
+ * MemberCapabilityClient：本地/候选业务逻辑测试客户端，不代表已完成 V0117
+ * 的 exact Owner Contract / Interface Inventory / permission / rule closure。
+ * 未注入 Owner 授权验证器时必须默认拒绝调用。
  * InMemoryMemberRepository：满足 MemberRepository 端口的内存实现，
  *   内置写串行化与 CAS，保证身份唯一、区间不重叠与更换原子性；
  *   仅用于本地开发/测试，不声明物理数据库所有权。

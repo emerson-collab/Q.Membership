@@ -218,8 +218,9 @@ export type OperationId =
   | 'resolve_membership';
 
 /**
- * 可信入口完成身份及操作授权后签发的证据（PD-6 候选路径）。
- * 未携带可验证证据的调用一律 DENY；本能力不从函数名或成员身份推断权限。
+ * 候选调用证据（PD-6）。这些调用方字符串并不构成 V0117 所要求的
+ * exact actor class / authorization_rule_ref / permission_ref 证明。
+ * 缺少 Owner 授权验证器时默认 DENY，不能由调用方自我签发权限。
  */
 export interface AuthorizationEvidence {
   actor_ref: string;

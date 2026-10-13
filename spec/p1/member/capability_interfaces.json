@@ -7,9 +7,21 @@
   "projection_only": true,
   "source_of_truth": "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/interfaces",
   "outcome_contract_ref": "Q.SS.STD.P1.CONTRACT.BUSINESS_RUNTIME@${CURRENT}#/outcome_contracts/call_outcome",
-  "path": ["capability_id", "operation_id", "request_id", "trace_id"],
-  "static_mount_common": ["operation_contract"],
-  "dynamic_mount_common": ["input", "runtime_result", "outcome_type", "stable_error"],
+  "path": [
+    "capability_id",
+    "operation_id",
+    "request_id",
+    "trace_id"
+  ],
+  "static_mount_common": [
+    "operation_contract"
+  ],
+  "dynamic_mount_common": [
+    "input",
+    "runtime_result",
+    "outcome_type",
+    "stable_error"
+  ],
   "interfaces": [
     {
       "interface_id": "member_creation_invoke",
@@ -24,8 +36,15 @@
       "request_contract_ref": "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/contracts/create_member_request_contract",
       "response_contract_ref": "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/contracts/create_member_response_contract",
       "stable_error_contract_ref": "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/stable_errors/create_member",
-      "static_mount": ["operation_contract"],
-      "dynamic_mount": ["input", "runtime_result", "outcome_type", "stable_error"]
+      "static_mount": [
+        "operation_contract"
+      ],
+      "dynamic_mount": [
+        "input",
+        "runtime_result",
+        "outcome_type",
+        "stable_error"
+      ]
     },
     {
       "interface_id": "member_resolution_invoke",
@@ -40,8 +59,15 @@
       "request_contract_ref": "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/contracts/resolve_member_request_contract",
       "response_contract_ref": "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/contracts/resolve_member_response_contract",
       "stable_error_contract_ref": "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/stable_errors/resolve_member",
-      "static_mount": ["operation_contract"],
-      "dynamic_mount": ["input", "runtime_result", "outcome_type", "stable_error"]
+      "static_mount": [
+        "operation_contract"
+      ],
+      "dynamic_mount": [
+        "input",
+        "runtime_result",
+        "outcome_type",
+        "stable_error"
+      ]
     },
     {
       "interface_id": "member_profile_update_invoke",
@@ -56,8 +82,15 @@
       "request_contract_ref": "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/contracts/update_member_profile_request_contract",
       "response_contract_ref": "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/contracts/update_member_profile_response_contract",
       "stable_error_contract_ref": "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/stable_errors/update_member_profile",
-      "static_mount": ["operation_contract"],
-      "dynamic_mount": ["input", "runtime_result", "outcome_type", "stable_error"]
+      "static_mount": [
+        "operation_contract"
+      ],
+      "dynamic_mount": [
+        "input",
+        "runtime_result",
+        "outcome_type",
+        "stable_error"
+      ]
     },
     {
       "interface_id": "member_status_update_invoke",
@@ -72,8 +105,15 @@
       "request_contract_ref": "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/contracts/update_member_status_request_contract",
       "response_contract_ref": "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/contracts/update_member_status_response_contract",
       "stable_error_contract_ref": "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/stable_errors/update_member_status",
-      "static_mount": ["operation_contract"],
-      "dynamic_mount": ["input", "runtime_result", "outcome_type", "stable_error"]
+      "static_mount": [
+        "operation_contract"
+      ],
+      "dynamic_mount": [
+        "input",
+        "runtime_result",
+        "outcome_type",
+        "stable_error"
+      ]
     },
     {
       "interface_id": "membership_creation_invoke",
@@ -88,8 +128,15 @@
       "request_contract_ref": "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/contracts/create_membership_request_contract",
       "response_contract_ref": "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/contracts/create_membership_response_contract",
       "stable_error_contract_ref": "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/stable_errors/create_membership",
-      "static_mount": ["operation_contract"],
-      "dynamic_mount": ["input", "runtime_result", "outcome_type", "stable_error"]
+      "static_mount": [
+        "operation_contract"
+      ],
+      "dynamic_mount": [
+        "input",
+        "runtime_result",
+        "outcome_type",
+        "stable_error"
+      ]
     },
     {
       "interface_id": "membership_plan_update_invoke",
@@ -104,8 +151,15 @@
       "request_contract_ref": "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/contracts/update_membership_plan_request_contract",
       "response_contract_ref": "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/contracts/update_membership_plan_response_contract",
       "stable_error_contract_ref": "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/stable_errors/update_membership_plan",
-      "static_mount": ["operation_contract"],
-      "dynamic_mount": ["input", "runtime_result", "outcome_type", "stable_error"]
+      "static_mount": [
+        "operation_contract"
+      ],
+      "dynamic_mount": [
+        "input",
+        "runtime_result",
+        "outcome_type",
+        "stable_error"
+      ]
     },
     {
       "interface_id": "membership_lookup_invoke",
@@ -120,8 +174,15 @@
       "request_contract_ref": "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/contracts/lookup_membership_request_contract",
       "response_contract_ref": "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/contracts/lookup_membership_response_contract",
       "stable_error_contract_ref": "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/stable_errors/lookup_membership",
-      "static_mount": ["operation_contract"],
-      "dynamic_mount": ["input", "runtime_result", "outcome_type", "stable_error"]
+      "static_mount": [
+        "operation_contract"
+      ],
+      "dynamic_mount": [
+        "input",
+        "runtime_result",
+        "outcome_type",
+        "stable_error"
+      ]
     },
     {
       "interface_id": "membership_eligibility_evaluation_invoke",
@@ -136,8 +197,17 @@
       "request_contract_ref": "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/contracts/evaluate_membership_eligibility_request_contract",
       "response_contract_ref": "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/contracts/evaluate_membership_eligibility_response_contract",
       "stable_error_contract_ref": "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/stable_errors/evaluate_membership_eligibility",
-      "static_mount": ["operation_contract", "policy_refs"],
-      "dynamic_mount": ["input", "runtime_result", "outcome_type", "stable_error", "rule_evidence"]
+      "static_mount": [
+        "operation_contract",
+        "policy_refs"
+      ],
+      "dynamic_mount": [
+        "input",
+        "runtime_result",
+        "outcome_type",
+        "stable_error",
+        "rule_evidence"
+      ]
     },
     {
       "interface_id": "membership_exact_resolution_invoke",
@@ -153,15 +223,72 @@
       "request_contract_ref": "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/contracts/resolve_membership_request_contract",
       "response_contract_ref": "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/contracts/resolve_membership_response_contract",
       "stable_error_contract_ref": "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/stable_errors/resolve_membership",
-      "static_mount": ["operation_contract"],
-      "dynamic_mount": ["input", "runtime_result", "outcome_type", "stable_error"]
+      "static_mount": [
+        "operation_contract"
+      ],
+      "dynamic_mount": [
+        "input",
+        "runtime_result",
+        "outcome_type",
+        "stable_error"
+      ]
     }
   ],
   "external_provider_surface": {
     "mode": "PUBLICATION_ELIGIBLE",
-    "public_interface_count": 8,
-    "internal_interface_count": 1,
-    "publication_executed": false,
-    "x_security_gate": "DO_NOT_EXPOSE_PUBLIC_INTERFACES_UNTIL_ACTOR_BINDINGS_RESOLVE"
+    "provider_interface_refs": [
+      "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/interfaces/member_creation_invoke",
+      "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/interfaces/member_resolution_invoke",
+      "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/interfaces/member_profile_update_invoke",
+      "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/interfaces/member_status_update_invoke",
+      "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/interfaces/membership_creation_invoke",
+      "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/interfaces/membership_plan_update_invoke",
+      "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/interfaces/membership_lookup_invoke",
+      "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/interfaces/membership_eligibility_evaluation_invoke"
+    ]
+  },
+  "interface_inventory": {
+    "specification_interface_refs": [
+      "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/interfaces/member_creation_invoke",
+      "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/interfaces/member_resolution_invoke",
+      "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/interfaces/member_profile_update_invoke",
+      "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/interfaces/member_status_update_invoke",
+      "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/interfaces/membership_creation_invoke",
+      "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/interfaces/membership_plan_update_invoke",
+      "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/interfaces/membership_lookup_invoke",
+      "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/interfaces/membership_eligibility_evaluation_invoke"
+    ],
+    "payload_contract_refs": [
+      "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/contracts/create_member_request_contract",
+      "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/contracts/create_member_response_contract",
+      "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/stable_errors/create_member",
+      "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/contracts/resolve_member_request_contract",
+      "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/contracts/resolve_member_response_contract",
+      "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/stable_errors/resolve_member",
+      "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/contracts/update_member_profile_request_contract",
+      "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/contracts/update_member_profile_response_contract",
+      "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/stable_errors/update_member_profile",
+      "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/contracts/update_member_status_request_contract",
+      "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/contracts/update_member_status_response_contract",
+      "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/stable_errors/update_member_status",
+      "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/contracts/create_membership_request_contract",
+      "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/contracts/create_membership_response_contract",
+      "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/stable_errors/create_membership",
+      "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/contracts/update_membership_plan_request_contract",
+      "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/contracts/update_membership_plan_response_contract",
+      "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/stable_errors/update_membership_plan",
+      "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/contracts/lookup_membership_request_contract",
+      "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/contracts/lookup_membership_response_contract",
+      "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/stable_errors/lookup_membership",
+      "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/contracts/evaluate_membership_eligibility_request_contract",
+      "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/contracts/evaluate_membership_eligibility_response_contract",
+      "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/stable_errors/evaluate_membership_eligibility",
+      "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/contracts/resolve_membership_request_contract",
+      "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/contracts/resolve_membership_response_contract",
+      "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/stable_errors/resolve_membership"
+    ],
+    "internal_interface_refs": [
+      "Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0103#/interfaces/membership_exact_resolution_invoke"
+    ]
   }
 }
