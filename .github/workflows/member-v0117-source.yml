@@ -1,0 +1,42 @@
+name: Member V0117 Source-Only Regression
+
+on:
+  push:
+    branches:
+      - main
+      - fix/member-p1cm-v0117-projection-v0110
+      - integrate/member-v0104-whitelist-main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  member-source-only:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.16.0'
+      - name: Validate V0117 source candidate and conditional branches
+        run: npm run test:member:source
+      - name: Verify exact Member V0104 compact whitelist
+        run: npm run test:member:whitelist
+      - name: Verify V0117 conditional State/Rule branches
+        run: npm run test:member:branches
+      - name: Install isolated TypeScript toolchain
+        run: npm ci --ignore-scripts
+      - name: Type-check Member source only
+        run: npm run typecheck:member
+      - name: P0 runtime smoke check (existing main baseline)
+        run: npm run smoke:p0
+      - name: Check local candidate runtime boundary
+        run: npm run test:member:boundary
+      - name: Install isolated Vitest business test runner
+        run: npm install --no-save --package-lock=false --ignore-scripts vitest@3.2.4
+      - name: Exercise all Member V0104 business handlers and client regressions
+        run: npx vitest run tests/p1/member/*/handler.test.ts tests/p1/export/member/contracts.test.ts tests/p1/export/member/client.test.ts tests/p1/export/member/entry.test.ts
