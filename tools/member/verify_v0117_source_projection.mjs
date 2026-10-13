@@ -144,7 +144,7 @@ check(!has(rel,'literal_value'),'CONSUMER_INPUT cannot create static literals');
 const state=topSection(files.profile,'state_model');
 check(state.includes('mode: STATEFUL'),'Member must retain exact STATEFUL model');
 check((state.match(/^\s{4}(?:member|membership):$/gm)||[]).length===2,'Two state machines required');
-check((state.match(/^\s{8}transition_ref:/gm)||[]).length===2,'Two exact transition identities required');
+check((state.match(/^\s{10}transition_ref:/gm)||[]).length===2,'Two exact transition identities required');
 check(!/^\s+from_state:/m.test(state) && !/^\s+via_operation:/m.test(state),'Legacy transition alias still authoritative');
 const perms=topSection(files.policy,'permission_model');
 check((perms.match(/^\s{6}permission_ref:/gm)||[]).length===9,'Each Operation needs an exact permission_ref');
