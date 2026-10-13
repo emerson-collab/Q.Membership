@@ -19,6 +19,8 @@ jobs:
           node-version: '22.16.0'
       - name: Validate V0117 source candidate and conditional branches
         run: npm run test:member:source
+      - name: Verify exact Member V0104 compact whitelist
+        run: npm run test:member:whitelist
       - name: Verify V0117 conditional State/Rule branches
         run: npm run test:member:branches
       - name: Install isolated TypeScript toolchain
