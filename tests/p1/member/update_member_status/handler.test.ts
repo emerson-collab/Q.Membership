@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { createUpdateMemberStatusHandler } from '../../../../src/p1/member/update_member_status/handler';
 import { createCreateMemberHandler } from '../../../../src/p1/member/create_member/handler';
 import {
-  InMemoryMemberRepository } from '../../../../src/p1/export/member/entry';
+  InMemoryMemberRepository } from '../../../../src/p1/export/member/client';
 import { staticMembershipPlanProvider } from '../../../../src/p1/export/member/client';
 import type {
   CallContext,
