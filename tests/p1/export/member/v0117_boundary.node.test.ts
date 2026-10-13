@@ -6,7 +6,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { stableError, trustedEntryAuthorizer } from '../../../../src/p1/export/member/contracts.ts';
+import { stableError, trustedEntryAuthorizer, preserveExactProviderStableError } from '../../../../src/p1/export/member/contracts.ts';
 
 test('V0117: caller-attested actor identity and wildcard are never default authorization', () => {
   const authorized = trustedEntryAuthorizer.authorize({
@@ -31,6 +31,23 @@ test('V0117: stable error must belong to the exact Operation', () => {
   assert.throws(
     () => stableError('create_member', 'MEMBERSHIP_NOT_FOUND' as never),
     /Undeclared stable error for exact Operation create_member/,
+  );
+});
+
+test('V0117: unadmitted Provider errors may not widen Member StableError carrier', () => {
+  assert.throws(
+    () => preserveExactProviderStableError('create_membership', {
+      code: 'UNDECLARED_PROVIDER_ERROR',
+      message: 'opaque',
+    }),
+    /outside exact Member Operation create_membership/,
+  );
+  assert.equal(
+    preserveExactProviderStableError('create_membership', {
+      code: 'MEMBERSHIP_PLAN_NOT_FOUND',
+      message: 'exact declared code',
+    }).code,
+    'MEMBERSHIP_PLAN_NOT_FOUND',
   );
 });
 

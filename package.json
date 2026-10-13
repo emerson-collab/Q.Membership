@@ -14,7 +14,8 @@
     "test:p0": "node --experimental-transform-types --test tests/p0/p0_runtime_core.test.ts",
     "smoke:p0": "node --experimental-transform-types --test --test-name-pattern=\"P0 smoke\" tests/p0/p0_runtime_core.test.ts",
     "test:member:source": "node tools/member/verify_v0117_source_projection.mjs",
-    "test:member:boundary": "node --experimental-transform-types --test tests/p1/export/member/v0117_boundary.node.test.ts"
+    "test:member:boundary": "node --experimental-transform-types --test tests/p1/export/member/v0117_boundary.node.test.ts",
+    "test:member:branches": "node tools/member/verify_v0117_branches.mjs"
   },
   "imports": {
     "#q/*": "./src/*"
