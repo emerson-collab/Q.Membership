@@ -21,5 +21,9 @@ jobs:
         run: npm run test:member:source
       - name: Verify V0117 conditional State/Rule branches
         run: npm run test:member:branches
+      - name: Install isolated TypeScript toolchain
+        run: npm ci --ignore-scripts
+      - name: Type-check Member source only
+        run: npm run typecheck:member
       - name: Check local candidate runtime boundary
         run: npm run test:member:boundary
