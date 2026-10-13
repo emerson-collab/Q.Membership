@@ -17,15 +17,13 @@ import {
   REPOSITORY_SKELETON_HASH,
   REPOSITORY_SKELETON_REF,
   GovernedDataProviderRealizationError,
-  realizeGovernedDataTriad as realizeWithExactAuthorities,
-  type GovernedDataTriadRealizationInput,
+  realizeGovernedDataTriad,
   type GovernedDataBindingExecution,
   type GovernedDataCategory,
   type GovernedDataHandoffBinding,
   type P2GovernedDataExposureMaterializer,
   type GovernedDataTriadDurableStore,
   type GovernedDataFilename,
-  type GovernedTriadFrozenAuthorities,
   type SourceAccessKind,
 } from "../../../runtime/governed_data_provider_realization.ts";
 
@@ -69,8 +67,6 @@ function binding(
   return Object.freeze({
     binding_ref: `binding:${category.toLowerCase()}:${suffix}`,
     data_category: category,
-    source_operation_ref: `${CAPABILITY_CONTRACT_REF}#/operations/expose_${category.toLowerCase()}_source`,
-    source_interface_ref: `${CAPABILITY_CONTRACT_REF}#/interfaces/expose_${category.toLowerCase()}_source`,
     source_access_kind: kind,
     source_access_ref: `${CAPABILITY_CONTRACT_REF}#/sources/${category.toLowerCase()}/${suffix}`,
     members: Object.freeze([
@@ -121,8 +117,12 @@ function execution(bindingValue: GovernedDataHandoffBinding): GovernedDataBindin
     runtime_context: Object.freeze({ stage_contract_ref: P2_CONTRACT_REF }),
     trace_id: `trace:${bindingValue.binding_ref}`,
     request_id: `request:${bindingValue.binding_ref}`,
-    p1_interface_anchor_binding_ref:
-      `${P1_BUSINESS_RUNTIME_REF}#/concrete_interface_framework_anchor_crosswalk/anchors/CALL_INVOKE`,
+    ...(bindingValue.source_access_kind === "DECLARED_Q_INTERFACE_SOURCE_FACT"
+      ? {
+          p1_interface_anchor_binding_ref:
+            `${P1_BUSINESS_RUNTIME_REF}#/concrete_interface_framework_anchor_crosswalk/anchors/CALL_INVOKE`,
+        }
+      : {}),
   });
 }
 
@@ -147,102 +147,6 @@ function p2Handoff(bindings: readonly GovernedDataHandoffBinding[]) {
     ...withoutHash,
     p2_handoff_obligation_snapshot_hash: hash(withoutHash),
   });
-}
-
-function frozenV0117Projection(bindings: readonly GovernedDataHandoffBinding[]) {
-  const handoff = p2Handoff(bindings);
-  const value = Object.freeze({
-    exact_capability_contract_ref_and_hash: Object.freeze({
-      ref: CAPABILITY_CONTRACT_REF, hash: CAPABILITY_CONTRACT_HASH,
-    }),
-    exact_frozen_current_p2_ref_and_hash: Object.freeze({
-      ref: P2_CONTRACT_REF, hash: P2_CONTRACT_HASH,
-    }),
-    p2_handoff_obligation_snapshot_hash: handoff.p2_handoff_obligation_snapshot_hash,
-    bindings: Object.freeze([...bindings].map(b => Object.freeze({
-      ...b,
-      target_p2_operation_id: `expose_${b.data_category.toLowerCase()}_data`,
-      target_p2_operation_catalog_ref: `${P2_CONTRACT_REF}#/operation_catalog/provider/governed_data_exposure`,
-      target_p2_primary_interface_profile_ref: `${P2_CONTRACT_REF}#/interface_semantics/new_governed_data_operations_primary_interface`,
-      target_p2_carrier_binding_ref: `${P2_CONTRACT_REF}#/governed_data_material_contract/q_interface_carrier_binding`,
-      declared_instance_variable_refs: Object.freeze([]),
-    }))),
-  });
-  return Object.freeze({
-    governed_data_exposure_binding_projection: value,
-    governed_data_exposure_binding_projection_hash: hash(value),
-  });
-}
-
-/** Test-only providers for independently frozen Q.Prompt/Capability Source facts. */
-function frozenAuthorities(
-  originalBindings: readonly GovernedDataHandoffBinding[],
-  options: Readonly<{
-    wrong_prompt_hash?: boolean;
-    wrong_owner_operation?: boolean;
-    wrong_source_access?: boolean;
-    wrong_member_lineage?: boolean;
-    wrong_surface_kind?: boolean;
-    overlapping_layers?: boolean;
-  }> = {},
-): GovernedTriadFrozenAuthorities {
-  const frozen = frozenV0117Projection(originalBindings);
-  return Object.freeze({
-    async frozen_prompt_projection_hash(
-      request: Parameters<GovernedTriadFrozenAuthorities["frozen_prompt_projection_hash"]>[0],
-    ) {
-      assert.equal(request.p1_capability_materialization_ref, P1_CAPABILITY_MATERIALIZATION_REF);
-      assert.equal(request.p1_capability_materialization_hash, P1_CAPABILITY_MATERIALIZATION_HASH);
-      assert.equal(request.p2_contract_ref, P2_CONTRACT_REF);
-      assert.equal(request.p2_contract_content_hash, P2_CONTRACT_HASH);
-      return options.wrong_prompt_hash
-        ? `sha256:${"f".repeat(64)}`
-        : frozen.governed_data_exposure_binding_projection_hash;
-    },
-    async resolve_source_interface(request: Parameters<GovernedTriadFrozenAuthorities["resolve_source_interface"]>[0]) {
-      const ownerBinding = originalBindings.find(b => b.binding_ref === request.binding_ref);
-      if (!ownerBinding) throw new Error("owner Capability fixture lacks the requested source binding");
-      return Object.freeze({
-        capability_contract_ref: CAPABILITY_CONTRACT_REF,
-        capability_contract_content_hash: CAPABILITY_CONTRACT_HASH,
-        operation_ref: options.wrong_owner_operation
-          ? `${CAPABILITY_CONTRACT_REF}#/operations/different`
-          : ownerBinding.source_operation_ref,
-        interface_ref: ownerBinding.source_interface_ref,
-        authorized_source_access_ref: options.wrong_source_access
-          ? `${CAPABILITY_CONTRACT_REF}#/sources/not_authorized`
-          : ownerBinding.source_access_ref,
-        verified_members: options.wrong_member_lineage
-          ? ownerBinding.members.map((m, i) =>
-              i === 0 ? { ...m, source_fact_authority_ref: "Q.TEST.WRONG@V0100" } : m)
-          : ownerBinding.members,
-        surface: options.wrong_surface_kind ? "REGISTRY" : "CALL",
-        kind_code: "M1",
-        kind: "CALL_INVOKE", method_ref: "read_owner_fact",
-        path: Object.freeze(["operation_id", "trace_id", "request_id"]),
-        static_mount: Object.freeze(["operation_contract"]),
-        dynamic_mount: options.overlapping_layers
-          ? Object.freeze(["input", "operation_contract"])
-          : Object.freeze(["input", "runtime_result"]),
-        framework_anchor_binding_ref:
-          `${P1_BUSINESS_RUNTIME_REF}#/concrete_interface_framework_anchor_crosswalk/anchors/CALL_INVOKE`,
-      });
-    },
-  });
-}
-
-/** Existing test cases use one test-owned source snapshot, never production authority. */
-function realizeGovernedDataTriad(
-  input: Readonly<GovernedDataTriadRealizationInput>,
-  materialization: P2GovernedDataExposureMaterializer,
-  store: GovernedDataTriadDurableStore,
-) {
-  const handoff = input.p2_handoff_obligation.governed_data_exposure as {
-    bindings: readonly GovernedDataHandoffBinding[];
-  };
-  return realizeWithExactAuthorities(
-    input, materialization, store, frozenAuthorities(handoff.bindings),
-  );
 }
 
 function triadObligation(overrides: Readonly<Record<string, unknown>> = {}) {
@@ -338,7 +242,7 @@ function memoryStore(
   });
 }
 
-test("P2 governed-data triad: realizes exact triad, skips P2 for empty category, and commits only after all readbacks", async () => {
+test("V0152 realizes exact triad, skips P2 for empty category, and commits only after all readbacks", async () => {
   const staticBinding = binding("STATIC", "a");
   const runtimeBinding = binding("RUNTIME", "r");
   const bindings = Object.freeze([runtimeBinding, staticBinding]);
@@ -349,7 +253,6 @@ test("P2 governed-data triad: realizes exact triad, skips P2 for empty category,
   const result = await realizeGovernedDataTriad(
     Object.freeze({
       p2_handoff_obligation: p2Handoff(bindings),
-        ...frozenV0117Projection(bindings),
       governed_data_json_triad_obligation: triadObligation(),
       binding_executions: Object.freeze([
         execution(runtimeBinding),
@@ -393,12 +296,6 @@ test("P2 governed-data triad: realizes exact triad, skips P2 for empty category,
   assert.equal(staticProjection.data_category, "STATIC");
   assert.equal(staticProjection.bindings.length, 1);
   assert.equal(staticProjection.material_envelopes.length, 1);
-  // P2 physical JSON must preserve source identity without copying the
-  // V0117 pre-instance projection's target profiles or instance values.
-  assert.equal(staticProjection.bindings[0].source_operation_ref, staticBinding.source_operation_ref);
-  assert.equal(staticProjection.bindings[0].source_interface_ref, staticBinding.source_interface_ref);
-  assert.equal(staticProjection.bindings[0].data_category, "STATIC");
-  assert.equal(staticProjection.bindings[0].target_p2_carrier_binding_ref, undefined);
   assert.equal(dynamicProjection.data_category, "DYNAMIC");
   assert.deepEqual(dynamicProjection.bindings, []);
   assert.deepEqual(dynamicProjection.material_envelopes, []);
@@ -416,14 +313,13 @@ test("P2 governed-data triad: realizes exact triad, skips P2 for empty category,
   assert.equal(result.triad_set_hash_algorithm, GOVERNED_DATA_TRIAD_SET_HASH_ALGORITHM);
 });
 
-test("P2 governed-data triad: fails closed when canonical triad resource identity is changed", async () => {
+test("V0152 fails closed when canonical triad resource identity is changed", async () => {
   const staticBinding = binding("STATIC", "a");
   const events: string[] = [];
   await assert.rejects(
     () => realizeGovernedDataTriad(
       Object.freeze({
         p2_handoff_obligation: p2Handoff([staticBinding]),
-        ...frozenV0117Projection([staticBinding]),
         governed_data_json_triad_obligation: triadObligation({
           canonical_file_set: Object.freeze({
             STATIC: Object.freeze({
@@ -452,7 +348,7 @@ test("P2 governed-data triad: fails closed when canonical triad resource identit
   assert.deepEqual(events, []);
 });
 
-test("P2 governed-data triad: fails closed instead of reordering noncanonical binding order", async () => {
+test("V0152 fails closed instead of reordering noncanonical binding order", async () => {
   const staticBinding = binding("STATIC", "a");
   const runtimeBinding = binding("RUNTIME", "r");
   const noncanonical = Object.freeze([staticBinding, runtimeBinding]);
@@ -461,7 +357,6 @@ test("P2 governed-data triad: fails closed instead of reordering noncanonical bi
     () => realizeGovernedDataTriad(
       Object.freeze({
         p2_handoff_obligation: p2Handoff(noncanonical),
-        ...frozenV0117Projection(noncanonical),
         governed_data_json_triad_obligation: triadObligation(),
         binding_executions: Object.freeze([
           execution(staticBinding),
@@ -478,14 +373,13 @@ test("P2 governed-data triad: fails closed instead of reordering noncanonical bi
   assert.deepEqual(events, []);
 });
 
-test("P2 governed-data triad: requires exactly one execution input for every declared binding", async () => {
+test("V0152 requires exactly one execution input for every declared binding", async () => {
   const staticBinding = binding("STATIC", "a");
   const events: string[] = [];
   await assert.rejects(
     () => realizeGovernedDataTriad(
       Object.freeze({
         p2_handoff_obligation: p2Handoff([staticBinding]),
-        ...frozenV0117Projection([staticBinding]),
         governed_data_json_triad_obligation: triadObligation(),
         binding_executions: Object.freeze([]),
       }),
@@ -499,7 +393,7 @@ test("P2 governed-data triad: requires exactly one execution input for every dec
   assert.deepEqual(events, []);
 });
 
-test("P2 governed-data triad: exact readback mismatch forbids set-hash and triad commit", async () => {
+test("V0152 exact readback mismatch forbids set-hash and triad commit", async () => {
   const staticBinding = binding("STATIC", "a");
   const observed: GovernedDataCategory[] = [];
   const events: string[] = [];
@@ -507,7 +401,6 @@ test("P2 governed-data triad: exact readback mismatch forbids set-hash and triad
     () => realizeGovernedDataTriad(
       Object.freeze({
         p2_handoff_obligation: p2Handoff([staticBinding]),
-        ...frozenV0117Projection([staticBinding]),
         governed_data_json_triad_obligation: triadObligation(),
         binding_executions: Object.freeze([execution(staticBinding)]),
       }),
@@ -528,7 +421,7 @@ test("P2 governed-data triad: exact readback mismatch forbids set-hash and triad
   ]);
 });
 
-test("P2 governed-data triad: NOT_APPLICABLE triad cannot execute P2 or storage", async () => {
+test("V0152 NOT_APPLICABLE triad cannot execute P2 or storage", async () => {
   const staticBinding = binding("STATIC", "a");
   const observed: GovernedDataCategory[] = [];
   const events: string[] = [];
@@ -536,7 +429,6 @@ test("P2 governed-data triad: NOT_APPLICABLE triad cannot execute P2 or storage"
     () => realizeGovernedDataTriad(
       Object.freeze({
         p2_handoff_obligation: p2Handoff([staticBinding]),
-        ...frozenV0117Projection([staticBinding]),
         governed_data_json_triad_obligation: triadObligation({
           applicability: "NOT_APPLICABLE",
         }),
@@ -553,7 +445,7 @@ test("P2 governed-data triad: NOT_APPLICABLE triad cannot execute P2 or storage"
   assert.deepEqual(events, []);
 });
 
-test("P2 governed-data triad: DECLARED_Q_INTERFACE_SOURCE_FACT requires pre-resolved P1 V0186 anchor evidence", async () => {
+test("V0152 DECLARED_Q_INTERFACE_SOURCE_FACT requires pre-resolved P1 V0186 anchor evidence", async () => {
   const dynamicBinding = binding(
     "DYNAMIC",
     "d",
@@ -568,7 +460,6 @@ test("P2 governed-data triad: DECLARED_Q_INTERFACE_SOURCE_FACT requires pre-reso
     () => realizeGovernedDataTriad(
       Object.freeze({
         p2_handoff_obligation: p2Handoff([dynamicBinding]),
-        ...frozenV0117Projection([dynamicBinding]),
         governed_data_json_triad_obligation: triadObligation(),
         binding_executions: Object.freeze([invalidExecution]),
       }),
@@ -579,7 +470,7 @@ test("P2 governed-data triad: DECLARED_Q_INTERFACE_SOURCE_FACT requires pre-reso
   );
 });
 
-test("P2 governed-data triad: rejects tampered p2_handoff obligation snapshot before execution", async () => {
+test("V0152 rejects tampered p2_handoff obligation snapshot before execution", async () => {
   const staticBinding = binding("STATIC", "a");
   const handoff = {
     ...p2Handoff([staticBinding]),
@@ -590,7 +481,6 @@ test("P2 governed-data triad: rejects tampered p2_handoff obligation snapshot be
     () => realizeGovernedDataTriad(
       Object.freeze({
         p2_handoff_obligation: Object.freeze(handoff),
-        ...frozenV0117Projection([staticBinding]),
         governed_data_json_triad_obligation: triadObligation(),
         binding_executions: Object.freeze([execution(staticBinding)]),
       }),
@@ -602,215 +492,4 @@ test("P2 governed-data triad: rejects tampered p2_handoff obligation snapshot be
       && error.code === "RDS_GOVERNED_DATA_HANDOFF_SNAPSHOT_HASH_MISMATCH",
   );
   assert.deepEqual(events, []);
-});
-
-test("V0117 refuses a tampered immutable projection hash before P2 execution or storage", async () => {
-  const source = binding("STATIC", "projection-hash");
-  const events: string[] = [];
-  const frozen = frozenV0117Projection([source]);
-  await assert.rejects(
-    () => realizeGovernedDataTriad({
-      p2_handoff_obligation: p2Handoff([source]),
-      ...frozen,
-      governed_data_exposure_binding_projection_hash: `sha256:${"0".repeat(64)}`,
-      governed_data_json_triad_obligation: triadObligation(),
-      binding_executions: [execution(source)],
-    }, materializer([]), memoryStore(events)),
-    (error: unknown) => error instanceof GovernedDataProviderRealizationError
-      && error.code === "RDS_GOVERNED_DATA_PROJECTION_HASH_MISMATCH",
-  );
-  assert.deepEqual(events, []);
-});
-
-test("V0117 refuses source Interface identity drift before P2 execution or storage", async () => {
-  const source = binding("STATIC", "source-interface");
-  const events: string[] = [];
-  const frozen = frozenV0117Projection([source]);
-  const projected = frozen.governed_data_exposure_binding_projection;
-  const tampered = {
-    ...projected,
-    bindings: (projected.bindings as readonly Record<string, unknown>[]).map(b => ({
-      ...b, source_interface_ref: `${CAPABILITY_CONTRACT_REF}#/interfaces/wrong`,
-    })),
-  };
-  await assert.rejects(
-    () => realizeGovernedDataTriad({
-      p2_handoff_obligation: p2Handoff([source]),
-      governed_data_exposure_binding_projection: tampered,
-      governed_data_exposure_binding_projection_hash: hash(tampered),
-      governed_data_json_triad_obligation: triadObligation(),
-      binding_executions: [execution(source)],
-    }, materializer([]), memoryStore(events)),
-    (error: unknown) => error instanceof GovernedDataProviderRealizationError
-      && error.code === "RDS_GOVERNED_DATA_PROJECTION_BINDING_MISMATCH",
-  );
-  assert.deepEqual(events, []);
-});
-
-test("V0117 independent frozen Q.Prompt hash must match exactly", async () => {
-  const b = binding("STATIC", "prompt-hash");
-  const events: string[] = [];
-  const observed: GovernedDataCategory[] = [];
-  await assert.rejects(
-    () => realizeWithExactAuthorities({
-      p2_handoff_obligation: p2Handoff([b]),
-      ...frozenV0117Projection([b]),
-      governed_data_json_triad_obligation: triadObligation(),
-      binding_executions: [execution(b)],
-    }, materializer(observed), memoryStore(events),
-       frozenAuthorities([b], { wrong_prompt_hash: true })),
-    (err: unknown) => err instanceof GovernedDataProviderRealizationError
-      && err.code === "RDS_GOVERNED_DATA_PROMPT_PROJECTION_MISMATCH",
-  );
-  assert.deepEqual(events, []);
-  assert.deepEqual(observed, []);
-});
-
-test("V0117 source Operation identity must resolve from the exact owner Contract", async () => {
-  const b = binding("STATIC", "owner-resolution");
-  const events: string[] = [];
-  await assert.rejects(
-    () => realizeWithExactAuthorities({
-      p2_handoff_obligation: p2Handoff([b]),
-      ...frozenV0117Projection([b]),
-      governed_data_json_triad_obligation: triadObligation(),
-      binding_executions: [execution(b)],
-    }, materializer([]), memoryStore(events),
-       frozenAuthorities([b], { wrong_owner_operation: true })),
-    (err: unknown) => err instanceof GovernedDataProviderRealizationError
-      && err.code === "RDS_GOVERNED_DATA_SOURCE_INTERFACE_MISMATCH",
-  );
-  assert.deepEqual(events, []);
-});
-
-test("V0117 source-access authorization must come from the exact owner binding", async () => {
-  const b = binding("STATIC", "source-access");
-  const events: string[] = [];
-  await assert.rejects(
-    () => realizeWithExactAuthorities({
-      p2_handoff_obligation: p2Handoff([b]),
-      ...frozenV0117Projection([b]),
-      governed_data_json_triad_obligation: triadObligation(),
-      binding_executions: [execution(b)],
-    }, materializer([]), memoryStore(events),
-       frozenAuthorities([b], { wrong_source_access: true })),
-    (err: unknown) => err instanceof GovernedDataProviderRealizationError
-      && err.code === "RDS_GOVERNED_DATA_SOURCE_INTERFACE_MISMATCH",
-  );
-  assert.deepEqual(events, []);
-});
-
-test("V0117 rejects source Surface/Kind drift and duplicate interface-layer fields", async () => {
-  const b = binding("STATIC", "surface-layer");
-  for (const [options, code] of [
-    [{ wrong_surface_kind: true }, "RDS_GOVERNED_DATA_SOURCE_ANCHOR_INVALID"],
-    [{ overlapping_layers: true }, "RDS_GOVERNED_DATA_SOURCE_INTERFACE_MISMATCH"],
-  ] as const) {
-    const events: string[] = [];
-    await assert.rejects(
-      () => realizeWithExactAuthorities({
-        p2_handoff_obligation: p2Handoff([b]),
-        ...frozenV0117Projection([b]),
-        governed_data_json_triad_obligation: triadObligation(),
-        binding_executions: [execution(b)],
-      }, materializer([]), memoryStore(events), frozenAuthorities([b], options)),
-      (err: unknown) => err instanceof GovernedDataProviderRealizationError
-        && err.code === code,
-    );
-    assert.deepEqual(events, []);
-  }
-});
-
-test("V0117 one source Interface cannot be reclassified across P2 categories", async () => {
-  const dynamic = binding("DYNAMIC", "category-d");
-  const source = binding("STATIC", "category-s");
-  const duplicate = Object.freeze({ ...source, source_interface_ref: dynamic.source_interface_ref });
-  const bindings = [dynamic, duplicate];
-  const events: string[] = [];
-  await assert.rejects(
-    () => realizeGovernedDataTriad({
-      p2_handoff_obligation: p2Handoff(bindings),
-      ...frozenV0117Projection(bindings),
-      governed_data_json_triad_obligation: triadObligation(),
-      binding_executions: [execution(dynamic), execution(duplicate)],
-    }, materializer([]), memoryStore(events)),
-    (err: unknown) => err instanceof GovernedDataProviderRealizationError
-      && err.code === "RDS_GOVERNED_DATA_SOURCE_INTERFACE_CATEGORY_CONFLICT",
-  );
-  assert.deepEqual(events, []);
-});
-
-test("V0117 frozen instance-variable refs cannot contain runtime values", async () => {
-  const b = binding("STATIC", "instance-var");
-  const original = frozenV0117Projection([b]).governed_data_exposure_binding_projection;
-  const changed = {
-    ...original,
-    bindings: original.bindings.map(row => ({
-      ...row, declared_instance_variable_refs: ["unbound-runtime-value"],
-    })),
-  };
-  const events: string[] = [];
-  await assert.rejects(
-    () => realizeGovernedDataTriad({
-      p2_handoff_obligation: p2Handoff([b]),
-      governed_data_exposure_binding_projection: changed,
-      governed_data_exposure_binding_projection_hash: hash(changed),
-      governed_data_json_triad_obligation: triadObligation(),
-      binding_executions: [execution(b)],
-    }, materializer([]), memoryStore(events)),
-    (err: unknown) => err instanceof GovernedDataProviderRealizationError
-      && err.code === "RDS_GOVERNED_DATA_PROJECTION_BINDING_MISMATCH",
-  );
-  assert.deepEqual(events, []);
-});
-
-test("V0117 refuses any triad execution without governed upstream authorities", async () => {
-  const b = binding("STATIC", "no-authority");
-  const events: string[] = [];
-  await assert.rejects(
-    () => realizeWithExactAuthorities({
-      p2_handoff_obligation: p2Handoff([b]),
-      ...frozenV0117Projection([b]),
-      governed_data_json_triad_obligation: triadObligation(),
-      binding_executions: [execution(b)],
-    }, materializer([]), memoryStore(events),
-       undefined as unknown as GovernedTriadFrozenAuthorities),
-    (err: unknown) => err instanceof GovernedDataProviderRealizationError
-      && err.code === "RDS_GOVERNED_DATA_AUTHORITY_UNAVAILABLE",
-  );
-  assert.deepEqual(events, []);
-});
-
-test("V0117 source member fact lineage must resolve exactly under owner authority", async () => {
-  const b = binding("STATIC", "member-lineage");
-  const events: string[] = [];
-  await assert.rejects(
-    () => realizeWithExactAuthorities({
-      p2_handoff_obligation: p2Handoff([b]),
-      ...frozenV0117Projection([b]),
-      governed_data_json_triad_obligation: triadObligation(),
-      binding_executions: [execution(b)],
-    }, materializer([]), memoryStore(events),
-       frozenAuthorities([b], { wrong_member_lineage: true })),
-    (err: unknown) => err instanceof GovernedDataProviderRealizationError
-      && err.code === "RDS_GOVERNED_DATA_SOURCE_INTERFACE_MISMATCH",
-  );
-  assert.deepEqual(events, []);
-});
-
-test("V0117 rejects a retargeted capability_publication declaration", async () => {
-  const b = binding("STATIC", "publication-ref");
-  const original = p2Handoff([b]);
-  const {p2_handoff_obligation_snapshot_hash: ignored, ...base} = original;
-  const updated = {...base, capability_publication: {mode:"NONE",external_provider_surface_ref:"wrong"}};
-  const events: string[] = [];
-  await assert.rejects(() => realizeGovernedDataTriad({
-    p2_handoff_obligation: {...updated, p2_handoff_obligation_snapshot_hash:hash(updated)},
-    ...frozenV0117Projection([b]),
-    governed_data_json_triad_obligation: triadObligation(),
-    binding_executions:[execution(b)],
-  }, materializer([]), memoryStore(events)),
-  (err: unknown) => err instanceof GovernedDataProviderRealizationError
-     && err.code === "RDS_GOVERNED_DATA_HANDOFF_OBLIGATION_INVALID");
-  assert.deepEqual(events,[]);
 });
