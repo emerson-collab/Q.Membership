@@ -1,0 +1,23 @@
+name: Member V0117 Source-Only Regression
+
+on:
+  push:
+    branches:
+      - fix/member-p1cm-v0117-projection-v0110
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  member-source-only:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.16.0'
+      - name: Validate V0117 source candidate and conditional branches
+        run: npm run test:member:source
+      - name: Check local candidate runtime boundary
+        run: npm run test:member:boundary
