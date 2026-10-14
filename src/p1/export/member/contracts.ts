@@ -9,7 +9,7 @@ import type {
   OperationAuthorizer,
   OperationId,
   StableErrorPayload,
-} from './types';
+} from './types.ts';
 
 // ---------------------------------------------------------------------------
 // 一、Operation 清单（8 对外 + 1 内部）

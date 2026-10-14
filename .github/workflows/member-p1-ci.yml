@@ -30,9 +30,17 @@ jobs:
       - name: Check Member TypeScript
         run: npm run typecheck:member
 
-      - name: Check repository TypeScript
-        continue-on-error: true
-        run: npm run typecheck
+      - name: Check create_member dependency chain under NodeNext
+        run: |
+          node --input-type=module <<'NODE'
+          import { writeFileSync } from 'node:fs';
+          writeFileSync('tsconfig.create-member.ci.json', JSON.stringify({
+            extends: './tsconfig.json',
+            include: ['src/p1/member/create_member/handler.ts'],
+            exclude: ['tests/**/*']
+          }));
+          NODE
+          npx tsc --noEmit -p tsconfig.create-member.ci.json
 
       - name: Run P0 and P1 Runtime tests
         run: |
@@ -49,3 +57,16 @@ jobs:
 
       - name: Run create_member and Member regression tests
         run: npx --no-install vitest run tests/p1/member/create_member/handler.test.ts tests/p1/export/member/client.test.ts
+
+  repository-types:
+    name: Repository-wide TypeScript (strict, not suppressed)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: npm run typecheck

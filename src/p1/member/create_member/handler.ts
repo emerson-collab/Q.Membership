@@ -11,14 +11,14 @@
 
 import { StableRuntimeError } from '#q/p0/runtime_contract';
 import type { HookBinding, RuntimeContext } from '#q/p0/runtime_contract';
-import { register_business_operation } from '../../business_runtime/business_operation_registry';
+import { register_business_operation } from '../../business_runtime/business_operation_registry.ts';
 import type {
   BusinessOperationAuthorization,
   BusinessOperationHandler,
   BusinessOperationRouteBinding,
   P1StaticRuntimeSlotProjection,
-} from '../../business_runtime/business_operation_registry';
-import type { P1CapabilityGeneralSlotProjection } from '../../business_runtime/stage_extension_contract';
+} from '../../business_runtime/business_operation_registry.ts';
+import type { P1CapabilityGeneralSlotProjection } from '../../business_runtime/stage_extension_contract.ts';
 import {
   StableError,
   fail,
@@ -27,7 +27,7 @@ import {
   succeed,
   trustedEntryAuthorizer,
   validateOperationRequest,
-} from '../../export/member/contracts';
+} from '../../export/member/contracts.ts';
 import type {
   CallContext,
   CallOutcome,
@@ -38,7 +38,7 @@ import type {
   MemberRuntimeDeps,
   OperationHandler,
   StoredMember,
-} from '../../export/member/types';
+} from '../../export/member/types.ts';
 
 /**
  * 两种受支持的调用入口只共享这一份业务实现。
