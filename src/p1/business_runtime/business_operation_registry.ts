@@ -226,12 +226,66 @@ interface RegisteredBusinessOperation {
   readonly capability_identity?: RegisteredCapabilityIdentity;
   readonly interface_bindings: readonly RegisteredInterfaceIdentity[];
   readonly static_runtime_slots?: P1StaticRuntimeSlotProjection;
+  /** P1 invocation-only snapshot, not a persistent binding lifecycle authority. */
+  readonly hook_binding_snapshot?: readonly HookBinding[];
 }
 
 const operations = new Map<string, RegisteredBusinessOperation>();
 const business_objects = new Map<string, BusinessRegistryEntry>();
 const event_interfaces = new Map<string, BusinessEventInterfaceBinding>();
 const completed_p1_receipts = new WeakSet<P1ExecutionReceipt>();
+
+/**
+ * P1 keeps only an in-process, owner-supplied invocation snapshot. P0 M2
+ * validates each declared HookBinding but does not activate or persist it.
+ */
+function freezeExactHookBindingSnapshot(
+  extension: StageExtensionContract,
+  bindings: readonly HookBinding[] | undefined,
+): readonly HookBinding[] | undefined {
+  if (bindings === undefined) return undefined;
+  if (!Array.isArray(bindings)) {
+    throw new StableRuntimeError("P1_BINDING_INVALID", "Hook Binding snapshot must be an array");
+  }
+  const declared = [...extension.hook_binding_refs].sort();
+  const actual = bindings.map((binding) => binding?.binding_ref).sort();
+  if (
+    actual.length !== declared.length
+    || new Set(actual).size !== actual.length
+    || actual.some((ref, i) => ref !== declared[i])
+  ) {
+    throw new StableRuntimeError(
+      "P1_BINDING_INVALID",
+      "Hook Binding snapshot must exactly match the P1 declared hook_binding_refs",
+    );
+  }
+  for (const binding of bindings) runtime_provider.bind({ binding });
+  return deep_freeze([...bindings]);
+}
+
+/** No caller can downgrade a declared Hook set to [] or retarget a frozen one. */
+function selectInvocationHookBindings(
+  registered: RegisteredBusinessOperation,
+  supplied?: readonly HookBinding[],
+): readonly HookBinding[] {
+  const frozen = registered.hook_binding_snapshot;
+  if (frozen !== undefined) {
+    if (
+      supplied !== undefined
+      && (supplied.length !== frozen.length || supplied.some((binding) => !frozen.includes(binding)))
+    ) {
+      throw new StableRuntimeError("P1_BINDING_INVALID", "Invocation may not retarget a frozen P1 Hook Binding snapshot");
+    }
+    return frozen;
+  }
+  if (supplied !== undefined) {
+    return freezeExactHookBindingSnapshot(registered.stage_extension, supplied)!;
+  }
+  if (registered.stage_extension.hook_binding_refs.length !== 0) {
+    throw new StableRuntimeError("P1_BINDING_INVALID", "Declared Hook refs require an exact bound invocation snapshot");
+  }
+  return deep_freeze([] as HookBinding[]);
+}
 
 function nonEmptyString(value: string, field: string): string {
   if (value.length === 0) {
@@ -323,6 +377,7 @@ function exactGeneralSlotProjection(projection: P1CapabilityGeneralSlotProjectio
 function createRegisteredStageExtension(
   projection: P1CapabilityGeneralSlotProjection,
   staticSlots: P1StaticRuntimeSlotProjection,
+  exactHookBindings?: readonly HookBinding[],
 ): StageExtensionContract {
   exactGeneralSlotProjection(projection);
   const allowedStaticSlots = [
@@ -357,6 +412,7 @@ function createRegisteredStageExtension(
     general_slots: projection,
     implementation_ref: exactSlotValue(projection, "capability_contract_ref"),
     provided_interface_refs: [exactSlotValue(projection, "interface_ref")],
+    hook_consumer_refs: [...new Set(exactHookBindings?.map((binding) => binding.consumer_ref) ?? [])],
     hook_binding_refs: hookBindingRefs,
   });
 }
@@ -405,7 +461,9 @@ function registerOperationRoute(
   staticSlots?: P1StaticRuntimeSlotProjection,
   capabilityIdentity?: RegisteredCapabilityIdentity,
   interfaceIdentity?: RegisteredInterfaceIdentity,
+  hookBindingSet?: readonly HookBinding[],
 ): BusinessOperationRouteBinding {
+  const hookSnapshot = freezeExactHookBindingSnapshot(extension, hookBindingSet);
   // ONE_PER_CAPABILITY forbids conflicting GENERAL facts across Operations
   // resolved inside one exact Capability Contract.
   for (const registered of operations.values()) {
@@ -465,6 +523,11 @@ function registerOperationRoute(
       || existing.stage_extension.implementation_ref !== extension.implementation_ref
       || JSON.stringify(existing.stage_extension.hook_binding_refs)
         !== JSON.stringify(extension.hook_binding_refs)
+      || (hookSnapshot !== undefined && (
+        existing.hook_binding_snapshot === undefined
+        || hookSnapshot.length !== existing.hook_binding_snapshot.length
+        || hookSnapshot.some((binding) => !existing.hook_binding_snapshot!.includes(binding))
+      ))
       || (
         existing.static_runtime_slots !== undefined && staticSlots !== undefined
         && ([
@@ -529,6 +592,7 @@ function registerOperationRoute(
     ...(capabilityIdentity === undefined ? {} : { capability_identity: capabilityIdentity }),
     interface_bindings: interfaceIdentity === undefined ? [] : [interfaceIdentity],
     ...(staticSlots === undefined ? {} : { static_runtime_slots: staticSlots }),
+    ...(hookSnapshot === undefined ? {} : { hook_binding_snapshot: hookSnapshot }),
   }));
   return frozenRoute;
 }
@@ -538,6 +602,7 @@ export function register_business_operation(
   handler: BusinessOperationHandler,
   static_runtime_slots: P1StaticRuntimeSlotProjection,
   authorization: BusinessOperationAuthorization,
+  hook_binding_set?: readonly HookBinding[],
 ): BusinessOperationRouteBinding {
   if (typeof handler !== "function" || typeof authorization !== "function") {
     throw new StableRuntimeError(
@@ -548,7 +613,7 @@ export function register_business_operation(
   if (!static_runtime_slots) {
     throw new StableRuntimeError("P1_OVERLAY_SLOT_INVALID", "every concrete Operation requires exact P1 static runtime slots");
   }
-  const extension = createRegisteredStageExtension(general_slots, static_runtime_slots);
+  const extension = createRegisteredStageExtension(general_slots, static_runtime_slots, hook_binding_set);
   resolve_p1_framework_anchor({
     surface: exactSlotValue(general_slots, "surface"),
     kind: exactSlotValue(general_slots, "kind"),
@@ -572,7 +637,7 @@ export function register_business_operation(
   });
   return registerOperationRoute(
     operationRouteFromProjection(general_slots), handler, authorization,
-    extension, static_runtime_slots, capabilityIdentity, interfaceIdentity,
+    extension, static_runtime_slots, capabilityIdentity, interfaceIdentity, hook_binding_set,
   );
 }
 
@@ -584,6 +649,7 @@ export function register_internal_business_operation(
   binding: Readonly<BusinessInternalOperationBinding>,
   handler: BusinessOperationHandler,
   authorization: BusinessOperationAuthorization,
+  hook_binding_set?: readonly HookBinding[],
 ): BusinessOperationRouteBinding {
   if (typeof handler !== "function" || typeof authorization !== "function") {
     throw new StableRuntimeError(
@@ -614,8 +680,8 @@ export function register_internal_business_operation(
     implementation_ref: capabilityContractRef,
     provided_interface_refs: [],
     consumed_interface_refs: [`${P0_CONTRACT_REF}#/interfaces/runtime_execution_invoke`],
-    hook_consumer_refs: [],
-    hook_binding_refs: [],
+    hook_consumer_refs: [...new Set(hook_binding_set?.map((item) => item.consumer_ref) ?? [])],
+    hook_binding_refs: hook_binding_set?.map((item) => item.binding_ref) ?? [],
     port_refs: [],
     upstream_runtime_ref: P0_CONTRACT_REF,
     runtime_provider_symbol_ref: P0_PROVIDER_SYMBOL_REF,
@@ -629,7 +695,7 @@ export function register_internal_business_operation(
     capability_id: capabilityId,
     operation_id: operationId,
     operation_ref: operationRef,
-  }), handler, authorization, extension);
+  }), handler, authorization, extension, undefined, undefined, undefined, hook_binding_set);
 }
 
 function resolveRegisteredOperationByExactRef(operationRef: string): RegisteredBusinessOperation {
@@ -899,9 +965,10 @@ async function invokeResolvedOperation(
   path: Readonly<BusinessOperationInvokePath>,
   input: unknown,
   runtime_context: RuntimeContext,
-  hook_binding_set: readonly HookBinding[],
+  hook_binding_set?: readonly HookBinding[],
 ): Promise<BusinessOperationOutcome> {
   let validated: ReturnType<typeof validatedP1Context>;
+  let exactHookBindings: readonly HookBinding[];
   try {
     if (
       path.capability_id !== registered.route.capability_id
@@ -911,6 +978,7 @@ async function invokeResolvedOperation(
       throw new StableRuntimeError("P1_OPERATION_ROUTE_MISMATCH", "Resolved P1 Operation does not match its exact dispatch tuple");
     }
     validated = validatedP1Context(path, registered.route, runtime_context);
+    exactHookBindings = selectInvocationHookBindings(registered, hook_binding_set);
   } catch (error) {
     return stableP1Outcome(error, path?.trace_id ?? "", path?.request_id ?? "");
   }
@@ -935,7 +1003,7 @@ async function invokeResolvedOperation(
       runtime_context: validated.runtime_context,
       input: inputSlot.value,
       operation: registered.handler,
-      hook_binding_set,
+      hook_binding_set: exactHookBindings,
     });
     // Finalize first, create the P1 execution receipt second, return last.
     const finalized: FinalizedBusinessOperationOutcome = p0.outcome === "success"
@@ -967,7 +1035,7 @@ export async function invoke_business_operation(
   path: Readonly<BusinessOperationInvokePath>,
   input: unknown,
   runtime_context: RuntimeContext,
-  hook_binding_set: readonly HookBinding[] = [],
+  hook_binding_set?: readonly HookBinding[],
 ): Promise<BusinessOperationOutcome> {
   try {
     // The carried route_key is checked but never selects the Operation.
@@ -1081,6 +1149,7 @@ export async function invoke_internal_call(
       },
       request.input,
       childRuntimeContext,
+      registered.hook_binding_snapshot,
     );
     if (outcome.outcome_type === "stable_error") {
       return deep_freeze({
@@ -1325,7 +1394,7 @@ export async function consume_business_event(
   subject_ref: string,
   input: unknown,
   runtime_context: RuntimeContext,
-  hook_binding_set: readonly HookBinding[] = [],
+  hook_binding_set?: readonly HookBinding[],
 ): Promise<BusinessEventOutcome> {
   try {
     const binding = resolve_business_event_interface(interface_ref, "EVENT_CONSUME");

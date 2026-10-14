@@ -318,6 +318,77 @@ test("P1 internal_call_invoke advances exact child path/depth and uses RuntimeCo
   assert.equal(attempts, 1);
 });
 
+test("P1 internal CALL with declared Hook uses the immutable P1 snapshot at the sole P0 runtime", async () => {
+  const slots = projection("internal_hook_snapshot", "internal_hook_snapshot", "CALL", "CALL_INVOKE", "invoke_business_operation");
+  const opRef = slots.operation_ref.value;
+  const b = governedHookBinding("Q.TEST.HOOK.INTERNAL_BIND@V0100", "Q.TEST.HOOK.INTERNAL_CONSUMER@V0100", "continue");
+  let attempts = 0;
+  register_concrete_business_operation(slots, async () => {
+    attempts += 1;
+    return { accepted: true };
+  }, exactStaticSlots(slots, [b.binding_ref]), testAuthorization, [b]);
+  const runtimeContext = context("caller", "internal-hook-snapshot");
+  const result = await invoke_internal_call({
+    local_route_key: opRef,
+    input: { key: "value" },
+    runtime_context: runtimeContext,
+    call_path: [],
+    call_depth: 0,
+    trace_id: runtimeContext.trace_id,
+    parent_request_id: "request:parent",
+  });
+  assert.equal(result.outcome_type, "response");
+  if (result.outcome_type !== "response") return;
+  assert.equal(attempts, 1);
+  assert.equal(result.execution_receipt?.hook_evidence.length, 1);
+  assert.equal(result.execution_receipt?.hook_evidence[0]?.binding_ref, b.binding_ref);
+});
+
+test("P1 internal CALL refuses declared Hook refs without a bound snapshot before P0 execution", async () => {
+  const slots = projection("internal_hook_missing", "internal_hook_missing", "CALL", "CALL_INVOKE", "invoke_business_operation");
+  const b = governedHookBinding("Q.TEST.HOOK.MISSING_BIND@V0100", "Q.TEST.HOOK.MISSING_CONSUMER@V0100", "continue");
+  let attempts = 0;
+  register_concrete_business_operation(slots, async () => { attempts++; return "unexpected"; },
+    exactStaticSlots(slots, [b.binding_ref]), testAuthorization);
+  const runtimeContext = context("caller", "internal-hook-missing");
+  const result = await invoke_internal_call({
+    local_route_key: slots.operation_ref.value,
+    input: {},
+    runtime_context: runtimeContext,
+    call_path: [],
+    call_depth: 0,
+    trace_id: runtimeContext.trace_id,
+    parent_request_id: "request:parent",
+  });
+  assert.equal(result.outcome_type, "stable_error");
+  if (result.outcome_type !== "stable_error") return;
+  assert.equal(result.stable_error.code, "P1_BINDING_INVALID");
+  assert.equal(attempts, 0);
+});
+
+test("P1 concrete CALL uses registered Hook snapshot and rejects caller retargeting", async () => {
+  const slots = projection("call_hook_snapshot", "call_hook_snapshot", "CALL", "CALL_INVOKE", "invoke_business_operation");
+  const b = governedHookBinding("Q.TEST.HOOK.CALL_BIND@V0100", "Q.TEST.HOOK.CALL_CONSUMER@V0100", "continue");
+  let attempts = 0;
+  register_concrete_business_operation(slots, async () => { attempts++; return "ok"; },
+    exactStaticSlots(slots, [b.binding_ref]), testAuthorization, [b]);
+  const opRef = slots.operation_ref.value;
+  const accepted = await invoke_business_operation(
+    invokePath(opRef, "call_hook_snapshot", "call-hook-snapshot"), {}, context(opRef, "call-hook-snapshot"));
+  assert.equal(accepted.outcome_type, "response");
+  if (accepted.outcome_type === "response") {
+    assert.equal(accepted.execution_receipt.hook_evidence[0]?.binding_ref, b.binding_ref);
+  }
+  const altered: HookBinding = { ...b, consumer: {
+    consumer_ref: b.consumer_ref, evaluate: () => ({ decision: "deny" }),
+  } };
+  const denied = await invoke_business_operation(
+    invokePath(opRef, "call_hook_snapshot", "call-hook-retarget"), {}, context(opRef, "call-hook-retarget"), [altered]);
+  assert.equal(denied.outcome_type, "stable_error");
+  if (denied.outcome_type === "stable_error") assert.equal(denied.stable_error.code, "P1_BINDING_INVALID");
+  assert.equal(attempts, 1);
+});
+
 test("P1 internal_call_invoke cycle fails closed before Operation attempt", async () => {
   const slots = projection(
     "internal_cycle",
