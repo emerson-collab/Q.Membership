@@ -1,0 +1,50 @@
+name: Member P1 CI
+
+on:
+  push:
+    branches:
+      - work/member-p1-phase1-20261014
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  create-member:
+    name: TypeScript and Member/P1 regression
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout exact commit
+        uses: actions/checkout@v4
+
+      - name: Set up Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Check Member TypeScript
+        run: npm run typecheck:member
+
+      - name: Check repository TypeScript
+        run: npm run typecheck
+
+      - name: Run P0 and P1 Runtime tests
+        run: |
+          npm run test:p0
+          node --experimental-transform-types --test tests/p1/business_runtime/business_operation_registry.test.ts tests/p1/business_runtime/stage_extension_contract.test.ts
+
+      - name: Run Member source and boundary checks
+        run: |
+          npm run test:member:source
+          npm run test:member:boundary
+
+      - name: Install test runner without changing lockfile
+        run: npm install --no-save --package-lock=false vitest@3.2.4
+
+      - name: Run create_member and Member regression tests
+        run: npx --no-install vitest run tests/p1/member/create_member/handler.test.ts tests/p1/export/member/client.test.ts
