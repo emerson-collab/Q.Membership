@@ -258,7 +258,7 @@ test("P2 Anchors -> three verified category facts -> three test-only JSON files"
           test_only_authorized_facts:anchored.facts,
         };
         const filename=category.toLowerCase()+".json";
-        const serialized=JSON.stringify(testOnlyArtifact,null,2)+"\\n";
+        const serialized=JSON.stringify(testOnlyArtifact,null,2)+"\n";
         writeFileSync(join(outputDir,filename),serialized);
         const readback=readFileSync(join(outputDir,filename),"utf8");
         assert.equal(sha(readback),sha(serialized));
