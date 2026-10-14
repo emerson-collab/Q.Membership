@@ -92,6 +92,7 @@ jobs:
               'src/p2/provider/governed_data_exposure/expose_static_data/handler.ts',
               'src/p2/provider/governed_data_exposure/expose_dynamic_data/handler.ts',
               'src/p2/provider/governed_data_exposure/expose_runtime_data/handler.ts',
+              'runtime/governed_data_provider_realization.ts',
             ],
             exclude: ['tests/**/*']
           }));
@@ -101,6 +102,8 @@ jobs:
         env:
           P2_ANCHOR_TRIAD_DEMO_DIR: ${{ runner.temp }}/p2-anchor-triad-test-only
         run: node --experimental-transform-types --test tests/p2/provider/governed_data_exposure/expose_static_data/handler.test.ts tests/p2/provider/governed_data_exposure/expose_dynamic_data/handler.test.ts tests/p2/provider/governed_data_exposure/expose_runtime_data/handler.test.ts
+      - name: Test governed triad durability and downstream consumer compatibility
+        run: node --experimental-transform-types --test tests/repository_support/runtime/governed_data_provider_realization.test.ts tests/p2/consumer/governed_data_consumption/consume_static_data/handler.test.ts tests/p2/consumer/governed_data_consumption/consume_dynamic_data/handler.test.ts tests/p2/consumer/governed_data_consumption/consume_runtime_data/handler.test.ts
       - name: Upload test-only three JSON artifacts
         uses: actions/upload-artifact@v4
         with:

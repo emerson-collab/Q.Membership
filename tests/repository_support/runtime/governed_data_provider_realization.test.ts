@@ -277,18 +277,33 @@ function triadObligation(overrides: Readonly<Record<string, unknown>> = {}) {
 
 function materializer(observed: GovernedDataCategory[]): P2GovernedDataExposureMaterializer {
   return Object.freeze({
+    async read_authorized_anchor_facts(
+      input: Parameters<P2GovernedDataExposureMaterializer["read_authorized_anchor_facts"]>[0],
+    ) {
+      const binding = input.exact_source_authority;
+      assert.equal(input.p1_interface_anchor_binding_ref,
+        `${P1_BUSINESS_RUNTIME_REF}#/concrete_interface_framework_anchor_crosswalk/anchors/CALL_INVOKE`);
+      return Object.freeze({
+        ...binding,
+        source_fact_ref: input.source_provenance.source_ref,
+        source_fact_authority_ref: input.source_fact_authority,
+        facts: { test_only: true, access_ref: binding.source_access_ref },
+      });
+    },
     async produce_exposure_material(
       input: Parameters<P2GovernedDataExposureMaterializer["produce_exposure_material"]>[0],
     ) {
       observed.push(input.data_category);
       const request = input.authorized_exposure_request as Readonly<Record<string, unknown>>;
+      const anchored = input.authorized_anchor_facts;
+      assert.equal(anchored.data_category, input.data_category);
       return Object.freeze({
         material_ref: `urn:q:material:${String(request.subject_ref)}`,
         subject_ref: request.subject_ref,
         owner_ref: OWNER_REF,
-        source_ref: `${CAPABILITY_CONTRACT_REF}#/facts/${input.data_category.toLowerCase()}`,
+        source_ref: anchored.source_fact_ref,
         representation_mode: request.requested_representation,
-        content_hash: `sha256:${"a".repeat(64)}`,
+        content_hash: hash(anchored.facts),
         integrity_profile_ref: INTEGRITY_REF,
       });
     },

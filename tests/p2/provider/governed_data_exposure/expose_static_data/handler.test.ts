@@ -206,7 +206,7 @@ test("P2 Anchors -> three verified category facts -> three test-only JSON files"
   const sha=(value:unknown)=>"sha256:"+createHash("sha256").update(JSON.stringify(value)).digest("hex");
 
   function depsFor(category:"STATIC"|"DYNAMIC"|"RUNTIME"){
-    const binding=bindings[category];
+    const binding=bindings[category]!;
     return {
       async read_authorized_anchor_facts(input:Readonly<Record<string,unknown>>){
         assert.equal(input.data_category,category);

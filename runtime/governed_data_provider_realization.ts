@@ -126,6 +126,22 @@ export interface GovernedTriadFrozenAuthorities {
 }
 
 export interface P2GovernedDataExposureMaterializer {
+  /**
+   * Trusted source-Interface/Anchor read, bound by the governed outer
+   * composition. Neither P2 nor this dependency may scan P1 implementation.
+   * The source binding has already passed the frozen V0117/V0186 checks.
+   */
+  read_authorized_anchor_facts(input: Readonly<{
+    data_category: GovernedDataCategory;
+    authorized_exposure_request: StaticJsonObject;
+    exact_source_authority: StaticJsonObject;
+    governed_access_binding: StaticJsonObject;
+    source_provenance: StaticJsonObject;
+    source_fact_authority: string;
+    trace_id: string;
+    request_id: string;
+    p1_interface_anchor_binding_ref: string;
+  }>): Promise<StaticJsonObject>;
   produce_exposure_material(input: Readonly<{
     data_category: GovernedDataCategory;
     authorized_exposure_request: StaticJsonObject;
@@ -133,6 +149,7 @@ export interface P2GovernedDataExposureMaterializer {
     owning_persistence_contract: StaticJsonObject;
     integrity_profile: StaticJsonObject;
     artifact_store_binding: StaticJsonObject;
+    authorized_anchor_facts: StaticJsonObject;
   }>): Promise<StaticJsonObject>;
 }
 
@@ -1003,13 +1020,48 @@ async function executeBinding(
     );
   }
 
+  if (typeof materialization.read_authorized_anchor_facts !== "function") {
+    throw new GovernedDataProviderRealizationError(
+      "RDS_GOVERNED_DATA_AUTHORITY_UNAVAILABLE",
+      "the authorized P1 Anchor facts reader must be bound before P2 materialization",
+    );
+  }
+  // The exact frozen and verified V0117 binding overrides any caller-provided
+  // exact_source_authority; P2 must never select one from untrusted request data.
   const request = Object.freeze({
-    input: execution.p2_operation_input,
+    input: Object.freeze({
+      ...execution.p2_operation_input,
+      exact_source_authority: projectBinding(binding),
+    }),
     runtime_context: execution.runtime_context,
     trace_id: execution.trace_id,
     request_id: execution.request_id,
   });
   const dependencies = Object.freeze({
+    read_authorized_anchor_facts: (
+      sourceReadInput: Readonly<{
+        data_category: GovernedDataCategory;
+        authorized_exposure_request: StaticJsonObject;
+        exact_source_authority: StaticJsonObject;
+        governed_access_binding: StaticJsonObject;
+        source_provenance: StaticJsonObject;
+        source_fact_authority: string;
+        trace_id: string;
+        request_id: string;
+      }>,
+    ) => {
+      const anchorRef = execution.p1_interface_anchor_binding_ref;
+      if (!anchorRef) {
+        throw new GovernedDataProviderRealizationError(
+          "RDS_GOVERNED_DATA_SOURCE_ANCHOR_INVALID",
+          "exact verified source Interface must have its existing P1 Anchor",
+        );
+      }
+      return materialization.read_authorized_anchor_facts(Object.freeze({
+        ...sourceReadInput,
+        p1_interface_anchor_binding_ref: anchorRef,
+      }));
+    },
     materialize_governed_data: (
       materializationInput: Parameters<
         P2GovernedDataExposureMaterializer["produce_exposure_material"]
