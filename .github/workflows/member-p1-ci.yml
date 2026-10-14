@@ -97,5 +97,13 @@ jobs:
           }));
           NODE
           npx tsc --noEmit -p tsconfig.p2-anchor.ci.json
-      - name: Test all three P2 Provider exposure handlers
+      - name: Test actual P1 Anchors and three P2 Provider exposure handlers
+        env:
+          P2_ANCHOR_TRIAD_DEMO_DIR: ${{ runner.temp }}/p2-anchor-triad-test-only
         run: node --experimental-transform-types --test tests/p2/provider/governed_data_exposure/expose_static_data/handler.test.ts tests/p2/provider/governed_data_exposure/expose_dynamic_data/handler.test.ts tests/p2/provider/governed_data_exposure/expose_runtime_data/handler.test.ts
+      - name: Upload test-only three JSON artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: p2-anchor-triad-test-only
+          path: ${{ runner.temp }}/p2-anchor-triad-test-only/*.json
+          if-no-files-found: error

@@ -43,7 +43,7 @@ test("expose_dynamic_data preserves P2 identity and CURRENT material_envelope",a
 
 test("expose_dynamic_data fails closed on envelope representation mismatch",async()=>{
  const mismatched={...deps,async materialize_governed_data(){return {...envelope,representation_mode:"INLINE_FACT_SET"};}};
- await assert.rejects(()=>handler(baseRequest({...p2Fields,authorized_exposure_request:exposureRequest,exact_source_authority:{},owning_persistence_contract:{},integrity_profile:{},artifact_store_binding:{}}),mismatched),(e:unknown)=>e instanceof P2StableError&&e.code==="P2_GOVERNED_DATA_BINDING_MISMATCH");
+ await assert.rejects(()=>handler(baseRequest({...p2Fields,authorized_exposure_request:exposureRequest,exact_source_authority:sourceBinding,owning_persistence_contract:{},integrity_profile:{},artifact_store_binding:{}}),mismatched),(e:unknown)=>e instanceof P2StableError&&e.code==="P2_GOVERNED_DATA_BINDING_MISMATCH");
 });
 
 test("expose_dynamic_data rejects an unauthorized or mismatched Anchor fact without materializing",async()=>{
