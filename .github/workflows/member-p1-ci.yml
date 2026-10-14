@@ -70,3 +70,32 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run typecheck
+
+  p2-anchor-facts:
+    name: P2 Provider - Authorized Anchor Sources
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - name: Typecheck exact P2 Provider Handler chain
+        run: |
+          node --input-type=module <<'NODE'
+          import { writeFileSync } from 'node:fs';
+          writeFileSync('tsconfig.p2-anchor.ci.json', JSON.stringify({
+            extends: './tsconfig.json',
+            include: [
+              'src/p2/provider/governed_data_exposure/expose_static_data/handler.ts',
+              'src/p2/provider/governed_data_exposure/expose_dynamic_data/handler.ts',
+              'src/p2/provider/governed_data_exposure/expose_runtime_data/handler.ts',
+            ],
+            exclude: ['tests/**/*']
+          }));
+          NODE
+          npx tsc --noEmit -p tsconfig.p2-anchor.ci.json
+      - name: Test all three P2 Provider exposure handlers
+        run: node --experimental-transform-types --test tests/p2/provider/governed_data_exposure/expose_static_data/handler.test.ts tests/p2/provider/governed_data_exposure/expose_dynamic_data/handler.test.ts tests/p2/provider/governed_data_exposure/expose_runtime_data/handler.test.ts
