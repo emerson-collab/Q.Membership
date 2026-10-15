@@ -7,10 +7,34 @@ const baseRequest=(input:Record<string,unknown>)=>({input,runtime_context:{stage
 const p2Fields={source_domain_identity:"Q.SOURCE.CONTRACT.DOMAIN@V0100",subject_identity:"subject-1",source_provenance:{source_ref:"Q.SOURCE.FACT@V0100",revision_ref:"rev-1"},source_fact_authority:"Q.SOURCE.CONTRACT.DOMAIN@V0100",governed_access_binding:{authorization_ref:"auth-1"},integrity_binding:{profile_ref:"Q.INTEGRITY.PROFILE@V0100"}};
 const exposureRequest={subject_ref:"subject-1",requested_representation:"INLINE_FACT_SET",selection_spec:{scope:"authorized"}};
 const envelope={material_ref:"urn:q:material:1",subject_ref:"subject-1",owner_ref:"Q.SOURCE.CONTRACT.DOMAIN@V0100",source_ref:"Q.SOURCE.FACT@V0100",representation_mode:"INLINE_FACT_SET",content_hash:`sha256:${"a".repeat(64)}`,integrity_profile_ref:"Q.INTEGRITY.PROFILE@V0100"};
-const exposureDeps={async materialize_governed_data(){return envelope;}};
+const sourceBinding={
+  binding_ref:"Q.TEST.P2.CONSUMER_SOURCE.STATIC@V0100",
+  data_category:"STATIC",
+  source_operation_ref:"Q.TEST.CONTRACT.CAPABILITY.SOURCE@V0100#/operations/consumer_static_test",
+  source_interface_ref:"Q.TEST.CONTRACT.CAPABILITY.SOURCE@V0100#/interfaces/consumer_static_test",
+  source_access_kind:"P1_AUTHORIZED_STATIC_OR_PACKAGE_FACT",
+  source_access_ref:"Q.TEST.P1.SOURCE.STATIC@V0100",
+};
+const exposureDeps={
+  async read_authorized_anchor_facts(input:Readonly<Record<string,unknown>>){
+    assert.equal(input.data_category,"STATIC");
+    assert.deepEqual(input.exact_source_authority,sourceBinding);
+    return {
+      ...sourceBinding,
+      source_fact_ref:p2Fields.source_provenance.source_ref,
+      source_fact_authority_ref:p2Fields.source_fact_authority,
+      facts:{test_only:true,data_category:"STATIC"},
+    };
+  },
+  async materialize_governed_data(input:Readonly<Record<string,unknown>>){
+    assert.equal(input.data_category,"STATIC");
+    assert.equal((input.authorized_anchor_facts as Record<string,unknown>).data_category,"STATIC");
+    return envelope;
+  },
+};
 
 test("expose_static_data→consume_static_data preserves P2 governance and CURRENT material identity",async()=>{
- const exposed=await exposeHandler(baseRequest({...p2Fields,authorized_exposure_request:exposureRequest,exact_source_authority:{ref:"Q.SOURCE"},owning_persistence_contract:{ref:"Q.DB"},integrity_profile:{ref:"Q.INTEGRITY"},artifact_store_binding:{ref:"Q.ARTIFACT"}}),exposureDeps);
+ const exposed=await exposeHandler(baseRequest({...p2Fields,authorized_exposure_request:exposureRequest,exact_source_authority:sourceBinding,owning_persistence_contract:{ref:"Q.DB"},integrity_profile:{ref:"Q.INTEGRITY"},artifact_store_binding:{ref:"Q.ARTIFACT"}}),exposureDeps);
  const governed_data_material=exposed.runtime_result as Record<string,unknown>;
  let calls=0; const artifactResolver={store_ref:"Q.ARTIFACT"}; const consumerBinding={authorization_ref:"auth-1"};
  const consumed=await handler(baseRequest({governed_data_material,consumer_binding:consumerBinding,artifact_store_resolver:artifactResolver}),{async consume_governed_data(input){calls+=1;assert.equal(input.data_category,"STATIC");assert.deepEqual(input.governed_material_envelope,envelope);assert.deepEqual(input.consumer_binding,consumerBinding);assert.deepEqual(input.artifact_store_resolver,artifactResolver);return {delivered:true};}});

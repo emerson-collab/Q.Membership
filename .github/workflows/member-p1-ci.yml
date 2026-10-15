@@ -1,0 +1,112 @@
+name: Member P1 CI
+
+on:
+  push:
+    branches:
+      - work/member-p1-phase1-20261014
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  create-member:
+    name: TypeScript and Member/P1 regression
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout exact commit
+        uses: actions/checkout@v4
+
+      - name: Set up Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Check Member TypeScript
+        run: npm run typecheck:member
+
+      - name: Check create_member dependency chain under NodeNext
+        run: |
+          node --input-type=module <<'NODE'
+          import { writeFileSync } from 'node:fs';
+          writeFileSync('tsconfig.create-member.ci.json', JSON.stringify({
+            extends: './tsconfig.json',
+            include: ['src/p1/member/create_member/handler.ts'],
+            exclude: ['tests/**/*']
+          }));
+          NODE
+          npx tsc --noEmit -p tsconfig.create-member.ci.json
+
+      - name: Run P0 and P1 Runtime tests
+        run: |
+          npm run test:p0
+          node --experimental-transform-types --test tests/p1/business_runtime/business_operation_registry.test.ts tests/p1/business_runtime/stage_extension_contract.test.ts
+
+      - name: Run Member source and boundary checks
+        run: |
+          npm run test:member:source
+          npm run test:member:boundary
+
+      - name: Install test runner without changing lockfile
+        run: npm install --no-save --package-lock=false vitest@3.2.4
+
+      - name: Run create_member and Member regression tests
+        run: npx --no-install vitest run tests/p1/member/create_member/handler.test.ts tests/p1/export/member/client.test.ts
+
+  repository-types:
+    name: Repository-wide TypeScript (strict, not suppressed)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: npm run typecheck
+
+  p2-anchor-facts:
+    name: P2 Provider - Authorized Anchor Sources
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - name: Typecheck exact P2 Provider Handler chain
+        run: |
+          node --input-type=module <<'NODE'
+          import { writeFileSync } from 'node:fs';
+          writeFileSync('tsconfig.p2-anchor.ci.json', JSON.stringify({
+            extends: './tsconfig.json',
+            include: [
+              'src/p2/provider/governed_data_exposure/expose_static_data/handler.ts',
+              'src/p2/provider/governed_data_exposure/expose_dynamic_data/handler.ts',
+              'src/p2/provider/governed_data_exposure/expose_runtime_data/handler.ts',
+              'runtime/governed_data_provider_realization.ts',
+            ],
+            exclude: ['tests/**/*']
+          }));
+          NODE
+          npx tsc --noEmit -p tsconfig.p2-anchor.ci.json
+      - name: Test actual P1 Anchors and three P2 Provider exposure handlers
+        env:
+          P2_ANCHOR_TRIAD_DEMO_DIR: ${{ runner.temp }}/p2-anchor-triad-test-only
+        run: node --experimental-transform-types --test tests/p2/provider/governed_data_exposure/expose_static_data/handler.test.ts tests/p2/provider/governed_data_exposure/expose_dynamic_data/handler.test.ts tests/p2/provider/governed_data_exposure/expose_runtime_data/handler.test.ts
+      - name: Test governed triad durability and downstream consumer compatibility
+        run: node --experimental-transform-types --test tests/repository_support/runtime/governed_data_provider_realization.test.ts tests/p2/consumer/governed_data_consumption/consume_static_data/handler.test.ts tests/p2/consumer/governed_data_consumption/consume_dynamic_data/handler.test.ts tests/p2/consumer/governed_data_consumption/consume_runtime_data/handler.test.ts
+      - name: Upload test-only three JSON artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: p2-anchor-triad-test-only
+          path: ${{ runner.temp }}/p2-anchor-triad-test-only/*.json
+          if-no-files-found: error
