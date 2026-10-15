@@ -1,0 +1,132 @@
+{
+  "store_version": 1,
+  "members": [
+    {
+      "member_ref": "mem_aecc47a9-dba8-448c-b5c6-5a8527d0efcc",
+      "identity_namespace": "13811111111",
+      "identity_value": "13811111111",
+      "display_name": "chen",
+      "contact_email": null,
+      "member_status": "active",
+      "created_at": "2026-10-14T09:41:57.689Z",
+      "terminated_at": null,
+      "terminate_reason": null,
+      "version": 1
+    },
+    {
+      "member_ref": "mem_36083135-7a2b-459e-8523-a74b43ba5fa2",
+      "identity_namespace": "13811111112",
+      "identity_value": "13811111112",
+      "display_name": "chen",
+      "contact_email": null,
+      "member_status": "active",
+      "created_at": "2026-10-14T13:22:02.698Z",
+      "terminated_at": null,
+      "terminate_reason": null,
+      "version": 1
+    },
+    {
+      "member_ref": "mem_a582100f-7545-4a21-8677-567140376ea9",
+      "identity_namespace": "13811111113",
+      "identity_value": "13811111113",
+      "display_name": "chg",
+      "contact_email": null,
+      "member_status": "active",
+      "created_at": "2026-10-14T13:31:25.214Z",
+      "terminated_at": null,
+      "terminate_reason": null,
+      "version": 1
+    },
+    {
+      "member_ref": "mem_55abbd2d-430d-40bc-b61c-03d671dd537a",
+      "identity_namespace": "13811111114",
+      "identity_value": "13811111114",
+      "display_name": "chg",
+      "contact_email": null,
+      "member_status": "active",
+      "created_at": "2026-10-14T14:02:13.957Z",
+      "terminated_at": null,
+      "terminate_reason": null,
+      "version": 1
+    },
+    {
+      "member_ref": "mem_51703402-f605-43a5-ba3b-892fe2280c70",
+      "identity_namespace": "13811111111",
+      "identity_value": "13811111115",
+      "display_name": "ccc",
+      "contact_email": null,
+      "member_status": "active",
+      "created_at": "2026-10-15T01:07:21.496Z",
+      "terminated_at": null,
+      "terminate_reason": null,
+      "version": 1
+    }
+  ],
+  "memberships": [
+    {
+      "membership_ref": "msh_3ae2b5b5-16f7-40a6-b122-1a27da897db9",
+      "member_ref": "mem_36083135-7a2b-459e-8523-a74b43ba5fa2",
+      "plan_ref": "plan-basic",
+      "membership_status": "active",
+      "effective_time": "2026-10-15T00:55:48.093Z",
+      "termination_time": null,
+      "version": 1
+    }
+  ],
+  "member_status_events": [
+    {
+      "event_ref": "msev_b0e2d2e2-5938-4024-a5e2-047497db601b",
+      "member_ref": "mem_aecc47a9-dba8-448c-b5c6-5a8527d0efcc",
+      "from_status": null,
+      "to_status": "active",
+      "occurred_at": "2026-10-14T09:41:57.689Z",
+      "reason": null
+    },
+    {
+      "event_ref": "msev_013b04b0-ca02-4d62-8382-87a35a270d59",
+      "member_ref": "mem_36083135-7a2b-459e-8523-a74b43ba5fa2",
+      "from_status": null,
+      "to_status": "active",
+      "occurred_at": "2026-10-14T13:22:02.698Z",
+      "reason": null
+    },
+    {
+      "event_ref": "msev_4672a95f-1158-4422-a26f-f36288a57587",
+      "member_ref": "mem_a582100f-7545-4a21-8677-567140376ea9",
+      "from_status": null,
+      "to_status": "active",
+      "occurred_at": "2026-10-14T13:31:25.214Z",
+      "reason": null
+    },
+    {
+      "event_ref": "msev_abbeee0a-6668-4726-a71e-d6d2d4e2df2e",
+      "member_ref": "mem_55abbd2d-430d-40bc-b61c-03d671dd537a",
+      "from_status": null,
+      "to_status": "active",
+      "occurred_at": "2026-10-14T14:02:13.957Z",
+      "reason": null
+    },
+    {
+      "event_ref": "msev_b17e75d9-9582-4ac5-8d37-dc3d626ed243",
+      "member_ref": "mem_51703402-f605-43a5-ba3b-892fe2280c70",
+      "from_status": null,
+      "to_status": "active",
+      "occurred_at": "2026-10-15T01:07:21.496Z",
+      "reason": null
+    }
+  ],
+  "relation_events": [
+    {
+      "event_ref": "mrev_ed809dbd-e0dd-443c-9e82-182ec5302899",
+      "membership_ref": "msh_3ae2b5b5-16f7-40a6-b122-1a27da897db9",
+      "member_ref": "mem_36083135-7a2b-459e-8523-a74b43ba5fa2",
+      "plan_ref": "plan-basic",
+      "event_kind": "created",
+      "effective_time": "2026-10-15T00:55:48.093Z",
+      "termination_time": null,
+      "successor_ref": null,
+      "predecessor_ref": null,
+      "occurred_at": "2026-10-15T00:55:48.093Z"
+    }
+  ]
+}

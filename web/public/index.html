@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Member 能力 V0104 · 网页演示层</title>
+    <style>
+      :root {
+        --bg: #0e1116;
+        --panel: #161b22;
+        --panel-2: #1c2230;
+        --line: #2a3242;
+        --text: #e6edf3;
+        --muted: #8b98ab;
+        --accent: #4c8dff;
+        --ok: #35c46b;
+        --err: #ff6b6b;
+        --warn: #e3b341;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        font: 13px/1.55 "Segoe UI", "Microsoft YaHei", system-ui, sans-serif;
+      }
+      header {
+        padding: 16px 20px;
+        border-bottom: 1px solid var(--line);
+        background: linear-gradient(180deg, #141b26, #0e1116);
+      }
+      h1 { margin: 0 0 6px; font-size: 16px; letter-spacing: .3px; }
+      .sub { color: var(--muted); font-size: 12px; }
+      code.ref { color: var(--accent); font-size: 12px; }
+      .layout {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 340px;
+        gap: 14px;
+        padding: 14px 20px 40px;
+        align-items: start;
+      }
+      @media (max-width: 980px) { .layout { grid-template-columns: 1fr; } }
+      .ops { display: grid; gap: 12px; }
+      .card {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 12px 14px;
+      }
+      .card.internal { border-color: #4b3f21; }
+      .card-head { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+      .idx {
+        font-family: ui-monospace, Consolas, monospace;
+        color: var(--accent);
+        font-weight: 700;
+      }
+      .title { font-weight: 600; }
+      .opid {
+        font-family: ui-monospace, Consolas, monospace;
+        color: var(--muted);
+        font-size: 12px;
+      }
+      .tag {
+        font-size: 11px;
+        padding: 1px 6px;
+        border-radius: 999px;
+        border: 1px solid var(--line);
+        color: var(--muted);
+      }
+      .tag.internal { border-color: #6b5520; color: var(--warn); }
+      .fields {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+        gap: 8px;
+        margin: 10px 0 8px;
+      }
+      label { display: block; font-size: 11px; color: var(--muted); margin-bottom: 3px; }
+      input[type="text"], select {
+        width: 100%;
+        padding: 5px 7px;
+        border-radius: 5px;
+        border: 1px solid var(--line);
+        background: #0f141c;
+        color: var(--text);
+        font: inherit;
+      }
+      input:focus, select:focus { outline: none; border-color: var(--accent); }
+      input[readonly] { color: var(--muted); }
+      .row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+      button {
+        padding: 5px 12px;
+        border-radius: 5px;
+        border: 1px solid #2f4d84;
+        background: #1d2c47;
+        color: var(--text);
+        cursor: pointer;
+        font: inherit;
+      }
+      button:hover { background: #24395c; }
+      .hint { color: var(--muted); font-size: 11px; }
+      .result { margin-top: 8px; display: none; }
+      .result.show { display: block; }
+      .badge {
+        font-size: 11px;
+        font-weight: 700;
+        padding: 1px 7px;
+        border-radius: 999px;
+      }
+      .badge.ok { background: rgba(53,196,107,.14); color: var(--ok); border: 1px solid rgba(53,196,107,.4); }
+      .badge.err { background: rgba(255,107,107,.12); color: var(--err); border: 1px solid rgba(255,107,107,.4); }
+      .envelope { color: var(--muted); font-size: 11px; margin: 5px 0; word-break: break-all; }
+      pre {
+        margin: 4px 0 0;
+        padding: 9px 10px;
+        background: #0b0f15;
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        overflow: auto;
+        max-height: 260px;
+        font-size: 12px;
+      }
+      aside { display: grid; gap: 12px; position: sticky; top: 14px; }
+      .panel {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 12px 14px;
+      }
+      .panel h2 { margin: 0 0 8px; font-size: 13px; }
+      .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+      .chip {
+        font-family: ui-monospace, Consolas, monospace;
+        font-size: 11px;
+        padding: 2px 7px;
+        border-radius: 999px;
+        border: 1px solid #2f4d84;
+        background: #1a2436;
+        color: #b9ccf0;
+        cursor: pointer;
+      }
+      .chip:hover { background: #24395c; }
+      .empty { color: var(--muted); font-size: 12px; }
+      .inspect { font-family: ui-monospace, Consolas, monospace; font-size: 11px; color: #c6d2e3; }
+      .inspect h3 { margin: 9px 0 3px; font-size: 11px; color: var(--muted); font-weight: 600; }
+      .inspect ul { margin: 0; padding-left: 16px; }
+      .msg { font-size: 12px; color: var(--warn); margin-top: 4px; }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Member 能力 · 网页演示层（9 个 Operation）</h1>
+      <div class="sub">
+        语义权威：<code class="ref">Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104</code>
+        &nbsp;·&nbsp; 后台逻辑复用 <code class="ref">src/p1/member</code>
+        &nbsp;·&nbsp; 默认授权 DENY，本页注入的是<b>本地演示授权器</b>（非生产授权）
+      </div>
+    </header>
+
+    <div class="layout">
+      <main class="ops" id="ops"></main>
+      <aside>
+        <div class="panel">
+          <h2>上下文（成功调用后自动登记）</h2>
+          <div class="chips" id="chips"><span class="empty">暂无稳定标识；先执行 01 创建会员。</span></div>
+          <div class="hint" style="margin-top:8px">
+            点击 chip 会填充到<b>最近聚焦的那张卡片</b>中的同名字段（member_ref / membership_ref）。
+          </div>
+        </div>
+        <div class="panel">
+          <h2>运行状态（只读巡检）</h2>
+          <div class="inspect" id="inspect"><span class="empty">加载中…</span></div>
+        </div>
+      </aside>
+    </div>
+
+    <script type="module" src="/app.js"></script>
+  </body>
+</html>

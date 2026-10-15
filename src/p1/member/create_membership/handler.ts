@@ -21,7 +21,7 @@ import {
   trustedEntryAuthorizer,
   validateOperationRequest,
   validatePlanResolution,
-} from '../../export/member/contracts';
+} from '../../export/member/contracts.ts';
 import type {
   CallContext,
   CallOutcome,

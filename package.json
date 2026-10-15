@@ -9,6 +9,7 @@
   "scripts": {
     "typecheck": "tsc --noEmit",
     "build": "npm run typecheck",
+    "web": "node --experimental-transform-types web/server.ts",
     "test": "node --experimental-transform-types --test",
     "smoke": "npm run smoke:p0",
     "test:p0": "node --experimental-transform-types --test tests/p0/p0_runtime_core.test.ts",
@@ -29,6 +30,7 @@
   },
   "devDependencies": {
     "@types/node": "22.17.0",
-    "typescript": "5.8.3"
+    "typescript": "5.8.3",
+    "vitest": "^5.0.4"
   }
 }

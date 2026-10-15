@@ -6,8 +6,8 @@
  * Full state/rule/permission/relation/schema facts live only in the
  * source-bound spec/p1/member projections. Do not hand-copy short aliases.
  */
-import { ALL_OPERATION_IDS, INTERNAL_OPERATION_IDS, PUBLIC_OPERATION_IDS, STABLE_ERROR_CODE_SETS } from './contracts';
-import type { OperationId } from './types';
+import { ALL_OPERATION_IDS, INTERNAL_OPERATION_IDS, PUBLIC_OPERATION_IDS, STABLE_ERROR_CODE_SETS } from './contracts.ts';
+import type { OperationId } from './types.ts';
 
 const MEMBER_CONTRACT_REF = 'Q.MEMBERSHIP.CONTRACT.CAPABILITY.MEMBER@V0104' as const;
 const MEMBER_CAPABILITY_REF = 'Q.MEMBERSHIP.CAPABILITY.MEMBER@V0104' as const;

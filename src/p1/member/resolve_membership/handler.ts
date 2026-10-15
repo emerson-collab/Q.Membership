@@ -14,8 +14,8 @@ import {
   succeed,
   trustedEntryAuthorizer,
   validateOperationRequest,
-} from '../../export/member/contracts';
-import { toMembershipView } from '../lookup_membership/handler';
+} from '../../export/member/contracts.ts';
+import { toMembershipView } from '../lookup_membership/handler.ts';
 import type {
   CallContext,
   CallOutcome,

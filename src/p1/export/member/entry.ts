@@ -6,11 +6,11 @@
  * Deliberately do not expose the local direct-to-handler client, in-memory
  * storage, or static provider through the public Capability barrel.
  */
-export * from './types';
-export * from './contracts';
+export * from './types.ts';
+export * from './contracts.ts';
 export {
   MEMBER_CAPABILITY_METADATA,
   MEMBER_OPERATION_INTERFACE_IDS,
   getMemberGeneralExportCandidate,
-} from './metadata';
-export type { MemberCapabilityMetadata } from './metadata';
+} from './metadata.ts';
+export type { MemberCapabilityMetadata } from './metadata.ts';

@@ -10,22 +10,22 @@
  * staticMembershipPlanProvider：基于静态方案表的 Provider 适配器。
  */
 
-import { createCreateMemberHandler } from '../../member/create_member/handler';
-import { createResolveMemberHandler } from '../../member/resolve_member/handler';
-import { createUpdateMemberProfileHandler } from '../../member/update_member_profile/handler';
-import { createUpdateMemberStatusHandler } from '../../member/update_member_status/handler';
-import { createCreateMembershipHandler } from '../../member/create_membership/handler';
-import { createUpdateMembershipPlanHandler } from '../../member/update_membership_plan/handler';
-import { createLookupMembershipHandler } from '../../member/lookup_membership/handler';
-import { createEvaluateMembershipEligibilityHandler } from '../../member/evaluate_membership_eligibility/handler';
-import { createResolveMembershipHandler } from '../../member/resolve_membership/handler';
+import { createCreateMemberHandler } from '../../member/create_member/handler.ts';
+import { createResolveMemberHandler } from '../../member/resolve_member/handler.ts';
+import { createUpdateMemberProfileHandler } from '../../member/update_member_profile/handler.ts';
+import { createUpdateMemberStatusHandler } from '../../member/update_member_status/handler.ts';
+import { createCreateMembershipHandler } from '../../member/create_membership/handler.ts';
+import { createUpdateMembershipPlanHandler } from '../../member/update_membership_plan/handler.ts';
+import { createLookupMembershipHandler } from '../../member/lookup_membership/handler.ts';
+import { createEvaluateMembershipEligibilityHandler } from '../../member/evaluate_membership_eligibility/handler.ts';
+import { createResolveMembershipHandler } from '../../member/resolve_membership/handler.ts';
 import {
   defaultClock,
   generateEventRef,
   normalizeCallContext,
   toEpoch,
   trustedEntryAuthorizer,
-} from './contracts';
+} from './contracts.ts';
 import type {
   CallContext,
   CallOutcome,
@@ -57,7 +57,7 @@ import type {
   UpdateMemberStatusResponse,
   UpdateMembershipPlanRequest,
   UpdateMembershipPlanResponse,
-} from './types';
+} from './types.ts';
 
 // ---------------------------------------------------------------------------
 // 客户端
