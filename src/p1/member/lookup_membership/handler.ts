@@ -28,7 +28,7 @@ import type {
   Membership,
   OperationHandler,
   StoredMembership,
-} from '../../export/member/types';
+} from '../../export/member/types.ts';
 
 export function toMembershipView(stored: StoredMembership): Membership {
   return {

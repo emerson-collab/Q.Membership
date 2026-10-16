@@ -1,0 +1,12 @@
+{
+  "extends": "./tsconfig.json",
+  "include": [
+    "src/p2/provider/governed_data_exposure/expose_static_data/handler.ts",
+    "src/p2/provider/governed_data_exposure/expose_dynamic_data/handler.ts",
+    "src/p2/provider/governed_data_exposure/expose_runtime_data/handler.ts",
+    "runtime/governed_data_provider_realization.ts"
+  ],
+  "exclude": [
+    "tests/**/*"
+  ]
+}

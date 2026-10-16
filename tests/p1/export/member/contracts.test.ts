@@ -3,11 +3,11 @@ import {
   parseDateTime,
   validateOperationRequest,
   validatePlanResolution,
-} from '../../../../src/p1/export/member/contracts';
+} from '../../../../src/p1/export/member/contracts.ts';
 import type {
   MembershipPlanResolutionBinding,
   OperationId,
-} from '../../../../src/p1/export/member/types';
+} from '../../../../src/p1/export/member/types.ts';
 
 // ---------------------------------------------------------------------------
 // B-08：parseDateTime 真实日历严格校验

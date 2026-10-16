@@ -1,0 +1,9 @@
+{
+  "extends": "./tsconfig.json",
+  "include": [
+    "src/p1/member/create_member/handler.ts"
+  ],
+  "exclude": [
+    "tests/**/*"
+  ]
+}

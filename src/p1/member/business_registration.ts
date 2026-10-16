@@ -39,6 +39,7 @@ import type { P1CapabilityGeneralSlotProjection } from '../business_runtime/stag
 import {
   register_business_operation,
   register_internal_business_operation,
+  unregister_business_operation,
 } from '../business_runtime/business_operation_registry.ts';
 import type {
   BusinessOperationAuthorization,
@@ -348,6 +349,18 @@ export function registerMemberBusinessOperations(
   }
   registrationCompleted = true;
   return MEMBER_BUSINESS_ROUTES;
+}
+
+/**
+ * 反注册全部 9 个会员 Operation，重置进程内幂等标记。
+ * 主要供测试生命周期使用：每个测试用 fresh deps 重新注册，
+ * 避免仓储状态在测试间泄漏。
+ */
+export function unregisterMemberBusinessOperations(): void {
+  for (const operationId of Object.keys(MEMBER_BUSINESS_ROUTES) as OperationId[]) {
+    unregister_business_operation(MEMBER_BUSINESS_ROUTES[operationId].operation_ref);
+  }
+  registrationCompleted = false;
 }
 
 // ---------------------------------------------------------------------------

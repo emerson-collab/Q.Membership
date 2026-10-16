@@ -2,7 +2,7 @@
  * TEST-ONLY simulated actor/permission authority for legacy business behavior.
  * This fixture is not governed V0117 authorization evidence or production code.
  */
-import type { OperationAuthorizer } from '../../../src/p1/export/member/types';
+import type { OperationAuthorizer } from '../../../src/p1/export/member/types.ts';
 
 export const testAuthorizer: OperationAuthorizer = {
   authorize({ context, operation_id }) {

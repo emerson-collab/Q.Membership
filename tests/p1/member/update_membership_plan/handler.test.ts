@@ -1,17 +1,18 @@
-import { testAuthorizer } from '../test_authorizer';
-import { describe, expect, it } from 'vitest';
-import { createUpdateMembershipPlanHandler } from '../../../../src/p1/member/update_membership_plan/handler';
-import { createCreateMemberHandler } from '../../../../src/p1/member/create_member/handler';
-import { createCreateMembershipHandler } from '../../../../src/p1/member/create_membership/handler';
+﻿import { testAuthorizer } from '../test_authorizer.ts';
+import { describe, expect, it, afterEach } from 'vitest';
 import {
-  InMemoryMemberRepository } from '../../../../src/p1/export/member/client';
-import { staticMembershipPlanProvider } from '../../../../src/p1/export/member/client';
+  invokeMemberOperation,
+  registerMemberForTest,
+} from '../registry_test_helper.ts';
+import {
+  InMemoryMemberRepository } from '../../../../src/p1/export/member/client.ts';
+import { staticMembershipPlanProvider } from '../../../../src/p1/export/member/client.ts';
 import type {
   CallContext,
   MemberRuntimeDeps,
   MembershipPlanProvider,
   MembershipPlanResolutionBinding,
-} from '../../../../src/p1/export/member/entry';
+} from '../../../../src/p1/export/member/entry.ts';
 
 const T0 = '2026-01-01T00:00:00.000Z';
 const T1 = '2026-02-01T00:00:00.000Z';
@@ -38,7 +39,7 @@ const PLAN_INACTIVE: MembershipPlanResolutionBinding = {
   state: 'inactive',
 };
 
-function deps() {
+function deps(): MemberRuntimeDeps {
   return {
     repository: new InMemoryMemberRepository(),
     planProvider: staticMembershipPlanProvider([PLAN_A, PLAN_B, PLAN_INACTIVE]),
@@ -62,48 +63,51 @@ function ctx(overrides: CtxOverrides = {}): CallContext {
   } as CallContext;
 }
 
-async function seedMember(d: MemberRuntimeDeps): Promise<string> {
-  const outcome = await createCreateMemberHandler(d)(
-    {
-      member_identity: { identity_namespace: 'ns', identity_value: 'v-1' },
-      registration_profile: { display_name: '张三' },
-    },
-    { ...ctx(), commit_time: T0 },
-  );
+async function seedMember(): Promise<string> {
+  const outcome = await invokeMemberOperation('create_member', {
+    member_identity: { identity_namespace: 'ns', identity_value: 'v-1' },
+    registration_profile: { display_name: '张三' },
+  }, { ...ctx(), commit_time: T0 });
   if (outcome.outcome_type !== 'SUCCESS') throw new Error('seed failed');
   return outcome.runtime_result.member_ref;
 }
 
 async function seedRelation(
-  d: MemberRuntimeDeps,
   memberRef: string,
   planRef = 'plan-a',
   time = T1,
 ): Promise<string> {
-  const outcome = await createCreateMembershipHandler(d)(
-    { member_ref: memberRef, plan_ref: planRef, requested_effective_time: time },
-    ctx({ commit_time: time }),
-  );
+  const outcome = await invokeMemberOperation('create_membership', {
+    member_ref: memberRef,
+    plan_ref: planRef,
+    requested_effective_time: time,
+  }, ctx({ commit_time: time }));
   if (outcome.outcome_type !== 'SUCCESS') throw new Error('seed relation failed');
   return outcome.runtime_result.membership_ref;
 }
 
+let activeUnregister: (() => void) | undefined;
+afterEach(() => {
+  activeUnregister?.();
+  activeUnregister = undefined;
+});
+function bindDeps<T extends MemberRuntimeDeps>(d: T): T {
+  activeUnregister?.();
+  activeUnregister = registerMemberForTest(d).unregister;
+  return d;
+}
+
 describe('update_membership_plan handler', () => {
-  const handlerFactory = createUpdateMembershipPlanHandler;
-
   it('原子替换：同一时点旧关系 replaced、新关系 active，区间无缝衔接', async () => {
-    const d = deps();
-    const memberRef = await seedMember(d);
-    const oldRef = await seedRelation(d, memberRef, 'plan-a', T1);
+    const d = bindDeps(deps());
+    const memberRef = await seedMember();
+    const oldRef = await seedRelation(memberRef, 'plan-a', T1);
 
-    const outcome = await handlerFactory(d)(
-      {
-        member_ref: memberRef,
-        current_membership_ref: oldRef,
-        target_plan_ref: 'plan-b',
-      },
-      ctx({ commit_time: T2 }),
-    );
+    const outcome = await invokeMemberOperation('update_membership_plan', {
+      member_ref: memberRef,
+      current_membership_ref: oldRef,
+      target_plan_ref: 'plan-b',
+    }, ctx({ commit_time: T2 }));
     expect(outcome.outcome_type).toBe('SUCCESS');
     if (outcome.outcome_type !== 'SUCCESS') throw new Error('expected success');
     expect(outcome.runtime_result).toMatchObject({
@@ -129,16 +133,13 @@ describe('update_membership_plan handler', () => {
   });
 
   it('旧关系不存在 -> MEMBERSHIP_NOT_FOUND', async () => {
-    const d = deps();
-    const memberRef = await seedMember(d);
-    const outcome = await handlerFactory(d)(
-      {
-        member_ref: memberRef,
-        current_membership_ref: 'msh_none',
-        target_plan_ref: 'plan-b',
-      },
-      ctx(),
-    );
+    bindDeps(deps());
+    const memberRef = await seedMember();
+    const outcome = await invokeMemberOperation('update_membership_plan', {
+      member_ref: memberRef,
+      current_membership_ref: 'msh_none',
+      target_plan_ref: 'plan-b',
+    }, ctx());
     expect(outcome).toMatchObject({
       outcome_type: 'STABLE_ERROR',
       stable_error: { code: 'MEMBERSHIP_NOT_FOUND' },
@@ -146,26 +147,20 @@ describe('update_membership_plan handler', () => {
   });
 
   it('旧关系不属于该会员 -> MEMBERSHIP_NOT_FOUND', async () => {
-    const d = deps();
-    const memberA = await seedMember(d);
-    const otherSeed = await createCreateMemberHandler(d)(
-      {
-        member_identity: { identity_namespace: 'ns', identity_value: 'v-2' },
-        registration_profile: { display_name: '李四' },
-      },
-      { ...ctx(), commit_time: T0, request_id: 'req-2' },
-    );
+    bindDeps(deps());
+    const memberA = await seedMember();
+    const otherSeed = await invokeMemberOperation('create_member', {
+      member_identity: { identity_namespace: 'ns', identity_value: 'v-2' },
+      registration_profile: { display_name: '李四' },
+    }, { ...ctx(), commit_time: T0, request_id: 'req-2' });
     if (otherSeed.outcome_type !== 'SUCCESS') throw new Error('seed failed');
-    const otherRelation = await seedRelation(d, otherSeed.runtime_result.member_ref);
+    const otherRelation = await seedRelation(otherSeed.runtime_result.member_ref);
 
-    const outcome = await handlerFactory(d)(
-      {
-        member_ref: memberA,
-        current_membership_ref: otherRelation,
-        target_plan_ref: 'plan-b',
-      },
-      ctx(),
-    );
+    const outcome = await invokeMemberOperation('update_membership_plan', {
+      member_ref: memberA,
+      current_membership_ref: otherRelation,
+      target_plan_ref: 'plan-b',
+    }, ctx());
     expect(outcome).toMatchObject({
       outcome_type: 'STABLE_ERROR',
       stable_error: { code: 'MEMBERSHIP_NOT_FOUND' },
@@ -173,26 +168,20 @@ describe('update_membership_plan handler', () => {
   });
 
   it('已 replaced 的旧关系重复提交 -> INVALID_STATE_TRANSITION，不产生第二个后继', async () => {
-    const d = deps();
-    const memberRef = await seedMember(d);
-    const oldRef = await seedRelation(d, memberRef, 'plan-a', T1);
-    const first = await handlerFactory(d)(
-      {
-        member_ref: memberRef,
-        current_membership_ref: oldRef,
-        target_plan_ref: 'plan-b',
-      },
-      ctx({ commit_time: T2 }),
-    );
+    const d = bindDeps(deps());
+    const memberRef = await seedMember();
+    const oldRef = await seedRelation(memberRef, 'plan-a', T1);
+    const first = await invokeMemberOperation('update_membership_plan', {
+      member_ref: memberRef,
+      current_membership_ref: oldRef,
+      target_plan_ref: 'plan-b',
+    }, ctx({ commit_time: T2 }));
     expect(first.outcome_type).toBe('SUCCESS');
-    const retry = await handlerFactory(d)(
-      {
-        member_ref: memberRef,
-        current_membership_ref: oldRef,
-        target_plan_ref: 'plan-b',
-      },
-      ctx({ commit_time: T3 }),
-    );
+    const retry = await invokeMemberOperation('update_membership_plan', {
+      member_ref: memberRef,
+      current_membership_ref: oldRef,
+      target_plan_ref: 'plan-b',
+    }, ctx({ commit_time: T3 }));
     expect(retry).toMatchObject({
       outcome_type: 'STABLE_ERROR',
       stable_error: { code: 'INVALID_STATE_TRANSITION' },
@@ -202,17 +191,14 @@ describe('update_membership_plan handler', () => {
   });
 
   it('新旧方案相同 -> INVALID_STATE_TRANSITION', async () => {
-    const d = deps();
-    const memberRef = await seedMember(d);
-    const oldRef = await seedRelation(d, memberRef, 'plan-a', T1);
-    const outcome = await handlerFactory(d)(
-      {
-        member_ref: memberRef,
-        current_membership_ref: oldRef,
-        target_plan_ref: 'plan-a',
-      },
-      ctx(),
-    );
+    bindDeps(deps());
+    const memberRef = await seedMember();
+    const oldRef = await seedRelation(memberRef, 'plan-a', T1);
+    const outcome = await invokeMemberOperation('update_membership_plan', {
+      member_ref: memberRef,
+      current_membership_ref: oldRef,
+      target_plan_ref: 'plan-a',
+    }, ctx());
     expect(outcome).toMatchObject({
       outcome_type: 'STABLE_ERROR',
       stable_error: { code: 'INVALID_STATE_TRANSITION' },
@@ -220,29 +206,23 @@ describe('update_membership_plan handler', () => {
   });
 
   it('目标方案不可用 -> MEMBERSHIP_PLAN_NOT_FOUND；依赖故障 -> DEPENDENCY_INFORMATION_INCOMPLETE', async () => {
-    const d = deps();
-    const memberRef = await seedMember(d);
-    const oldRef = await seedRelation(d, memberRef, 'plan-a', T1);
-    const inactive = await handlerFactory(d)(
-      {
-        member_ref: memberRef,
-        current_membership_ref: oldRef,
-        target_plan_ref: 'plan-inactive',
-      },
-      ctx(),
-    );
+    bindDeps(deps());
+    const memberRef = await seedMember();
+    const oldRef = await seedRelation(memberRef, 'plan-a', T1);
+    const inactive = await invokeMemberOperation('update_membership_plan', {
+      member_ref: memberRef,
+      current_membership_ref: oldRef,
+      target_plan_ref: 'plan-inactive',
+    }, ctx());
     expect(inactive).toMatchObject({
       outcome_type: 'STABLE_ERROR',
       stable_error: { code: 'MEMBERSHIP_PLAN_NOT_FOUND' },
     });
-    const unknown = await handlerFactory(d)(
-      {
-        member_ref: memberRef,
-        current_membership_ref: oldRef,
-        target_plan_ref: 'plan-x',
-      },
-      ctx(),
-    );
+    const unknown = await invokeMemberOperation('update_membership_plan', {
+      member_ref: memberRef,
+      current_membership_ref: oldRef,
+      target_plan_ref: 'plan-x',
+    }, ctx());
     expect(unknown).toMatchObject({
       outcome_type: 'STABLE_ERROR',
       stable_error: { code: 'MEMBERSHIP_PLAN_NOT_FOUND' },
@@ -250,31 +230,25 @@ describe('update_membership_plan handler', () => {
   });
 
   it('生效时点早于旧关系开始或晚于提交 -> INVALID_BUSINESS_TIME', async () => {
-    const d = deps();
-    const memberRef = await seedMember(d);
-    const oldRef = await seedRelation(d, memberRef, 'plan-a', T1);
-    const beforeStart = await handlerFactory(d)(
-      {
-        member_ref: memberRef,
-        current_membership_ref: oldRef,
-        target_plan_ref: 'plan-b',
-        requested_effective_time: '2026-01-15T00:00:00.000Z',
-      },
-      ctx({ commit_time: T2 }),
-    );
+    bindDeps(deps());
+    const memberRef = await seedMember();
+    const oldRef = await seedRelation(memberRef, 'plan-a', T1);
+    const beforeStart = await invokeMemberOperation('update_membership_plan', {
+      member_ref: memberRef,
+      current_membership_ref: oldRef,
+      target_plan_ref: 'plan-b',
+      requested_effective_time: '2026-01-15T00:00:00.000Z',
+    }, ctx({ commit_time: T2 }));
     expect(beforeStart).toMatchObject({
       outcome_type: 'STABLE_ERROR',
       stable_error: { code: 'INVALID_BUSINESS_TIME' },
     });
-    const future = await handlerFactory(d)(
-      {
-        member_ref: memberRef,
-        current_membership_ref: oldRef,
-        target_plan_ref: 'plan-b',
-        requested_effective_time: T3,
-      },
-      ctx({ commit_time: T2 }),
-    );
+    const future = await invokeMemberOperation('update_membership_plan', {
+      member_ref: memberRef,
+      current_membership_ref: oldRef,
+      target_plan_ref: 'plan-b',
+      requested_effective_time: T3,
+    }, ctx({ commit_time: T2 }));
     expect(future).toMatchObject({
       outcome_type: 'STABLE_ERROR',
       stable_error: { code: 'INVALID_BUSINESS_TIME' },
@@ -282,36 +256,30 @@ describe('update_membership_plan handler', () => {
   });
 
   it('失败不留半成品：旧关系保持 active，新关系不存在', async () => {
-    const d = deps();
-    const memberRef = await seedMember(d);
-    const oldRef = await seedRelation(d, memberRef, 'plan-a', T1);
-    await handlerFactory(d)(
-      {
-        member_ref: memberRef,
-        current_membership_ref: oldRef,
-        target_plan_ref: 'plan-inactive',
-      },
-      ctx(),
-    );
+    const d = bindDeps(deps());
+    const memberRef = await seedMember();
+    const oldRef = await seedRelation(memberRef, 'plan-a', T1);
+    await invokeMemberOperation('update_membership_plan', {
+      member_ref: memberRef,
+      current_membership_ref: oldRef,
+      target_plan_ref: 'plan-inactive',
+    }, ctx());
     const previous = await d.repository.getMembershipByRef(oldRef);
     expect(previous?.membership_status).toBe('active');
     expect((await d.repository.listMembershipsByMember(memberRef))).toHaveLength(1);
   });
 
   it('B-04：新生效时点等于旧关系开始 -> INVALID_BUSINESS_TIME，旧关系保持 active 且无后继', async () => {
-    const d = deps();
-    const memberRef = await seedMember(d);
-    const oldRef = await seedRelation(d, memberRef, 'plan-a', T1);
+    const d = bindDeps(deps());
+    const memberRef = await seedMember();
+    const oldRef = await seedRelation(memberRef, 'plan-a', T1);
 
-    const outcome = await handlerFactory(d)(
-      {
-        member_ref: memberRef,
-        current_membership_ref: oldRef,
-        target_plan_ref: 'plan-b',
-        requested_effective_time: T1,
-      },
-      ctx({ commit_time: T2 }),
-    );
+    const outcome = await invokeMemberOperation('update_membership_plan', {
+      member_ref: memberRef,
+      current_membership_ref: oldRef,
+      target_plan_ref: 'plan-b',
+      requested_effective_time: T1,
+    }, ctx({ commit_time: T2 }));
     expect(outcome).toMatchObject({
       outcome_type: 'STABLE_ERROR',
       stable_error: { code: 'INVALID_BUSINESS_TIME' },
@@ -348,23 +316,20 @@ describe('update_membership_plan handler', () => {
         };
       },
     };
-    const d = {
+    const d = bindDeps({
       repository: new InMemoryMemberRepository(),
       planProvider: mismatchProvider,
       authorizer: testAuthorizer,
       clock: () => T2,
-    };
-    const memberRef = await seedMember(d);
-    const oldRef = await seedRelation(d, memberRef, 'plan-a', T1);
+    });
+    const memberRef = await seedMember();
+    const oldRef = await seedRelation(memberRef, 'plan-a', T1);
 
-    const outcome = await handlerFactory(d)(
-      {
-        member_ref: memberRef,
-        current_membership_ref: oldRef,
-        target_plan_ref: 'plan-b',
-      },
-      ctx(),
-    );
+    const outcome = await invokeMemberOperation('update_membership_plan', {
+      member_ref: memberRef,
+      current_membership_ref: oldRef,
+      target_plan_ref: 'plan-b',
+    }, ctx());
     expect(outcome).toMatchObject({
       outcome_type: 'STABLE_ERROR',
       stable_error: { code: 'MEMBERSHIP_PLAN_NOT_FOUND' },
@@ -394,23 +359,20 @@ describe('update_membership_plan handler', () => {
         };
       },
     };
-    const d = {
+    const d = bindDeps({
       repository: new InMemoryMemberRepository(),
       planProvider: malformedProvider,
       authorizer: testAuthorizer,
       clock: () => T2,
-    };
-    const memberRef = await seedMember(d);
-    const oldRef = await seedRelation(d, memberRef, 'plan-a', T1);
+    });
+    const memberRef = await seedMember();
+    const oldRef = await seedRelation(memberRef, 'plan-a', T1);
 
-    const outcome = await handlerFactory(d)(
-      {
-        member_ref: memberRef,
-        current_membership_ref: oldRef,
-        target_plan_ref: 'plan-b',
-      },
-      ctx(),
-    );
+    const outcome = await invokeMemberOperation('update_membership_plan', {
+      member_ref: memberRef,
+      current_membership_ref: oldRef,
+      target_plan_ref: 'plan-b',
+    }, ctx());
     expect(outcome).toMatchObject({
       outcome_type: 'STABLE_ERROR',
       stable_error: { code: 'DEPENDENCY_INFORMATION_INCOMPLETE' },
@@ -420,17 +382,14 @@ describe('update_membership_plan handler', () => {
   });
 
   it('未授权 -> OPERATION_NOT_AUTHORIZED', async () => {
-    const d = deps();
-    const memberRef = await seedMember(d);
-    const oldRef = await seedRelation(d, memberRef, 'plan-a', T1);
-    const outcome = await handlerFactory(d)(
-      {
-        member_ref: memberRef,
-        current_membership_ref: oldRef,
-        target_plan_ref: 'plan-b',
-      },
-      ctx({ authorization: undefined }),
-    );
+    bindDeps(deps());
+    const memberRef = await seedMember();
+    const oldRef = await seedRelation(memberRef, 'plan-a', T1);
+    const outcome = await invokeMemberOperation('update_membership_plan', {
+      member_ref: memberRef,
+      current_membership_ref: oldRef,
+      target_plan_ref: 'plan-b',
+    }, ctx({ authorization: undefined }));
     expect(outcome).toMatchObject({
       outcome_type: 'STABLE_ERROR',
       stable_error: { code: 'OPERATION_NOT_AUTHORIZED' },

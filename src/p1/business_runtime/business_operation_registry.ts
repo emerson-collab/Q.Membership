@@ -698,6 +698,21 @@ export function register_internal_business_operation(
   }), handler, authorization, extension, undefined, undefined, undefined, hook_binding_set);
 }
 
+/**
+ * 反注册一个已注册的业务 Operation（按 operation_ref 精确匹配）。
+ * 仅供测试生命周期与受控热卸载使用；生产进程通常只注册不卸载。
+ * 返回是否实际删除了条目。
+ */
+export function unregister_business_operation(operation_ref: string): boolean {
+  const exactRef = nonEmptyString(operation_ref, "operation_ref");
+  for (const [key, registered] of operations) {
+    if (registered.route.operation_ref === exactRef) {
+      return operations.delete(key);
+    }
+  }
+  return false;
+}
+
 function resolveRegisteredOperationByExactRef(operationRef: string): RegisteredBusinessOperation {
   const registered = operations.get(operationRef);
   if (

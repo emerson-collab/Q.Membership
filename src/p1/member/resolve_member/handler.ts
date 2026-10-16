@@ -23,7 +23,7 @@ import type {
   ResolveMemberRequest,
   ResolveMemberResponse,
   StoredMember,
-} from '../../export/member/types';
+} from '../../export/member/types.ts';
 
 /** 持久化会员 -> 对外会员视图（剥离联系方式） */
 export function toMemberView(stored: StoredMember): Member {

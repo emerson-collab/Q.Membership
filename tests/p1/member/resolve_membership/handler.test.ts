@@ -1,17 +1,17 @@
-import { testAuthorizer } from '../test_authorizer';
-import { describe, expect, it } from 'vitest';
-import { createResolveMembershipHandler } from '../../../../src/p1/member/resolve_membership/handler';
-import { createCreateMemberHandler } from '../../../../src/p1/member/create_member/handler';
-import { createCreateMembershipHandler } from '../../../../src/p1/member/create_membership/handler';
-import { createUpdateMembershipPlanHandler } from '../../../../src/p1/member/update_membership_plan/handler';
+import { testAuthorizer } from '../test_authorizer.ts';
+import { describe, expect, it, afterEach } from 'vitest';
 import {
-  InMemoryMemberRepository } from '../../../../src/p1/export/member/client';
-import { staticMembershipPlanProvider } from '../../../../src/p1/export/member/client';
+  invokeMemberOperation,
+  registerMemberForTest,
+} from '../registry_test_helper.ts';
+import {
+  InMemoryMemberRepository } from '../../../../src/p1/export/member/client.ts';
+import { staticMembershipPlanProvider } from '../../../../src/p1/export/member/client.ts';
 import type {
   CallContext,
   MemberRuntimeDeps,
   MembershipPlanResolutionBinding,
-} from '../../../../src/p1/export/member/entry';
+} from '../../../../src/p1/export/member/entry.ts';
 
 const T0 = '2026-01-01T00:00:00.000Z';
 const T1 = '2026-02-01T00:00:00.000Z';
@@ -32,7 +32,7 @@ const PLAN_B: MembershipPlanResolutionBinding = {
   state: 'active',
 };
 
-function deps() {
+function deps(): MemberRuntimeDeps {
   return {
     repository: new InMemoryMemberRepository(),
     planProvider: staticMembershipPlanProvider([PLAN_A, PLAN_B]),
@@ -57,41 +57,47 @@ function ctx(overrides: CtxOverrides = {}): CallContext {
   } as CallContext;
 }
 
-async function seedChain(d: MemberRuntimeDeps): Promise<{ memberRef: string; oldRef: string; newRef: string }> {
-  const member = await createCreateMemberHandler(d)(
-    {
-      member_identity: { identity_namespace: 'ns', identity_value: 'v-1' },
-      registration_profile: { display_name: '张三' },
-    },
-    { ...ctx(), commit_time: T0, authorization: { actor_ref: 'a', issued_by: 't', allowed_operations: ['*'] } },
-  );
+async function seedChain(): Promise<{ memberRef: string; oldRef: string; newRef: string }> {
+  const externalAuth = { actor_ref: 'a', issued_by: 't', allowed_operations: ['*'] as const };
+  const member = await invokeMemberOperation('create_member', {
+    member_identity: { identity_namespace: 'ns', identity_value: 'v-1' },
+    registration_profile: { display_name: '张三' },
+  }, { ...ctx(), commit_time: T0, authorization: externalAuth });
   if (member.outcome_type !== 'SUCCESS') throw new Error('seed member failed');
   const memberRef = member.runtime_result.member_ref;
-  const created = await createCreateMembershipHandler(d)(
-    { member_ref: memberRef, plan_ref: 'plan-a' },
-    { ...ctx(), commit_time: T1, authorization: { actor_ref: 'a', issued_by: 't', allowed_operations: ['*'] } },
-  );
+  const created = await invokeMemberOperation('create_membership', {
+    member_ref: memberRef,
+    plan_ref: 'plan-a',
+  }, { ...ctx(), commit_time: T1, authorization: externalAuth });
   if (created.outcome_type !== 'SUCCESS') throw new Error('seed relation failed');
   const oldRef = created.runtime_result.membership_ref;
-  const replaced = await createUpdateMembershipPlanHandler(d)(
-    {
-      member_ref: memberRef,
-      current_membership_ref: oldRef,
-      target_plan_ref: 'plan-b',
-    },
-    { ...ctx(), commit_time: T2, authorization: { actor_ref: 'a', issued_by: 't', allowed_operations: ['*'] } },
-  );
+  const replaced = await invokeMemberOperation('update_membership_plan', {
+    member_ref: memberRef,
+    current_membership_ref: oldRef,
+    target_plan_ref: 'plan-b',
+  }, { ...ctx(), commit_time: T2, authorization: externalAuth });
   if (replaced.outcome_type !== 'SUCCESS') throw new Error('replace failed');
   return { memberRef, oldRef, newRef: replaced.runtime_result.membership_ref };
 }
 
-describe('resolve_membership handler（内部）', () => {
-  const handlerFactory = createResolveMembershipHandler;
+let activeUnregister: (() => void) | undefined;
+afterEach(() => {
+  activeUnregister?.();
+  activeUnregister = undefined;
+});
+function bindDeps(d: MemberRuntimeDeps): MemberRuntimeDeps {
+  activeUnregister?.();
+  activeUnregister = registerMemberForTest(d).unregister;
+  return d;
+}
 
+describe('resolve_membership handler（内部）', () => {
   it('按精确 ID 返回 active 关系，不重新选择', async () => {
-    const d = deps();
-    const { newRef } = await seedChain(d);
-    const outcome = await handlerFactory(d)({ membership_ref: newRef }, ctx());
+    bindDeps(deps());
+    const { newRef } = await seedChain();
+    const outcome = await invokeMemberOperation('resolve_membership', {
+      membership_ref: newRef,
+    }, ctx());
     expect(outcome.outcome_type).toBe('SUCCESS');
     if (outcome.outcome_type !== 'SUCCESS') throw new Error('expected success');
     expect(outcome.runtime_result.membership.membership_ref).toBe(newRef);
@@ -99,9 +105,11 @@ describe('resolve_membership handler（内部）', () => {
   });
 
   it('已 replaced 的历史关系仍可按精确 ID 读取', async () => {
-    const d = deps();
-    const { oldRef } = await seedChain(d);
-    const outcome = await handlerFactory(d)({ membership_ref: oldRef }, ctx());
+    bindDeps(deps());
+    const { oldRef } = await seedChain();
+    const outcome = await invokeMemberOperation('resolve_membership', {
+      membership_ref: oldRef,
+    }, ctx());
     expect(outcome).toMatchObject({
       outcome_type: 'SUCCESS',
       runtime_result: {
@@ -115,12 +123,11 @@ describe('resolve_membership handler（内部）', () => {
   });
 
   it('仅有操作授权、缺少内部用途证据 -> OPERATION_NOT_AUTHORIZED', async () => {
-    const d = deps();
-    const { newRef } = await seedChain(d);
-    const outcome = await handlerFactory(d)(
-      { membership_ref: newRef },
-      ctx({ internal_invocation: undefined }),
-    );
+    bindDeps(deps());
+    const { newRef } = await seedChain();
+    const outcome = await invokeMemberOperation('resolve_membership', {
+      membership_ref: newRef,
+    }, ctx({ internal_invocation: undefined }));
     expect(outcome).toMatchObject({
       outcome_type: 'STABLE_ERROR',
       stable_error: { code: 'OPERATION_NOT_AUTHORIZED' },
@@ -128,12 +135,11 @@ describe('resolve_membership handler（内部）', () => {
   });
 
   it('内部用途证据明确不允许 -> OPERATION_NOT_AUTHORIZED', async () => {
-    const d = deps();
-    const { newRef } = await seedChain(d);
-    const outcome = await handlerFactory(d)(
-      { membership_ref: newRef },
-      ctx({ internal_invocation: { purpose: 'wrong-purpose', permitted: false } }),
-    );
+    bindDeps(deps());
+    const { newRef } = await seedChain();
+    const outcome = await invokeMemberOperation('resolve_membership', {
+      membership_ref: newRef,
+    }, ctx({ internal_invocation: { purpose: 'wrong-purpose', permitted: false } }));
     expect(outcome).toMatchObject({
       outcome_type: 'STABLE_ERROR',
       stable_error: { code: 'OPERATION_NOT_AUTHORIZED' },
@@ -141,7 +147,10 @@ describe('resolve_membership handler（内部）', () => {
   });
 
   it('空 membership_ref -> MEMBERSHIP_REF_REQUIRED', async () => {
-    const outcome = await handlerFactory(deps())({ membership_ref: '' }, ctx());
+    bindDeps(deps());
+    const outcome = await invokeMemberOperation('resolve_membership', {
+      membership_ref: '',
+    }, ctx());
     expect(outcome).toMatchObject({
       outcome_type: 'STABLE_ERROR',
       stable_error: { code: 'MEMBERSHIP_REF_REQUIRED' },
@@ -149,12 +158,11 @@ describe('resolve_membership handler（内部）', () => {
   });
 
   it('标识不存在 -> MEMBERSHIP_NOT_FOUND，不返回另一条关系', async () => {
-    const d = deps();
-    await seedChain(d);
-    const outcome = await handlerFactory(d)(
-      { membership_ref: 'msh_unknown' },
-      ctx(),
-    );
+    bindDeps(deps());
+    await seedChain();
+    const outcome = await invokeMemberOperation('resolve_membership', {
+      membership_ref: 'msh_unknown',
+    }, ctx());
     expect(outcome).toMatchObject({
       outcome_type: 'STABLE_ERROR',
       stable_error: { code: 'MEMBERSHIP_NOT_FOUND' },

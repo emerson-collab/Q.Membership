@@ -1,14 +1,17 @@
-import { testAuthorizer } from '../test_authorizer';
-import { describe, expect, it } from 'vitest';
-import { createCreateMemberHandler } from '../../../../src/p1/member/create_member/handler';
+﻿import { testAuthorizer } from '../test_authorizer.ts';
+import { describe, expect, it, afterEach } from 'vitest';
 import {
-  InMemoryMemberRepository } from '../../../../src/p1/export/member/client';
-import { staticMembershipPlanProvider } from '../../../../src/p1/export/member/client';
+  invokeMemberOperation,
+  registerMemberForTest,
+} from '../registry_test_helper.ts';
+import {
+  InMemoryMemberRepository } from '../../../../src/p1/export/member/client.ts';
+import { staticMembershipPlanProvider } from '../../../../src/p1/export/member/client.ts';
 import type {
   CallContext,
   CreateMemberRequest,
   MemberRuntimeDeps,
-} from '../../../../src/p1/export/member/entry';
+} from '../../../../src/p1/export/member/entry.ts';
 
 const T0 = '2026-01-01T00:00:00.000Z';
 
@@ -41,9 +44,22 @@ const validRequest: CreateMemberRequest = {
   registration_profile: { display_name: '张三' },
 };
 
+// 每个测试用例自行 bindDeps 注册到 P1 业务注册表；afterEach 统一反注册。
+let activeUnregister: (() => void) | undefined;
+afterEach(() => {
+  activeUnregister?.();
+  activeUnregister = undefined;
+});
+function bindDeps<T extends MemberRuntimeDeps>(d: T): T {
+  activeUnregister?.();
+  activeUnregister = registerMemberForTest(d).unregister;
+  return d;
+}
+
 describe('create_member handler', () => {
   it('成功创建会员：生成稳定标识，初始 active', async () => {
-    const outcome = await createCreateMemberHandler(deps())(validRequest, ctx());
+    bindDeps(deps());
+    const outcome = await invokeMemberOperation('create_member', validRequest, ctx());
     expect(outcome.outcome_type).toBe('SUCCESS');
     if (outcome.outcome_type !== 'SUCCESS') throw new Error('expected success');
     expect(outcome.runtime_result.member_ref).toMatch(/^mem_/);
@@ -53,8 +69,9 @@ describe('create_member handler', () => {
   });
 
   it('无授权证据默认拒绝，且不留下会员事实', async () => {
-    const d = deps();
-    const outcome = await createCreateMemberHandler(d)(
+    const d = bindDeps(deps());
+    const outcome = await invokeMemberOperation(
+      'create_member',
       validRequest,
       ctx({ authorization: undefined }),
     );
@@ -67,16 +84,14 @@ describe('create_member handler', () => {
   });
 
   it('可信入口授权未包含本操作时拒绝', async () => {
-    const outcome = await createCreateMemberHandler(deps())(
-      validRequest,
-      ctx({
-        authorization: {
-          actor_ref: 'actor-1',
-          issued_by: 'trusted-ingress',
-          allowed_operations: ['resolve_member'],
-        },
-      }),
-    );
+    bindDeps(deps());
+    const outcome = await invokeMemberOperation('create_member', validRequest, ctx({
+      authorization: {
+        actor_ref: 'actor-1',
+        issued_by: 'trusted-ingress',
+        allowed_operations: ['resolve_member'],
+      },
+    }));
     expect(outcome).toMatchObject({
       outcome_type: 'STABLE_ERROR',
       stable_error: { code: 'OPERATION_NOT_AUTHORIZED' },
@@ -84,25 +99,19 @@ describe('create_member handler', () => {
   });
 
   it('身份命名空间或取值为空 -> MEMBER_IDENTITY_MISSING', async () => {
-    const handler = createCreateMemberHandler(deps());
-    const o1 = await handler(
-      {
-        member_identity: { identity_namespace: '', identity_value: 'x' },
-        registration_profile: { display_name: 'x' },
-      },
-      ctx(),
-    );
+    bindDeps(deps());
+    const o1 = await invokeMemberOperation('create_member', {
+      member_identity: { identity_namespace: '', identity_value: 'x' },
+      registration_profile: { display_name: 'x' },
+    }, ctx());
     expect(o1).toMatchObject({
       outcome_type: 'STABLE_ERROR',
       stable_error: { code: 'MEMBER_IDENTITY_MISSING' },
     });
-    const o2 = await handler(
-      {
-        member_identity: { identity_namespace: 'ns', identity_value: '' },
-        registration_profile: { display_name: 'x' },
-      },
-      ctx(),
-    );
+    const o2 = await invokeMemberOperation('create_member', {
+      member_identity: { identity_namespace: 'ns', identity_value: '' },
+      registration_profile: { display_name: 'x' },
+    }, ctx());
     expect(o2).toMatchObject({
       outcome_type: 'STABLE_ERROR',
       stable_error: { code: 'MEMBER_IDENTITY_MISSING' },
@@ -110,13 +119,11 @@ describe('create_member handler', () => {
   });
 
   it('display_name 缺失/为空 -> MEMBERSHIP_REQUIRED_INPUT_MISSING', async () => {
-    const outcome = await createCreateMemberHandler(deps())(
-      {
-        member_identity: { identity_namespace: 'ns', identity_value: 'v' },
-        registration_profile: { display_name: '' },
-      },
-      ctx(),
-    );
+    bindDeps(deps());
+    const outcome = await invokeMemberOperation('create_member', {
+      member_identity: { identity_namespace: 'ns', identity_value: 'v' },
+      registration_profile: { display_name: '' },
+    }, ctx());
     expect(outcome).toMatchObject({
       outcome_type: 'STABLE_ERROR',
       stable_error: { code: 'MEMBERSHIP_REQUIRED_INPUT_MISSING' },
@@ -124,13 +131,11 @@ describe('create_member handler', () => {
   });
 
   it('非法邮箱格式 -> MEMBERSHIP_REQUIRED_INPUT_MISSING', async () => {
-    const outcome = await createCreateMemberHandler(deps())(
-      {
-        member_identity: { identity_namespace: 'ns', identity_value: 'v' },
-        registration_profile: { display_name: '张三', contact_email: 'not-an-email' },
-      },
-      ctx(),
-    );
+    bindDeps(deps());
+    const outcome = await invokeMemberOperation('create_member', {
+      member_identity: { identity_namespace: 'ns', identity_value: 'v' },
+      registration_profile: { display_name: '张三', contact_email: 'not-an-email' },
+    }, ctx());
     expect(outcome).toMatchObject({
       outcome_type: 'STABLE_ERROR',
       stable_error: { code: 'MEMBERSHIP_REQUIRED_INPUT_MISSING' },
@@ -138,11 +143,14 @@ describe('create_member handler', () => {
   });
 
   it('精确键判重：相同原始字节组合重复注册被拒绝', async () => {
-    const d = deps();
-    const handler = createCreateMemberHandler(d);
-    const first = await handler(validRequest, ctx());
+    bindDeps(deps());
+    const first = await invokeMemberOperation('create_member', validRequest, ctx());
     expect(first.outcome_type).toBe('SUCCESS');
-    const second = await handler(validRequest, ctx({ request_id: 'req-2' }));
+    const second = await invokeMemberOperation(
+      'create_member',
+      validRequest,
+      ctx({ request_id: 'req-2' }),
+    );
     expect(second).toMatchObject({
       outcome_type: 'STABLE_ERROR',
       stable_error: { code: 'MEMBER_DUPLICATE_REGISTRATION' },
@@ -150,31 +158,23 @@ describe('create_member handler', () => {
   });
 
   it('不做大小写/空白归一化：差异即不同会员', async () => {
-    const d = deps();
-    const handler = createCreateMemberHandler(d);
-    await handler(
-      {
-        member_identity: { identity_namespace: 'ns', identity_value: 'User01' },
-        registration_profile: { display_name: 'a' },
-      },
-      ctx(),
-    );
-    const different = await handler(
-      {
-        member_identity: { identity_namespace: 'ns', identity_value: 'user01' },
-        registration_profile: { display_name: 'b' },
-      },
-      ctx(),
-    );
+    bindDeps(deps());
+    await invokeMemberOperation('create_member', {
+      member_identity: { identity_namespace: 'ns', identity_value: 'User01' },
+      registration_profile: { display_name: 'a' },
+    }, ctx());
+    const different = await invokeMemberOperation('create_member', {
+      member_identity: { identity_namespace: 'ns', identity_value: 'user01' },
+      registration_profile: { display_name: 'b' },
+    }, ctx());
     expect(different.outcome_type).toBe('SUCCESS');
   });
 
   it('并发提交同一身份：恰好一个成功，另一个冲突拒绝', async () => {
-    const d = deps();
-    const handler = createCreateMemberHandler(d);
+    bindDeps(deps());
     const [a, b] = await Promise.all([
-      handler(validRequest, ctx({ request_id: 'ra' })),
-      handler(validRequest, ctx({ request_id: 'rb' })),
+      invokeMemberOperation('create_member', validRequest, ctx({ request_id: 'ra' })),
+      invokeMemberOperation('create_member', validRequest, ctx({ request_id: 'rb' })),
     ]);
     const codes = [a, b].map((o) =>
       o.outcome_type === 'SUCCESS' ? 'SUCCESS' : o.stable_error.code,

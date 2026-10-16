@@ -10,18 +10,7 @@
  *  - 不以支付成功为前置；不产生订单、付款或权益履约事实。
  */
 
-import {
-  preserveExactProviderStableError,
-  fail,
-  generateMembershipRef,
-  parseDateTime,
-  stableError,
-  succeed,
-  toEpoch,
-  trustedEntryAuthorizer,
-  validateOperationRequest,
-  validatePlanResolution,
-} from '../../export/member/contracts.ts';
+import { succeed, trustedEntryAuthorizer } from '../../export/member/contracts.ts';
 import type {
   CallContext,
   CallOutcome,
@@ -29,9 +18,26 @@ import type {
   CreateMembershipResponse,
   MemberRuntimeDeps,
   OperationHandler,
-  StoredMembership,
-} from '../../export/member/types';
+} from '../../export/member/types.ts';
+import { validateCreateMembershipRequest } from './validator.ts';
+import { evaluateCreateMembershipTime, hasCreateMembershipOverlap } from './policy.ts';
+import { resolveActiveCreateMembershipPlan } from './dependency.ts';
+import {
+  loadCreateMembershipMember,
+  listCreateMembershipRelations,
+  insertCreateMembershipAtomic,
+} from './repository.ts';
+import {
+  createMembershipFailure,
+  createMembershipProviderFailure,
+  createMembershipInsertErrorCode,
+} from './errors.ts';
+import { toCreateMembershipResponse } from './mapper.ts';
 
+/**
+ * Operation entry stays here. Roles below remain implementation-private
+ * inside this same Operation directory; no extra execution or Anchor layer.
+ */
 export function createCreateMembershipHandler(
   deps: MemberRuntimeDeps,
 ): OperationHandler<CreateMembershipRequest, CreateMembershipResponse> {
@@ -42,171 +48,59 @@ export function createCreateMembershipHandler(
     request: CreateMembershipRequest,
     context: CallContext,
   ): Promise<CallOutcome<CreateMembershipResponse>> {
-    // 1. 授权
+    // 1. Authorization precedes validation and any business dependency.
     const authorized = await authorizer.authorize({
       operation_id: 'create_membership',
       request,
       context,
     });
     if (!authorized) {
-      return fail(
-        context,
-        stableError('create_membership', 'OPERATION_NOT_AUTHORIZED'),
-      );
+      return createMembershipFailure(context, 'OPERATION_NOT_AUTHORIZED');
     }
 
-    // 2. 请求 Schema 完整校验（B-06：required/type/additionalProperties/
-    //    minLength/date-time；直接调用路径同样不可绕过）
-    const validation = validateOperationRequest('create_membership', request);
-    if (!validation.ok) {
-      const code =
-        validation.category === 'identity'
-          ? 'MEMBER_IDENTITY_MISSING'
-          : validation.category === 'time'
-            ? 'INVALID_BUSINESS_TIME'
-            : 'MEMBERSHIP_REQUIRED_INPUT_MISSING';
-      return fail(context, stableError('create_membership', code));
-    }
-    let requestedTime: Date | null = null;
-    if (request.requested_effective_time !== undefined) {
-      requestedTime = parseDateTime(request.requested_effective_time);
-      if (requestedTime === null) {
-        return fail(
-          context,
-          stableError('create_membership', 'INVALID_BUSINESS_TIME'),
-        );
-      }
-    }
+    // 2. Existing exact schema and requested-time validation.
+    const validation = validateCreateMembershipRequest(request, context);
+    if (!validation.ok) return validation.outcome;
 
-    // 3. 会员必须真实存在
-    const member = await deps.repository.getMemberByRef(request.member_ref);
+    // 3. Member existence must be established before effective-time rules.
+    const member = await loadCreateMembershipMember(deps.repository, request.member_ref);
     if (member === null) {
-      return fail(context, stableError('create_membership', 'MEMBER_NOT_FOUND'));
+      return createMembershipFailure(context, 'MEMBER_NOT_FOUND');
     }
 
-    // 4. 生效时点边界（R-TEMPORAL-BOUNDS）
+    // 4–5. Contract-defined business-time and member-state guards.
     const commitTime = context.commit_time ?? clock();
-    const commitEpoch = toEpoch(commitTime);
-    const effectiveTime = requestedTime
-      ? request.requested_effective_time!
-      : commitTime;
-    const effectiveEpoch = requestedTime
-      ? requestedTime.getTime()
-      : commitEpoch;
-
-    if (effectiveEpoch > commitEpoch) {
-      return fail(
-        context,
-        stableError('create_membership', 'INVALID_BUSINESS_TIME'),
-      );
-    }
-    if (effectiveEpoch < toEpoch(member.created_at)) {
-      return fail(
-        context,
-        stableError('create_membership', 'INVALID_BUSINESS_TIME'),
-      );
-    }
-
-    // 5. 拟生效时点会员生命周期状态必须 active（R-EFFECTIVE-TIME-MEMBER-STATUS）
-    if (
-      member.terminated_at !== null &&
-      effectiveEpoch >= toEpoch(member.terminated_at)
-    ) {
-      return fail(
-        context,
-        stableError('create_membership', 'INVALID_STATE_TRANSITION'),
-      );
-    }
-
-    // 6. 精确解析外部方案；只接受 state=active（R-PLAN-EXISTENCE）
-    let planResult: Awaited<
-      ReturnType<MemberRuntimeDeps['planProvider']['resolveMembershipPlan']>
-    >;
-    try {
-      planResult = await deps.planProvider.resolveMembershipPlan(
-        { membership_plan_ref: request.plan_ref },
-        context,
-      );
-    } catch {
-      return fail(
-        context,
-        stableError('create_membership', 'DEPENDENCY_INFORMATION_INCOMPLETE'),
-      );
-    }
-    if (planResult.outcome_type === 'STABLE_ERROR') {
-      // stable_error_mode: PRESERVE_EXACT
-      return fail(
-        context,
-        preserveExactProviderStableError(
-          'create_membership',
-          planResult.stable_error,
-        ),
-      );
-    }
-    // B-01/B-02：五必填字段完整性 + 响应身份与请求 plan_ref 精确核对 + active。
-    // 调用成功、非空对象或“恰好某个方案 active”均不得替代精确解析。
-    const bindingIssue = validatePlanResolution(
-      planResult.membership_plan,
-      request.plan_ref,
+    const timing = evaluateCreateMembershipTime(
+      member, validation.requestedTime, request.requested_effective_time, commitTime,
     );
-    if (!bindingIssue.ok) {
-      if (bindingIssue.reason === 'MALFORMED_BINDING') {
-        return fail(
-          context,
-          stableError('create_membership', 'DEPENDENCY_INFORMATION_INCOMPLETE'),
-        );
-      }
-      // PLAN_REF_MISMATCH（A→B）与 PLAN_NOT_ACTIVE（A→A/inactive）
-      return fail(
-        context,
-        stableError('create_membership', 'MEMBERSHIP_PLAN_NOT_FOUND'),
-      );
+    if (!timing.ok) {
+      return createMembershipFailure(context, timing.errorCode);
     }
 
-    // 7. 有效区间不得重叠（R-ONE-EFFECTIVE-RELATION 的预检，原子写入兜底）
-    const existing = await deps.repository.listMembershipsByMember(
-      request.member_ref,
+    // 6. Existing declared Membership Plan Provider, without importing its handler.
+    const plan = await resolveActiveCreateMembershipPlan(
+      deps.planProvider, request.plan_ref, context,
     );
-    const overlap = existing.some(
-      (m) =>
-        m.termination_time === null || toEpoch(m.termination_time) > effectiveEpoch,
-    );
-    if (overlap) {
-      return fail(
-        context,
-        stableError('create_membership', 'MEMBERSHIP_RELATION_CONFLICT'),
-      );
+    if (plan.kind === 'provider_stable_error') {
+      return createMembershipProviderFailure(context, plan.stableError);
+    }
+    if (plan.kind === 'rejected') {
+      return createMembershipFailure(context, plan.errorCode);
     }
 
-    // 8. 原子建立关系
-    const record: StoredMembership = {
-      membership_ref: generateMembershipRef(),
-      member_ref: member.member_ref,
-      plan_ref: request.plan_ref,
-      membership_status: 'active',
-      effective_time: effectiveTime,
-      termination_time: null,
-      version: 1,
-    };
-    const inserted = await deps.repository.insertMembershipAtomic(record);
+    // 7. Preflight overlap; the repository remains the atomic final authority.
+    const existing = await listCreateMembershipRelations(deps.repository, request.member_ref);
+    if (hasCreateMembershipOverlap(existing, timing.effectiveEpoch)) {
+      return createMembershipFailure(context, 'MEMBERSHIP_RELATION_CONFLICT');
+    }
+
+    // 8. Atomic commit and stable-error closure.
+    const inserted = await insertCreateMembershipAtomic(
+      deps.repository, member.member_ref, request.plan_ref, timing.effectiveTime,
+    );
     if (!inserted.ok) {
-      // B-03：提交时会员已终止/历史状态不满足 -> INVALID_STATE_TRANSITION；
-      // 仓储事务保证拒绝时无任何部分写入。
-      const code =
-        inserted.reason === 'OVERLAP'
-          ? 'MEMBERSHIP_RELATION_CONFLICT'
-          : inserted.reason === 'MEMBER_NOT_ACTIVE_AT_TIME'
-            ? 'INVALID_STATE_TRANSITION'
-            : inserted.reason === 'MEMBER_NOT_FOUND'
-              ? 'MEMBER_NOT_FOUND'
-              : 'CONCURRENT_MODIFICATION_CONFLICT';
-      return fail(context, stableError('create_membership', code));
+      return createMembershipFailure(context, createMembershipInsertErrorCode(inserted.reason));
     }
-
-    return succeed(context, {
-      membership_ref: inserted.record.membership_ref,
-      membership_status: 'active',
-      effective_time: inserted.record.effective_time,
-    });
+    return succeed(context, toCreateMembershipResponse(inserted.record));
   };
 }

@@ -21,7 +21,7 @@ import type {
   OperationHandler,
   UpdateMemberStatusRequest,
   UpdateMemberStatusResponse,
-} from '../../export/member/types';
+} from '../../export/member/types.ts';
 
 export function createUpdateMemberStatusHandler(
   deps: MemberRuntimeDeps,

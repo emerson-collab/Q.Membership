@@ -4,21 +4,32 @@
  * MemberCapabilityClient：本地/候选业务逻辑测试客户端，不代表已完成 V0117
  * 的 exact Owner Contract / Interface Inventory / permission / rule closure。
  * 未注入 Owner 授权验证器时必须默认拒绝调用。
+ *
+ * 执行路径：构造时把 9 个会员 Operation 注册到 P1 业务注册表，方法调用统一经
+ * invoke_business_operation / invoke_internal_call 派发，与生产 web/server.ts
+ * 一致；不再直接实例化 handler。
  * InMemoryMemberRepository：满足 MemberRepository 端口的内存实现，
  *   内置写串行化与 CAS，保证身份唯一、区间不重叠与更换原子性；
  *   仅用于本地开发/测试，不声明物理数据库所有权。
  * staticMembershipPlanProvider：基于静态方案表的 Provider 适配器。
  */
 
-import { createCreateMemberHandler } from '../../member/create_member/handler.ts';
-import { createResolveMemberHandler } from '../../member/resolve_member/handler.ts';
-import { createUpdateMemberProfileHandler } from '../../member/update_member_profile/handler.ts';
-import { createUpdateMemberStatusHandler } from '../../member/update_member_status/handler.ts';
-import { createCreateMembershipHandler } from '../../member/create_membership/handler.ts';
-import { createUpdateMembershipPlanHandler } from '../../member/update_membership_plan/handler.ts';
-import { createLookupMembershipHandler } from '../../member/lookup_membership/handler.ts';
-import { createEvaluateMembershipEligibilityHandler } from '../../member/evaluate_membership_eligibility/handler.ts';
-import { createResolveMembershipHandler } from '../../member/resolve_membership/handler.ts';
+import { randomUUID } from 'node:crypto';
+import {
+  MEMBER_BUSINESS_ROUTES,
+  buildMemberRuntimeContext,
+  memberInvokePath,
+  registerMemberBusinessOperations,
+  unregisterMemberBusinessOperations,
+} from '../../member/business_registration.ts';
+import {
+  invoke_business_operation,
+  invoke_internal_call,
+} from '../../business_runtime/business_operation_registry.ts';
+import type {
+  BusinessInternalCallOutcome,
+  BusinessOperationOutcome,
+} from '../../business_runtime/business_operation_registry.ts';
 import {
   defaultClock,
   generateEventRef,
@@ -45,6 +56,7 @@ import type {
   MembershipPlanResolutionBinding,
   MembershipRelationEvent,
   OperationAuthorizer,
+  OperationId,
   ResolveMemberRequest,
   ResolveMemberResponse,
   ResolveMembershipRequest,
@@ -65,29 +77,7 @@ import type {
 
 export class MemberCapabilityClient {
   private readonly clock: Clock;
-  private readonly createMember: ReturnType<typeof createCreateMemberHandler>;
-  private readonly resolveMember: ReturnType<typeof createResolveMemberHandler>;
-  private readonly updateMemberProfile: ReturnType<
-    typeof createUpdateMemberProfileHandler
-  >;
-  private readonly updateMemberStatus: ReturnType<
-    typeof createUpdateMemberStatusHandler
-  >;
-  private readonly createMembership: ReturnType<
-    typeof createCreateMembershipHandler
-  >;
-  private readonly updateMembershipPlan: ReturnType<
-    typeof createUpdateMembershipPlanHandler
-  >;
-  private readonly lookupMembership: ReturnType<
-    typeof createLookupMembershipHandler
-  >;
-  private readonly evaluateEligibility: ReturnType<
-    typeof createEvaluateMembershipEligibilityHandler
-  >;
-  private readonly resolveMembership: ReturnType<
-    typeof createResolveMembershipHandler
-  >;
+  private readonly registered: boolean;
 
   constructor(deps: MemberRuntimeDeps) {
     this.clock = deps.clock ?? defaultClock;
@@ -96,24 +86,85 @@ export class MemberCapabilityClient {
       clock: this.clock,
       authorizer: deps.authorizer ?? trustedEntryAuthorizer,
     };
-    this.createMember = createCreateMemberHandler(resolvedDeps);
-    this.resolveMember = createResolveMemberHandler(resolvedDeps);
-    this.updateMemberProfile = createUpdateMemberProfileHandler(resolvedDeps);
-    this.updateMemberStatus = createUpdateMemberStatusHandler(resolvedDeps);
-    this.createMembership = createCreateMembershipHandler(resolvedDeps);
-    this.updateMembershipPlan = createUpdateMembershipPlanHandler(resolvedDeps);
-    this.lookupMembership = createLookupMembershipHandler(resolvedDeps);
-    this.evaluateEligibility =
-      createEvaluateMembershipEligibilityHandler(resolvedDeps);
-    this.resolveMembership = createResolveMembershipHandler(resolvedDeps);
+    // 注册到 P1 业务注册表；幂等，重复构造不会抛 P1_OPERATION_DUPLICATE。
+    registerMemberBusinessOperations(resolvedDeps);
+    this.registered = true;
   }
 
-  private invoke<TReq, TRes>(
-    handler: (request: TReq, context: CallContext) => Promise<CallOutcome<TRes>>,
-    request: TReq,
+  /** 反注册本客户端占用的会员 Operation（测试生命周期收尾用）。 */
+  dispose(): void {
+    if (this.registered) {
+      unregisterMemberBusinessOperations();
+    }
+  }
+
+  /**
+   * 经 P1 业务注册表派发一次会员 Operation，返回与原 handler 直调一致的
+   * CallOutcome 信封。对外 8 op 走 invoke_business_operation；
+   * 内部 op09 resolve_membership 走 invoke_internal_call。
+   */
+  private async invoke<TRes>(
+    operationId: OperationId,
+    request: unknown,
     context?: Partial<CallContext>,
   ): Promise<CallOutcome<TRes>> {
-    return handler(request, normalizeCallContext(context, this.clock));
+    const route = MEMBER_BUSINESS_ROUTES[operationId];
+    const memberContext = normalizeCallContext(context, this.clock);
+    const trace_id = memberContext.trace_id;
+    const request_id = memberContext.request_id;
+    const ids = {
+      trace_id,
+      request_id,
+      invocation_id: `inv_${randomUUID()}`,
+      binding_set_ref: `bs_client_${trace_id}`,
+    };
+    const runtimeContext = buildMemberRuntimeContext(route, memberContext, ids);
+
+    if (route.internal) {
+      const outcome: BusinessInternalCallOutcome = await invoke_internal_call({
+        local_route_key: route.operation_ref,
+        input: request,
+        runtime_context: runtimeContext,
+        call_path: [],
+        call_depth: 0,
+        trace_id,
+        parent_request_id: request_id,
+      });
+      if (outcome.outcome_type === 'response') {
+        return {
+          outcome_type: 'SUCCESS',
+          runtime_result: outcome.runtime_result as TRes,
+          trace_id,
+          request_id: outcome.child_request_id,
+        } as CallOutcome<TRes>;
+      }
+      return {
+        outcome_type: 'STABLE_ERROR',
+        stable_error: outcome.stable_error,
+        trace_id,
+        request_id: outcome.child_request_id,
+      } as CallOutcome<TRes>;
+    }
+
+    const outcome: BusinessOperationOutcome = await invoke_business_operation(
+      memberInvokePath(route, trace_id, request_id),
+      request,
+      runtimeContext,
+    );
+    if (outcome.outcome_type === 'response') {
+      return {
+        outcome_type: 'SUCCESS',
+        runtime_result: outcome.runtime_result as TRes,
+        trace_id,
+        request_id,
+      } as CallOutcome<TRes>;
+    }
+    return {
+      outcome_type: 'STABLE_ERROR',
+      stable_error: outcome.stable_error,
+      trace_id,
+      request_id,
+    } as CallOutcome<TRes>;
   }
 
   /** 01 创建会员（对外） */
@@ -121,7 +172,7 @@ export class MemberCapabilityClient {
     request: CreateMemberRequest,
     context?: Partial<CallContext>,
   ): Promise<CallOutcome<CreateMemberResponse>> {
-    return this.invoke(this.createMember, request, context);
+    return this.invoke('create_member', request, context);
   }
 
   /** 02 查询会员（对外） */
@@ -129,7 +180,7 @@ export class MemberCapabilityClient {
     request: ResolveMemberRequest,
     context?: Partial<CallContext>,
   ): Promise<CallOutcome<ResolveMemberResponse>> {
-    return this.invoke(this.resolveMember, request, context);
+    return this.invoke('resolve_member', request, context);
   }
 
   /** 03 修改会员档案（对外） */
@@ -137,7 +188,7 @@ export class MemberCapabilityClient {
     request: UpdateMemberProfileRequest,
     context?: Partial<CallContext>,
   ): Promise<CallOutcome<UpdateMemberProfileResponse>> {
-    return this.invoke(this.updateMemberProfile, request, context);
+    return this.invoke('update_member_profile', request, context);
   }
 
   /** 04 变更会员生命周期状态（对外） */
@@ -145,7 +196,7 @@ export class MemberCapabilityClient {
     request: UpdateMemberStatusRequest,
     context?: Partial<CallContext>,
   ): Promise<CallOutcome<UpdateMemberStatusResponse>> {
-    return this.invoke(this.updateMemberStatus, request, context);
+    return this.invoke('update_member_status', request, context);
   }
 
   /** 05 建立会员与方案关系（对外） */
@@ -153,7 +204,7 @@ export class MemberCapabilityClient {
     request: CreateMembershipRequest,
     context?: Partial<CallContext>,
   ): Promise<CallOutcome<CreateMembershipResponse>> {
-    return this.invoke(this.createMembership, request, context);
+    return this.invoke('create_membership', request, context);
   }
 
   /** 06 替换会员方案（对外） */
@@ -161,7 +212,7 @@ export class MemberCapabilityClient {
     request: UpdateMembershipPlanRequest,
     context?: Partial<CallContext>,
   ): Promise<CallOutcome<UpdateMembershipPlanResponse>> {
-    return this.invoke(this.updateMembershipPlan, request, context);
+    return this.invoke('update_membership_plan', request, context);
   }
 
   /** 07 按时点查询有效关系（对外） */
@@ -169,7 +220,7 @@ export class MemberCapabilityClient {
     request: LookupMembershipRequest,
     context?: Partial<CallContext>,
   ): Promise<CallOutcome<LookupMembershipResponse>> {
-    return this.invoke(this.lookupMembership, request, context);
+    return this.invoke('lookup_membership', request, context);
   }
 
   /** 08 判断会员关系有效性资格（对外） */
@@ -177,7 +228,7 @@ export class MemberCapabilityClient {
     request: EvaluateMembershipEligibilityRequest,
     context?: Partial<CallContext>,
   ): Promise<CallOutcome<EvaluateMembershipEligibilityResponse>> {
-    return this.invoke(this.evaluateEligibility, request, context);
+    return this.invoke('evaluate_membership_eligibility', request, context);
   }
 
   /** 09 按精确 membership_ref 读取关系（仅内部） */
@@ -185,7 +236,7 @@ export class MemberCapabilityClient {
     request: ResolveMembershipRequest,
     context?: Partial<CallContext>,
   ): Promise<CallOutcome<ResolveMembershipResponse>> {
-    return this.invoke(this.resolveMembership, request, context);
+    return this.invoke('resolve_membership', request, context);
   }
 }
 

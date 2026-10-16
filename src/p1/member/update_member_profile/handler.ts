@@ -23,7 +23,7 @@ import type {
   ProfileChanges,
   UpdateMemberProfileRequest,
   UpdateMemberProfileResponse,
-} from '../../export/member/types';
+} from '../../export/member/types.ts';
 
 export function createUpdateMemberProfileHandler(
   deps: MemberRuntimeDeps,

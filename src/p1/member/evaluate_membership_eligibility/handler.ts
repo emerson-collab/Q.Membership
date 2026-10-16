@@ -32,7 +32,7 @@ import type {
   MemberRuntimeDeps,
   MemberStatus,
   OperationHandler,
-} from '../../export/member/types';
+} from '../../export/member/types.ts';
 
 /** 读取会员在指定时点的生命周期状态；早于建立时点返回 null（事实不可解释） */
 function memberStatusAt(

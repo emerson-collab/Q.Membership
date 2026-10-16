@@ -1,18 +1,18 @@
-import { testAuthorizer } from '../test_authorizer';
-import { describe, expect, it } from 'vitest';
-import { createEvaluateMembershipEligibilityHandler } from '../../../../src/p1/member/evaluate_membership_eligibility/handler';
-import { createCreateMemberHandler } from '../../../../src/p1/member/create_member/handler';
-import { createCreateMembershipHandler } from '../../../../src/p1/member/create_membership/handler';
-import { createUpdateMemberStatusHandler } from '../../../../src/p1/member/update_member_status/handler';
+﻿import { testAuthorizer } from '../test_authorizer.ts';
+import { describe, expect, it, afterEach } from 'vitest';
 import {
-  InMemoryMemberRepository } from '../../../../src/p1/export/member/client';
-import { staticMembershipPlanProvider } from '../../../../src/p1/export/member/client';
+  invokeMemberOperation,
+  registerMemberForTest,
+} from '../registry_test_helper.ts';
+import {
+  InMemoryMemberRepository } from '../../../../src/p1/export/member/client.ts';
+import { staticMembershipPlanProvider } from '../../../../src/p1/export/member/client.ts';
 import type {
   CallContext,
   EvaluateMembershipEligibilityRequest,
   MemberRuntimeDeps,
   MembershipPlanResolutionBinding,
-} from '../../../../src/p1/export/member/entry';
+} from '../../../../src/p1/export/member/entry.ts';
 
 const T0 = '2026-01-01T00:00:00.000Z';
 const T1 = '2026-02-01T00:00:00.000Z';
@@ -28,7 +28,7 @@ const PLAN_A: MembershipPlanResolutionBinding = {
   state: 'active',
 };
 
-function deps() {
+function deps(): MemberRuntimeDeps {
   return {
     repository: new InMemoryMemberRepository(),
     planProvider: staticMembershipPlanProvider([PLAN_A]),
@@ -52,27 +52,24 @@ function ctx(overrides: CtxOverrides = {}): CallContext {
   } as CallContext;
 }
 
-async function seedMember(d: MemberRuntimeDeps): Promise<string> {
-  const outcome = await createCreateMemberHandler(d)(
-    {
-      member_identity: { identity_namespace: 'ns', identity_value: 'v-1' },
-      registration_profile: { display_name: '张三' },
-    },
-    { ...ctx(), commit_time: T0 },
-  );
+async function seedMember(): Promise<string> {
+  const outcome = await invokeMemberOperation('create_member', {
+    member_identity: { identity_namespace: 'ns', identity_value: 'v-1' },
+    registration_profile: { display_name: '张三' },
+  }, { ...ctx(), commit_time: T0 });
   if (outcome.outcome_type !== 'SUCCESS') throw new Error('seed failed');
   return outcome.runtime_result.member_ref;
 }
 
 async function seedRelation(
-  d: MemberRuntimeDeps,
   memberRef: string,
   time = T1,
 ): Promise<string> {
-  const outcome = await createCreateMembershipHandler(d)(
-    { member_ref: memberRef, plan_ref: 'plan-a', requested_effective_time: time },
-    ctx({ commit_time: time }),
-  );
+  const outcome = await invokeMemberOperation('create_membership', {
+    member_ref: memberRef,
+    plan_ref: 'plan-a',
+    requested_effective_time: time,
+  }, ctx({ commit_time: time }));
   if (outcome.outcome_type !== 'SUCCESS') throw new Error('relation seed failed');
   return outcome.runtime_result.membership_ref;
 }
@@ -88,14 +85,27 @@ function request(
   };
 }
 
-describe('evaluate_membership_eligibility handler', () => {
-  const handlerFactory = createEvaluateMembershipEligibilityHandler;
+let activeUnregister: (() => void) | undefined;
+afterEach(() => {
+  activeUnregister?.();
+  activeUnregister = undefined;
+});
+function bindDeps<T extends MemberRuntimeDeps>(d: T): T {
+  activeUnregister?.();
+  activeUnregister = registerMemberForTest(d).unregister;
+  return d;
+}
 
+describe('evaluate_membership_eligibility handler', () => {
   it('B：active 且恰有一条生效关系 -> eligible=true / MEMBERSHIP_VALID', async () => {
-    const d = deps();
-    const memberRef = await seedMember(d);
-    const relationRef = await seedRelation(d, memberRef, T1);
-    const outcome = await handlerFactory(d)(request(memberRef, T15), ctx());
+    bindDeps(deps());
+    const memberRef = await seedMember();
+    const relationRef = await seedRelation(memberRef, T1);
+    const outcome = await invokeMemberOperation(
+      'evaluate_membership_eligibility',
+      request(memberRef, T15),
+      ctx(),
+    );
     expect(outcome.outcome_type).toBe('SUCCESS');
     if (outcome.outcome_type !== 'SUCCESS') throw new Error('expected success');
     expect(outcome.runtime_result).toEqual({
@@ -111,9 +121,13 @@ describe('evaluate_membership_eligibility handler', () => {
   });
 
   it('C：active 但权威历史无生效关系 -> eligible=false / NO_EFFECTIVE_MEMBERSHIP', async () => {
-    const d = deps();
-    const memberRef = await seedMember(d);
-    const outcome = await handlerFactory(d)(request(memberRef, T15), ctx());
+    bindDeps(deps());
+    const memberRef = await seedMember();
+    const outcome = await invokeMemberOperation(
+      'evaluate_membership_eligibility',
+      request(memberRef, T15),
+      ctx(),
+    );
     expect(outcome).toMatchObject({
       outcome_type: 'SUCCESS',
       runtime_result: {
@@ -128,14 +142,18 @@ describe('evaluate_membership_eligibility handler', () => {
   });
 
   it('A：会员已终止 -> eligible=false / MEMBER_TERMINATED（原因优先于无关系）', async () => {
-    const d = deps();
-    const memberRef = await seedMember(d);
-    await seedRelation(d, memberRef, T1);
-    await createUpdateMemberStatusHandler(d)(
-      { member_ref: memberRef, target_status: 'terminated' },
-      ctx({ commit_time: T2 }),
+    bindDeps(deps());
+    const memberRef = await seedMember();
+    await seedRelation(memberRef, T1);
+    await invokeMemberOperation('update_member_status', {
+      member_ref: memberRef,
+      target_status: 'terminated',
+    }, ctx({ commit_time: T2 }));
+    const outcome = await invokeMemberOperation(
+      'evaluate_membership_eligibility',
+      request(memberRef, T3),
+      ctx(),
     );
-    const outcome = await handlerFactory(d)(request(memberRef, T3), ctx());
     expect(outcome).toMatchObject({
       outcome_type: 'SUCCESS',
       runtime_result: {
@@ -149,14 +167,18 @@ describe('evaluate_membership_eligibility handler', () => {
   });
 
   it('终止不重写历史：终止时点之前仍按 active + 生效关系判定 true', async () => {
-    const d = deps();
-    const memberRef = await seedMember(d);
-    await seedRelation(d, memberRef, T1);
-    await createUpdateMemberStatusHandler(d)(
-      { member_ref: memberRef, target_status: 'terminated' },
-      ctx({ commit_time: T2 }),
+    bindDeps(deps());
+    const memberRef = await seedMember();
+    await seedRelation(memberRef, T1);
+    await invokeMemberOperation('update_member_status', {
+      member_ref: memberRef,
+      target_status: 'terminated',
+    }, ctx({ commit_time: T2 }));
+    const outcome = await invokeMemberOperation(
+      'evaluate_membership_eligibility',
+      request(memberRef, T15),
+      ctx(),
     );
-    const outcome = await handlerFactory(d)(request(memberRef, T15), ctx());
     expect(outcome).toMatchObject({
       outcome_type: 'SUCCESS',
       runtime_result: {
@@ -170,9 +192,10 @@ describe('evaluate_membership_eligibility handler', () => {
   });
 
   it('D：decision_time 早于会员建立 -> DEPENDENCY_INFORMATION_INCOMPLETE，不伪装 false', async () => {
-    const d = deps();
-    const memberRef = await seedMember(d);
-    const outcome = await handlerFactory(d)(
+    bindDeps(deps());
+    const memberRef = await seedMember();
+    const outcome = await invokeMemberOperation(
+      'evaluate_membership_eligibility',
       request(memberRef, '2025-12-15T00:00:00.000Z'),
       ctx(),
     );
@@ -183,9 +206,13 @@ describe('evaluate_membership_eligibility handler', () => {
   });
 
   it('未来 decision_time -> INVALID_BUSINESS_TIME', async () => {
-    const d = deps();
-    const memberRef = await seedMember(d);
-    const outcome = await handlerFactory(d)(request(memberRef, T3), ctx({ commit_time: T2 }));
+    bindDeps(deps());
+    const memberRef = await seedMember();
+    const outcome = await invokeMemberOperation(
+      'evaluate_membership_eligibility',
+      request(memberRef, T3),
+      ctx({ commit_time: T2 }),
+    );
     expect(outcome).toMatchObject({
       outcome_type: 'STABLE_ERROR',
       stable_error: { code: 'INVALID_BUSINESS_TIME' },
@@ -193,9 +220,10 @@ describe('evaluate_membership_eligibility handler', () => {
   });
 
   it('不支持的 check_purpose -> DEPENDENCY_INFORMATION_INCOMPLETE', async () => {
-    const d = deps();
-    const memberRef = await seedMember(d);
-    const outcome = await handlerFactory(d)(
+    bindDeps(deps());
+    const memberRef = await seedMember();
+    const outcome = await invokeMemberOperation(
+      'evaluate_membership_eligibility',
       {
         member_ref: memberRef,
         ...({ check_purpose: 'benefit_grant' } as object),
@@ -210,13 +238,21 @@ describe('evaluate_membership_eligibility handler', () => {
   });
 
   it('会员不存在 -> MEMBER_NOT_FOUND；member_ref 为空 -> MEMBER_IDENTITY_MISSING', async () => {
-    const d = deps();
-    const notFound = await handlerFactory(d)(request('mem_none', T15), ctx());
+    bindDeps(deps());
+    const notFound = await invokeMemberOperation(
+      'evaluate_membership_eligibility',
+      request('mem_none', T15),
+      ctx(),
+    );
     expect(notFound).toMatchObject({
       outcome_type: 'STABLE_ERROR',
       stable_error: { code: 'MEMBER_NOT_FOUND' },
     });
-    const missing = await handlerFactory(d)(request('', T15), ctx());
+    const missing = await invokeMemberOperation(
+      'evaluate_membership_eligibility',
+      request('', T15),
+      ctx(),
+    );
     expect(missing).toMatchObject({
       outcome_type: 'STABLE_ERROR',
       stable_error: { code: 'MEMBER_IDENTITY_MISSING' },
@@ -224,9 +260,10 @@ describe('evaluate_membership_eligibility handler', () => {
   });
 
   it('未授权 -> OPERATION_NOT_AUTHORIZED', async () => {
-    const d = deps();
-    const memberRef = await seedMember(d);
-    const outcome = await handlerFactory(d)(
+    bindDeps(deps());
+    const memberRef = await seedMember();
+    const outcome = await invokeMemberOperation(
+      'evaluate_membership_eligibility',
       request(memberRef, T15),
       ctx({ authorization: undefined }),
     );
@@ -237,11 +274,19 @@ describe('evaluate_membership_eligibility handler', () => {
   });
 
   it('相同事实多次判定结果一致（幂等只读）', async () => {
-    const d = deps();
-    const memberRef = await seedMember(d);
-    await seedRelation(d, memberRef, T1);
-    const a = await handlerFactory(d)(request(memberRef, T15), ctx({ request_id: 'ra' }));
-    const b = await handlerFactory(d)(request(memberRef, T15), ctx({ request_id: 'rb' }));
+    bindDeps(deps());
+    const memberRef = await seedMember();
+    await seedRelation(memberRef, T1);
+    const a = await invokeMemberOperation(
+      'evaluate_membership_eligibility',
+      request(memberRef, T15),
+      ctx({ request_id: 'ra' }),
+    );
+    const b = await invokeMemberOperation(
+      'evaluate_membership_eligibility',
+      request(memberRef, T15),
+      ctx({ request_id: 'rb' }),
+    );
     // 幂等只读：业务判定结果与依据一致（信封 request_id 允许随调用不同）
     expect(a.outcome_type).toBe('SUCCESS');
     expect(b.outcome_type).toBe('SUCCESS');

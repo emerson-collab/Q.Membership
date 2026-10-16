@@ -29,7 +29,7 @@ import type {
   StoredMembership,
   UpdateMembershipPlanRequest,
   UpdateMembershipPlanResponse,
-} from '../../export/member/types';
+} from '../../export/member/types.ts';
 
 export function createUpdateMembershipPlanHandler(
   deps: MemberRuntimeDeps,

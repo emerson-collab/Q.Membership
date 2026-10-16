@@ -60,6 +60,18 @@
       "terminated_at": null,
       "terminate_reason": null,
       "version": 1
+    },
+    {
+      "member_ref": "mem_542df8e1-5663-431b-aae3-5492f034f9d8",
+      "identity_namespace": "13811111115",
+      "identity_value": "13811111115",
+      "display_name": "chen",
+      "contact_email": null,
+      "member_status": "active",
+      "created_at": "2026-10-15T14:46:46.373Z",
+      "terminated_at": null,
+      "terminate_reason": null,
+      "version": 1
     }
   ],
   "memberships": [
@@ -69,6 +81,15 @@
       "plan_ref": "plan-basic",
       "membership_status": "active",
       "effective_time": "2026-10-15T00:55:48.093Z",
+      "termination_time": null,
+      "version": 1
+    },
+    {
+      "membership_ref": "msh_1f7d14c1-4ed8-480e-a75e-73f99e1b2720",
+      "member_ref": "mem_55abbd2d-430d-40bc-b61c-03d671dd537a",
+      "plan_ref": "plan-premium",
+      "membership_status": "active",
+      "effective_time": "2026-10-15T13:23:12.706Z",
       "termination_time": null,
       "version": 1
     }
@@ -113,6 +134,14 @@
       "to_status": "active",
       "occurred_at": "2026-10-15T01:07:21.496Z",
       "reason": null
+    },
+    {
+      "event_ref": "msev_0fa87626-721b-46db-8dba-b3b05796e685",
+      "member_ref": "mem_542df8e1-5663-431b-aae3-5492f034f9d8",
+      "from_status": null,
+      "to_status": "active",
+      "occurred_at": "2026-10-15T14:46:46.373Z",
+      "reason": null
     }
   ],
   "relation_events": [
@@ -127,6 +156,18 @@
       "successor_ref": null,
       "predecessor_ref": null,
       "occurred_at": "2026-10-15T00:55:48.093Z"
+    },
+    {
+      "event_ref": "mrev_445100e2-b294-48d7-918e-73e35837cef6",
+      "membership_ref": "msh_1f7d14c1-4ed8-480e-a75e-73f99e1b2720",
+      "member_ref": "mem_55abbd2d-430d-40bc-b61c-03d671dd537a",
+      "plan_ref": "plan-premium",
+      "event_kind": "created",
+      "effective_time": "2026-10-15T13:23:12.706Z",
+      "termination_time": null,
+      "successor_ref": null,
+      "predecessor_ref": null,
+      "occurred_at": "2026-10-15T13:23:12.706Z"
     }
   ]
 }

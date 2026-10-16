@@ -23,7 +23,7 @@ import type {
   OperationHandler,
   ResolveMembershipRequest,
   ResolveMembershipResponse,
-} from '../../export/member/types';
+} from '../../export/member/types.ts';
 
 export function createResolveMembershipHandler(
   deps: MemberRuntimeDeps,

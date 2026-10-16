@@ -1,15 +1,16 @@
-import { testAuthorizer } from '../test_authorizer';
-import { describe, expect, it } from 'vitest';
-import { createResolveMemberHandler } from '../../../../src/p1/member/resolve_member/handler';
-import { createCreateMemberHandler } from '../../../../src/p1/member/create_member/handler';
-import { createUpdateMemberStatusHandler } from '../../../../src/p1/member/update_member_status/handler';
+﻿import { testAuthorizer } from '../test_authorizer.ts';
+import { describe, expect, it, afterEach } from 'vitest';
 import {
-  InMemoryMemberRepository } from '../../../../src/p1/export/member/client';
-import { staticMembershipPlanProvider } from '../../../../src/p1/export/member/client';
+  invokeMemberOperation,
+  registerMemberForTest,
+} from '../registry_test_helper.ts';
+import {
+  InMemoryMemberRepository } from '../../../../src/p1/export/member/client.ts';
+import { staticMembershipPlanProvider } from '../../../../src/p1/export/member/client.ts';
 import type {
   CallContext,
   MemberRuntimeDeps,
-} from '../../../../src/p1/export/member/entry';
+} from '../../../../src/p1/export/member/entry.ts';
 
 const T0 = '2026-01-01T00:00:00.000Z';
 const T1 = '2026-03-01T00:00:00.000Z';
@@ -38,26 +39,34 @@ function ctx(overrides: CtxOverrides = {}): CallContext {
   } as CallContext;
 }
 
-async function seedMember(d: MemberRuntimeDeps): Promise<string> {
-  const outcome = await createCreateMemberHandler(d)(
-    {
-      member_identity: { identity_namespace: 'wechat', identity_value: 'openid-1' },
-      registration_profile: {
-        display_name: '张三',
-        contact_email: 'zhangsan@example.com',
-      },
+async function seedMember(): Promise<string> {
+  const outcome = await invokeMemberOperation('create_member', {
+    member_identity: { identity_namespace: 'wechat', identity_value: 'openid-1' },
+    registration_profile: {
+      display_name: '张三',
+      contact_email: 'zhangsan@example.com',
     },
-    ctx(),
-  );
+  }, ctx());
   if (outcome.outcome_type !== 'SUCCESS') throw new Error('seed failed');
   return outcome.runtime_result.member_ref;
 }
 
+let activeUnregister: (() => void) | undefined;
+afterEach(() => {
+  activeUnregister?.();
+  activeUnregister = undefined;
+});
+function bindDeps<T extends MemberRuntimeDeps>(d: T): T {
+  activeUnregister?.();
+  activeUnregister = registerMemberForTest(d).unregister;
+  return d;
+}
+
 describe('resolve_member handler', () => {
   it('返回会员真实身份与状态，默认不披露 contact_email', async () => {
-    const d = deps();
-    const ref = await seedMember(d);
-    const outcome = await createResolveMemberHandler(d)({ member_ref: ref }, ctx());
+    const d = bindDeps(deps());
+    const ref = await seedMember();
+    const outcome = await invokeMemberOperation('resolve_member', { member_ref: ref }, ctx());
     expect(outcome.outcome_type).toBe('SUCCESS');
     if (outcome.outcome_type !== 'SUCCESS') throw new Error('expected success');
     expect(outcome.runtime_result.member).toEqual({
@@ -69,14 +78,14 @@ describe('resolve_member handler', () => {
   });
 
   it('会员终止后仍按真实状态返回', async () => {
-    const d = deps();
-    const ref = await seedMember(d);
-    const terminate = await createUpdateMemberStatusHandler(d)(
-      { member_ref: ref, target_status: 'terminated' },
-      ctx({ commit_time: T1 }),
-    );
+    bindDeps(deps());
+    const ref = await seedMember();
+    const terminate = await invokeMemberOperation('update_member_status', {
+      member_ref: ref,
+      target_status: 'terminated',
+    }, ctx({ commit_time: T1 }));
     expect(terminate.outcome_type).toBe('SUCCESS');
-    const outcome = await createResolveMemberHandler(d)({ member_ref: ref }, ctx());
+    const outcome = await invokeMemberOperation('resolve_member', { member_ref: ref }, ctx());
     expect(outcome).toMatchObject({
       outcome_type: 'SUCCESS',
       runtime_result: {
@@ -86,12 +95,11 @@ describe('resolve_member handler', () => {
   });
 
   it('未授权 -> OPERATION_NOT_AUTHORIZED', async () => {
-    const d = deps();
-    const ref = await seedMember(d);
-    const outcome = await createResolveMemberHandler(d)(
-      { member_ref: ref },
-      ctx({ authorization: undefined }),
-    );
+    bindDeps(deps());
+    const ref = await seedMember();
+    const outcome = await invokeMemberOperation('resolve_member', { member_ref: ref }, ctx({
+      authorization: undefined,
+    }));
     expect(outcome).toMatchObject({
       outcome_type: 'STABLE_ERROR',
       stable_error: { code: 'OPERATION_NOT_AUTHORIZED' },
@@ -99,10 +107,8 @@ describe('resolve_member handler', () => {
   });
 
   it('member_ref 为空 -> MEMBER_IDENTITY_MISSING', async () => {
-    const outcome = await createResolveMemberHandler(deps())(
-      { member_ref: '' },
-      ctx(),
-    );
+    bindDeps(deps());
+    const outcome = await invokeMemberOperation('resolve_member', { member_ref: '' }, ctx());
     expect(outcome).toMatchObject({
       outcome_type: 'STABLE_ERROR',
       stable_error: { code: 'MEMBER_IDENTITY_MISSING' },
@@ -110,7 +116,9 @@ describe('resolve_member handler', () => {
   });
 
   it('会员不存在 -> MEMBER_NOT_FOUND', async () => {
-    const outcome = await createResolveMemberHandler(deps())(
+    bindDeps(deps());
+    const outcome = await invokeMemberOperation(
+      'resolve_member',
       { member_ref: 'mem_unknown' },
       ctx(),
     );
@@ -121,11 +129,11 @@ describe('resolve_member handler', () => {
   });
 
   it('只读：查询不改变任何会员事实', async () => {
-    const d = deps();
-    const ref = await seedMember(d);
+    const d = bindDeps(deps());
+    const ref = await seedMember();
     const before = await d.repository.getMemberByRef(ref);
-    await createResolveMemberHandler(d)({ member_ref: ref }, ctx());
-    await createResolveMemberHandler(d)({ member_ref: ref }, ctx());
+    await invokeMemberOperation('resolve_member', { member_ref: ref }, ctx());
+    await invokeMemberOperation('resolve_member', { member_ref: ref }, ctx());
     const after = await d.repository.getMemberByRef(ref);
     expect(after).toEqual(before);
   });

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import * as MemberPublicExports from '../../../../src/p1/export/member/entry';
+import * as MemberPublicExports from '../../../../src/p1/export/member/entry.ts';
 import {
   MEMBER_CAPABILITY_METADATA,
   getMemberGeneralExportCandidate,
@@ -7,12 +7,12 @@ import {
   trustedEntryAuthorizer,
   stableError,
   preserveExactProviderStableError,
-} from '../../../../src/p1/export/member/entry';
+} from '../../../../src/p1/export/member/entry.ts';
 import {
   InMemoryMemberRepository,
   MemberCapabilityClient,
   staticMembershipPlanProvider,
-} from '../../../../src/p1/export/member/client';
+} from '../../../../src/p1/export/member/client.ts';
 
 describe('member capability entry 公共出口', () => {
   it('候选入口不导出本地直调客户端、内存仓库和静态方案提供方', () => {
